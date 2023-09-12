@@ -24,7 +24,7 @@ def p_diagram(p):
         rels = p[3]
 
     for i in rels:
-        d.addNode(i)
+        d.addObject(i)
 
     p[0] = d
 
@@ -52,7 +52,7 @@ def p_l_relation(p):
     n2 = DiagramClass(p[4])
     l = DiagramLine(p[2], n1, n2)
 
-    n1.addNode(n2)
+    n1.addObject(n2)
     n1.addLine(l)
 
     p[0] = n1
@@ -67,7 +67,7 @@ def p_r_relation(p):
     n2 = DiagramClass(p[4])
     l = DiagramLine(p[3], n1, n2)
 
-    n1.addNode(n2)
+    n1.addObject(n2)
     n1.addLine(l)
 
     p[0] = n1

@@ -1,28 +1,28 @@
-from .DiagramNode import DiagramNode
+from .DiagramObject import DiagramObject
 
 from manim import *
 
 
-class Diagram(DiagramNode):
+class Diagram(DiagramObject):
 
     def __init__(self, name: str):
         super().__init__(name)
-        self.identityMap: typing.Dict[str, DiagramNode] = {}
+        self.identityMap: typing.Dict[str, DiagramObject] = {}
 
     def draw(self):
-        for n in self.nodes:
+        for n in self.objects:
             print(n)
 
-    def addNode(self, node: DiagramNode):
+    def addObject(self, obj: DiagramObject):
 
-        if node.name in self.identityMap:
-            self.identityMap[node.name].nodes += node.nodes
-            self.identityMap[node.name].lines.update(node.lines)
+        if obj.name in self.identityMap:
+            self.identityMap[obj.name].objects += obj.objects
+            self.identityMap[obj.name].lines.update(obj.lines)
         else:
-            super().addNode(node)
-            self.identityMap[node.name] = node
+            super().addObject(obj)
+            self.identityMap[obj.name] = obj
 
-        for n in node.nodes:
+        for n in obj.objects:
             self.identityMap[n.name] = n
 
     def setScene(self, scene: Scene):

@@ -7,11 +7,11 @@ from typing import List
 from manim import *
 
 
-class DiagramNode(ABC):
+class DiagramObject(ABC):
 
     def __init__(self, name: str):
-        self.nodes: List[DiagramNode] = []
-        self.lines: typing.Dict[DiagramNode, List[DiagramLine]] = {}
+        self.objects: List[DiagramObject] = []
+        self.lines: typing.Dict[DiagramObject, List[DiagramLine]] = {}
         self.name = name
         self.mobject: Mobject = None
         self.doCustomPosition = False
@@ -20,10 +20,10 @@ class DiagramNode(ABC):
     def draw(self) -> Mobject:
         pass
 
-    def addNode(self, node: DiagramNode):
-        if not isinstance(node, DiagramNode):
+    def addObject(self, obj: DiagramObject):
+        if not isinstance(obj, DiagramObject):
             raise Exception("Invalid type")
-        self.nodes.append(node)
+        self.objects.append(obj)
 
     def addLine(self, line: DiagramLine):
 
@@ -34,17 +34,17 @@ class DiagramNode(ABC):
 
     def __str__(self):
 
-        childCount = len(self.nodes)
+        objCount = len(self.objects)
         linesCount = len(self.lines)
 
         result = self.__class__.__name__ + "\n"
         result += "Name: '" + self.name + "'\n"
-        result += "Nodes: " + str(childCount) + "\n"
+        result += "Objects: " + str(objCount) + "\n"
         result += "Lines: " + str(linesCount)
 
-        if childCount > 0:
+        if objCount > 0:
 
-            for child in self.nodes:
+            for child in self.objects:
                 result += '\n\t'.join(("\n" + str(child)).splitlines())
                 result += "\n"
 

@@ -1,9 +1,9 @@
-from .DiagramNode import DiagramNode
+from .DiagramObject import DiagramObject
 
 from manim import *
 
 
-class DiagramClass(DiagramNode):
+class DiagramClass(DiagramObject):
 
     def draw(self):
 

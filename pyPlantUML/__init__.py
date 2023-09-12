@@ -1,4 +1,4 @@
 from .Diagram import Diagram
-from .DiagramNode import DiagramNode
+from .DiagramObject import DiagramObject
 from .DiagramClass import DiagramClass
 from .DiagramLine import DiagramLine

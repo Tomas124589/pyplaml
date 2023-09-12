@@ -2,10 +2,10 @@ from . import *
 
 from manim import *
 
-class DiagramLine(DiagramNode):
+class DiagramLine(DiagramObject):
 
-    def __init__(self, name: str, source: DiagramNode, target: DiagramNode):
-        DiagramNode.__init__(self, name)
+    def __init__(self, name: str, source: DiagramObject, target: DiagramObject):
+        DiagramObject.__init__(self, name)
         self.source = source
         self.target = target
         self.doCustomPosition = True
