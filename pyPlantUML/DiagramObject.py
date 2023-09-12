@@ -11,7 +11,7 @@ class DiagramObject(ABC):
 
     def __init__(self, name: str):
         self.objects: List[DiagramObject] = []
-        self.lines: typing.Dict[DiagramObject, List[DiagramLine]] = {}
+        self.lines: List[DiagramLine] = []
         self.name = name
         self.mobject: Mobject = None
         self.doCustomPosition = False
@@ -26,11 +26,7 @@ class DiagramObject(ABC):
         self.objects.append(obj)
 
     def addLine(self, line: DiagramLine):
-
-        if line.target not in self.lines:
-            self.lines[line.target] = []
-            
-        self.lines[line.target].append(line)
+        self.lines.append(line)
 
     def __str__(self):
 

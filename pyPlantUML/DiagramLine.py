@@ -14,4 +14,6 @@ class DiagramLine(DiagramObject):
         line = Arrow(self.target.mobject.get_top(), self.source.mobject.get_bottom(), buff=0)
         line.color = BLACK
 
-        return line
+        self.mobject = line
+
+        return self.mobject
