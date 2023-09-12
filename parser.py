@@ -23,20 +23,8 @@ def p_diagram(p):
         d = Diagram(p[2])
         rels = p[3]
 
-    (first_nodes, others) = rels
-
-    for n in first_nodes:
-        d.addNode(n)
-
-    if others is not None:
-        while True:
-
-            (first_nodes, others) = others
-            for n in first_nodes:
-                d.addNode(n)
-
-            if others == None:
-                break
+    for i in rels:
+        d.addNode(i)
 
     p[0] = d
 
@@ -47,35 +35,42 @@ def p_relations(p):
     """
     length = len(p)
     if length == 2:
-        p[0] = (p[1], None)
+        p[0] = [p[1]]
     elif length == 3:
-        p[0] = (p[1], p[2])
+        if type(p[2]) is list:
+            p[0] = [p[1]] + p[2]
+        else:
+            p[0] = [p[1], p[2]]
 
 
 def p_l_relation(p):
     """
     relation : IDENTIFIER REL LINE IDENTIFIER
     """
-    # p[0] = (p[1], p[2], p[3], p[4])
 
     n1 = DiagramClass(p[1])
     n2 = DiagramClass(p[4])
-
     l = DiagramLine(p[2], n1, n2)
-    p[0] = (n1, n2, l)
+
+    n1.addNode(n2)
+    n1.addLine(l)
+
+    p[0] = n1
 
 
 def p_r_relation(p):
     """
     relation : IDENTIFIER LINE REL IDENTIFIER
     """
-    # p[0] = (p[1], p[3], p[2], p[4])
 
     n1 = DiagramClass(p[1])
     n2 = DiagramClass(p[4])
     l = DiagramLine(p[3], n1, n2)
 
-    p[0] = (n1, n2, l)
+    n1.addNode(n2)
+    n1.addLine(l)
+
+    p[0] = n1
 
 
 def p_error(p):

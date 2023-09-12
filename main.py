@@ -11,6 +11,8 @@ class MainScene(Scene):
         with open('inputs/simple.puml', 'r') as file:
             input = file.read()
 
-        res = p.parser.parse(input)
+        diagram = p.parser.parse(input)
 
-        res.drawDiag(self)
+        diagram.setScene(self)
+
+        diagram.draw()

@@ -5,16 +5,25 @@ from manim import *
 
 class Diagram(DiagramNode):
 
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.identityMap: typing.Dict[str, DiagramNode] = {}
+
     def draw(self):
-        return None
-
-    def drawDiag(self, scene: Scene):
         for n in self.nodes:
+            print(n)
 
-            noSceneObjects = len(scene.mobjects)
+    def addNode(self, node: DiagramNode):
 
-            mobject = n.draw()
+        if node.name in self.identityMap:
+            self.identityMap[node.name].nodes += node.nodes
+            self.identityMap[node.name].lines.update(node.lines)
+        else:
+            super().addNode(node)
+            self.identityMap[node.name] = node
 
-            mobject.to_edge(UP+LEFT)
+        for n in node.nodes:
+            self.identityMap[n.name] = n
 
-            scene.add(mobject)
+    def setScene(self, scene: Scene):
+        self.scene = scene
