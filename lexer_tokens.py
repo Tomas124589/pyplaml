@@ -1,7 +1,17 @@
 reserved = {
     "@startuml": "START",
     "@enduml": "END",
-    "class": "CLASS"
+    "class": "CLASS",
+    "Class": "CLASS",
+    "abstract": "ABS_CLASS",
+    "entity": "ENTITY",
+    "enum": "ENUM",
+    "exception": "EXCEPTION",
+    "interface": "INTERFACE",
+    "metaclass": "MTA_CLASS",
+    "protocol": "PROTOCOL",
+    "stereotype": "STEREOTYPE",
+    "struct": "STRUCT",
 }
 
 tokens = [
@@ -21,14 +31,13 @@ def t_LINE(t):
     t.value = (int(t.value.count(".") + t.value.count("-")), "." in t.value)
     return t
 
-
 def t_STRING(t):
     r'"(.*?)"'
     t.value = t.value.replace("\"", "")
     return t
 
 def t_EXTENSION(t):
-    r'<\||\|>|\^'
+    r'<\||\|>'
     t.type = 'REL'
     t.value = 'EXTENSION'
     return t

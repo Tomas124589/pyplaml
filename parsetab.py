@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'AGGREGATION ASSOCIATION CLASS COLON COMPOSITION END EXTENSION IDENTIFIER LINE REL START STRING\n    diagram : START relations END\n    diagram : START IDENTIFIER relations END\n    diagram : START STRING relations END\n    \n    relations : relation\n    relations : relation relations\n    \n    relation : IDENTIFIER REL LINE IDENTIFIER\n    \n    relation : IDENTIFIER LINE REL IDENTIFIER\n    '
+_lr_signature = 'ABS_CLASS AGGREGATION ASSOCIATION CLASS CLASS COLON COMPOSITION END EXTENSION IDENTIFIER LINE REL START STRING\n    uml : START objects END\n        | START IDENTIFIER objects END\n        | START STRING objects END\n    \n    objects : objects relation\n            | relation\n            | objects class\n            | class\n    \n    relation : IDENTIFIER REL LINE IDENTIFIER\n             | IDENTIFIER LINE REL IDENTIFIER\n    \n    relation : IDENTIFIER REL LINE REL IDENTIFIER\n    \n    class   : CLASS IDENTIFIER\n            | ABS_CLASS CLASS IDENTIFIER\n    '
     
-_lr_action_items = {'START':([0,],[2,]),'$end':([1,7,14,17,],[0,-1,-2,-3,]),'IDENTIFIER':([2,4,5,6,15,16,18,19,],[4,8,8,8,18,19,-6,-7,]),'STRING':([2,],[5,]),'END':([3,6,9,12,13,18,19,],[7,-4,14,17,-5,-6,-7,]),'REL':([4,8,11,],[10,10,16,]),'LINE':([4,8,10,],[11,11,15,]),}
+_lr_action_items = {'START':([0,],[2,]),'$end':([1,10,20,23,],[0,-1,-2,-3,]),'IDENTIFIER':([2,3,4,5,6,7,8,11,12,14,17,18,19,21,22,24,25,26,27,28,],[4,13,13,13,-5,-7,18,-4,-6,13,13,-11,24,25,27,-12,-8,28,-9,-10,]),'STRING':([2,],[5,]),'CLASS':([2,3,4,5,6,7,9,11,12,14,17,18,24,25,27,28,],[8,8,8,8,-5,-7,19,-4,-6,8,8,-11,-12,-8,-9,-10,]),'ABS_CLASS':([2,3,4,5,6,7,11,12,14,17,18,24,25,27,28,],[9,9,9,9,-5,-7,-4,-6,9,9,-11,-12,-8,-9,-10,]),'END':([3,6,7,11,12,14,17,18,24,25,27,28,],[10,-5,-7,-4,-6,20,23,-11,-12,-8,-9,-10,]),'REL':([4,13,16,21,],[15,15,22,26,]),'LINE':([4,13,15,],[16,16,21,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'diagram':([0,],[1,]),'relations':([2,4,5,6,],[3,9,12,13,]),'relation':([2,4,5,6,],[6,6,6,6,]),}
+_lr_goto_items = {'uml':([0,],[1,]),'objects':([2,4,5,],[3,14,17,]),'relation':([2,3,4,5,14,17,],[6,11,6,6,11,11,]),'class':([2,3,4,5,14,17,],[7,12,7,7,12,12,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,12 +26,17 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> diagram","S'",1,None,None,None),
-  ('diagram -> START relations END','diagram',3,'p_diagram','parser.py',11),
-  ('diagram -> START IDENTIFIER relations END','diagram',4,'p_diagram','parser.py',12),
-  ('diagram -> START STRING relations END','diagram',4,'p_diagram','parser.py',13),
-  ('relations -> relation','relations',1,'p_relations','parser.py',45),
-  ('relations -> relation relations','relations',2,'p_relations','parser.py',46),
-  ('relation -> IDENTIFIER REL LINE IDENTIFIER','relation',4,'p_l_relation','parser.py',57),
-  ('relation -> IDENTIFIER LINE REL IDENTIFIER','relation',4,'p_r_relation','parser.py',70),
+  ("S' -> uml","S'",1,None,None,None),
+  ('uml -> START objects END','uml',3,'p_uml','parser.py',12),
+  ('uml -> START IDENTIFIER objects END','uml',4,'p_uml','parser.py',13),
+  ('uml -> START STRING objects END','uml',4,'p_uml','parser.py',14),
+  ('objects -> objects relation','objects',2,'p_objects','parser.py',32),
+  ('objects -> relation','objects',1,'p_objects','parser.py',33),
+  ('objects -> objects class','objects',2,'p_objects','parser.py',34),
+  ('objects -> class','objects',1,'p_objects','parser.py',35),
+  ('relation -> IDENTIFIER REL LINE IDENTIFIER','relation',4,'p_relation','parser.py',52),
+  ('relation -> IDENTIFIER LINE REL IDENTIFIER','relation',4,'p_relation','parser.py',53),
+  ('relation -> IDENTIFIER REL LINE REL IDENTIFIER','relation',5,'p_bi_relation','parser.py',68),
+  ('class -> CLASS IDENTIFIER','class',2,'p_class','parser.py',84),
+  ('class -> ABS_CLASS CLASS IDENTIFIER','class',3,'p_class','parser.py',85),
 ]

@@ -6,77 +6,90 @@ from pyPlantUML import *
 import lexer_tokens
 from lexer_tokens import tokens
 
-def p_diagram(p):
-    """
-    diagram : START relations END
-    diagram : START IDENTIFIER relations END
-    diagram : START STRING relations END
-    """
-    length = len(p)
 
-    if length == 4:
+def p_uml(p):
+    """
+    uml : START objects END
+        | START IDENTIFIER objects END
+        | START STRING objects END
+    """
 
-        d = Diagram("")
-        rels = p[2]
+    name = ""
+    objects = p[2]
+    if len(p) == 5:
+        name = p[2]
+        objects = p[3]
+
+    print("name: " + name)
+    print("objects:")
+    print(objects)
+
+    p[0] = (p[1], p[2], p[3])
+
+
+def p_objects(p):
+    """
+    objects : objects relation
+            | relation
+            | objects class
+            | class
+    """
+
+    print("OBJS")
+    print(p[1])
+    if len(p) == 3:
+        print(p[2])
+    print("\n")
+
+    if len(p) == 3:
+        p[0] = (p[1], p[2])
     else:
-
-        d = Diagram(p[2])
-        rels = p[3]
-
-    for i in rels:
-        d.addObject(i)
-
-    p[0] = d
-
-def p_relations(p):
-    """
-    relations : relation
-    relations : relation relations
-    """
-    length = len(p)
-    if length == 2:
-        p[0] = [p[1]]
-    elif length == 3:
-        if type(p[2]) is list:
-            p[0] = [p[1]] + p[2]
-        else:
-            p[0] = [p[1], p[2]]
+        p[0] = (p[1], ())
 
 
-def p_l_relation(p):
+def p_relation(p):
     """
     relation : IDENTIFIER REL LINE IDENTIFIER
+             | IDENTIFIER LINE REL IDENTIFIER
     """
 
-    n1 = DiagramClass(p[1])
-    n2 = DiagramClass(p[4])
-    l = DiagramLine(p[2], n1, n2)
+    print("REL")
+    print(*p)
+    print("\n")
 
-    n1.addObject(n2)
-    n1.addLine(l)
-
-    p[0] = n1
+    p[0] = (p[1], p[2], p[3], p[4])
 
 
-def p_r_relation(p):
+def p_bi_relation(p):
     """
-    relation : IDENTIFIER LINE REL IDENTIFIER
+    relation : IDENTIFIER REL LINE REL IDENTIFIER
     """
 
-    n1 = DiagramClass(p[1])
-    n2 = DiagramClass(p[4])
-    l = DiagramLine(p[3], n1, n2)
+    print("BI_REL")
+    print(*p)
+    print("\n")
 
-    n1.addObject(n2)
-    n1.addLine(l)
+    p[0] = (p[1], p[2], p[3], p[4], p[5])
 
-    p[0] = n1
+
+def p_class(p):
+    """
+    class   : CLASS IDENTIFIER
+            | ABS_CLASS CLASS IDENTIFIER
+    """
+
+    print("CLASS")
+    print(*p)
+    print("\n")
+
+    p[0] = (p[1], p[2])
 
 
 def p_error(p):
     print("Parser syntax error:")
     print(p)
     print("======")
+
 
 lexer = lex.lex(module=lexer_tokens, debug=False)
 
