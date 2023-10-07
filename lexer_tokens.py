@@ -8,7 +8,7 @@ reserved = {
     "enum": "ENUM",
     "exception": "EXCEPTION",
     "interface": "INTERFACE",
-    "metaclass": "MTA_CLASS",
+    "metaclass": "META_CLASS",
     "protocol": "PROTOCOL",
     "stereotype": "STEREOTYPE",
     "struct": "STRUCT",

@@ -75,7 +75,25 @@ def p_bi_relation(p):
 def p_class(p):
     """
     class   : CLASS IDENTIFIER
+            | CLASS STRING
             | ABS_CLASS CLASS IDENTIFIER
+            | ABS_CLASS CLASS STRING
+            | ENTITY IDENTIFIER
+            | ENTITY STRING
+            | ENUM IDENTIFIER
+            | ENUM STRING
+            | EXCEPTION IDENTIFIER
+            | EXCEPTION STRING
+            | INTERFACE IDENTIFIER
+            | INTERFACE STRING
+            | META_CLASS IDENTIFIER
+            | META_CLASS STRING
+            | PROTOCOL IDENTIFIER
+            | PROTOCOL STRING
+            | STEREOTYPE IDENTIFIER
+            | STEREOTYPE STRING
+            | STRUCT IDENTIFIER
+            | STRUCT STRING
     """
 
     print("CLASS")
