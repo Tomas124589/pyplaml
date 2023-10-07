@@ -49,27 +49,17 @@ def p_objects(p):
 
 def p_relation(p):
     """
-    relation : IDENTIFIER REL LINE IDENTIFIER
-             | IDENTIFIER LINE REL IDENTIFIER
+    relation    : IDENTIFIER REL LINE REL IDENTIFIER
+                | IDENTIFIER REL LINE IDENTIFIER
+                | IDENTIFIER LINE REL IDENTIFIER
+                | IDENTIFIER LINE IDENTIFIER
     """
 
     print("REL")
     print(*p)
     print("\n")
 
-    p[0] = (p[1], p[2], p[3], p[4])
-
-
-def p_bi_relation(p):
-    """
-    relation : IDENTIFIER REL LINE REL IDENTIFIER
-    """
-
-    print("BI_REL")
-    print(*p)
-    print("\n")
-
-    p[0] = (p[1], p[2], p[3], p[4], p[5])
+    p[0] = [*p]
 
 
 def p_class(p):

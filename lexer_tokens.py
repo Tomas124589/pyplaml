@@ -26,21 +26,25 @@ tokens = [
     "COLON",
 ] + list(reserved.values())
 
+
 def t_LINE(t):
     r'[-\.]+'
     t.value = (int(t.value.count(".") + t.value.count("-")), "." in t.value)
     return t
+
 
 def t_STRING(t):
     r'"(.*?)"'
     t.value = t.value.replace("\"", "")
     return t
 
+
 def t_EXTENSION(t):
     r'<\||\|>'
     t.type = 'REL'
     t.value = 'EXTENSION'
     return t
+
 
 def t_ASSOCIATION(t):
     r'<|>'
@@ -54,6 +58,7 @@ def t_AGGREGATION(t):
     t.type = 'REL'
     t.value = 'AGGREGATION'
     return t
+
 
 def t_COMPOSITION(t):
     r'\*'
