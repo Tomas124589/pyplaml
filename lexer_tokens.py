@@ -40,7 +40,7 @@ def t_STRING(t):
 
 
 def t_EXTENSION(t):
-    r'<\||\|>'
+    r'<\||\|>|\^'
     t.type = 'REL'
     t.value = 'EXTENSION'
     return t
@@ -64,6 +64,34 @@ def t_COMPOSITION(t):
     r'\*'
     t.type = 'REL'
     t.value = 'COMPOSITION'
+    return t
+
+
+def t_HASH(t):
+    r'\#'
+    t.type = 'REL'
+    t.value = 'HASH'
+    return t
+
+
+def t_CROSS(t):
+    r'x'
+    t.type = 'REL'
+    t.value = 'CROSS'
+    return t
+
+
+def t_CROW_FOOT(t):
+    r'\{|\}'
+    t.type = 'REL'
+    t.value = 'CROW_FOOT'
+    return t
+
+
+def t_NEST_CLASSIFIER(t):
+    r'\+'
+    t.type = 'REL'
+    t.value = 'NEST_CLASSIFIER'
     return t
 
 
