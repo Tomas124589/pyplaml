@@ -9,65 +9,82 @@ from lexer_tokens import tokens
 
 def p_uml(p):
     """
-    uml : START objects END
-        | START IDENTIFIER objects END
-        | START STRING objects END
+    uml : START elements END
+        | START IDENTIFIER elements END
+        | START STRING elements END
     """
 
     name = ""
-    objects = p[2]
+    elements = p[2]
     if len(p) == 5:
         name = p[2]
-        objects = p[3]
+        elements = p[3]
 
-    print("name: " + name)
-    print("objects:")
-    print(objects)
-
-    p[0] = (p[1], p[2], p[3])
+    p[0] = (name, elements)
 
 
-def p_objects(p):
+def p_elements(p):
     """
-    objects : objects relation
+    elements : elements relation
             | relation
-            | objects class
+            | elements class
             | class
     """
 
-    print("OBJS")
-    print(p[1])
-    if len(p) == 3:
-        print(p[2])
-    print("\n")
-
-    if len(p) == 3:
-        p[0] = (p[1], p[2])
+    if len(p) == 2:
+        p[0] = [p[1]]
     else:
-        p[0] = (p[1], ())
+        p[0] = p[1] + [p[2]]
 
 
 def p_relation(p):
     """
-    relation    : IDENTIFIER REL LINE REL IDENTIFIER
-                | IDENTIFIER REL LINE IDENTIFIER
+    relation    : IDENTIFIER REL LINE IDENTIFIER
                 | IDENTIFIER LINE REL IDENTIFIER
-                | IDENTIFIER LINE IDENTIFIER
     """
 
-    print("REL")
-    print(*p)
-    print("\n")
+    leftClassName = str(p[1])
+    relation = p[2]
+    line = p[3]
+    rightClassName = str(p[4])
 
-    p[0] = [*p]
+    if isinstance(p[2], tuple):
+        relation = p[3]
+        line = p[2]
+
+    p[0] = (leftClassName, relation, line, rightClassName)
+
+
+def p_simple_relation(p):
+    """
+    relation    : IDENTIFIER LINE IDENTIFIER
+    """
+
+    leftClassName = str(p[1])
+    line = p[2]
+    rightClassName = str(p[3])
+
+    p[0] = (leftClassName, line, rightClassName)
+
+
+def p_bi_relation(p):
+    """
+    relation    : IDENTIFIER REL LINE REL IDENTIFIER
+    """
+
+    leftClassName = str(p[1])
+    leftRelation = p[2]
+    line = p[3]
+    rightRelation = p[4]
+    rightClassName = str(p[5])
+
+    p[0] = (leftClassName, leftRelation, line, rightRelation, rightClassName)
 
 
 def p_class(p):
     """
     class   : CLASS IDENTIFIER
             | CLASS STRING
-            | ABS_CLASS CLASS IDENTIFIER
-            | ABS_CLASS CLASS STRING
             | ENTITY IDENTIFIER
             | ENTITY STRING
             | ENUM IDENTIFIER
@@ -84,13 +101,17 @@ def p_class(p):
             | STEREOTYPE STRING
             | STRUCT IDENTIFIER
             | STRUCT STRING
+            | ABS_CLASS CLASS IDENTIFIER
+            | ABS_CLASS CLASS STRING
     """
 
-    print("CLASS")
-    print(*p)
-    print("\n")
+    classType = str(p[1]).lower()
+    name = str(p[2])
+    if classType == "abstract":
+        classType = "abstract_class"
+        name = str(p[3])
 
-    p[0] = (p[1], p[2])
+    p[0] = (classType, name)
 
 
 def p_error(p):
