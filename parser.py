@@ -71,7 +71,7 @@ def p_relation(p):
         relation
     )
 
-    rightClass.addLine(line)
+    leftClass.addLine(line)
 
     p[0] = (leftClass, rightClass)
 
@@ -97,7 +97,7 @@ def p_simple_relation(p):
         "none"
     )
 
-    rightClass.addLine(leftClass)
+    leftClass.addLine(leftClass)
 
     p[0] = (leftClass, rightClass)
 
@@ -124,7 +124,7 @@ def p_bi_relation(p):
         rightRelation
     )
 
-    rightClass.addLine(line)
+    leftClass.addLine(line)
 
     p[0] = (leftClass, rightClass)
 
