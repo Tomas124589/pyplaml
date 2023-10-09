@@ -1,9 +1,18 @@
 from .DiagramObject import DiagramObject
+from .DiagramLine import DiagramLine
 
 from manim import *
 
 
 class DiagramClass(DiagramObject):
+
+    def __init__(self, name: str, type:str):
+        super().__init__(name)
+        self.type = type
+        self.lines = []
+
+    def addLine(self, line: DiagramLine):
+        self.lines.append(line)
 
     def draw(self):
 

@@ -36,17 +36,9 @@ class Diagram(DiagramObject):
     def addObject(self, obj: DiagramObject):
 
         if obj.name in self.identityMap:
-            self.identityMap[obj.name].objects += obj.objects
-            self.identityMap[obj.name].lines += obj.lines
-
-            for l in obj.lines:
-                l.source = self.identityMap[obj.name]
+            pass
         else:
-            super().addObject(obj)
-            self.identityMap[obj.name] = obj
-
-        for n in obj.objects:
-            self.identityMap[n.name] = n
+            pass
 
     def setScene(self, scene: Scene):
         self.scene = scene

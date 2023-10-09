@@ -4,10 +4,13 @@ from manim import *
 
 class DiagramLine(DiagramObject):
 
-    def __init__(self, name: str, source: DiagramObject, target: DiagramObject):
+    def __init__(self, name: str, target: DiagramObject, dotted: bool, size: int, sourceArrowType: str, targetArrowType: str):
         DiagramObject.__init__(self, name)
-        self.source = source
         self.target = target
+        self.dotted = dotted
+        self.size = size
+        self.sourceArrowType = sourceArrowType
+        self.targetArrowType = targetArrowType
         self.doCustomPosition = True
 
     def draw(self):
@@ -17,3 +20,12 @@ class DiagramLine(DiagramObject):
         self.mobject = line
 
         return self.mobject
+
+    def __str__(self):
+        result = super().__str__()
+        if self.dotted: result += ",dotted"
+        result += ", size: " + str(self.size)
+        result += ", sourceArrow: " + self.sourceArrowType + "'"
+        result += ", targetArrow: '" + self.targetArrowType + "'"
+
+        return result
