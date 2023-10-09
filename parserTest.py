@@ -11,6 +11,4 @@ with open(fPath, 'r') as file:
 
 diagram = p.parser.parse(input)
 
-diagramObjects = diagram[1]
-
-pprint(diagramObjects)
+pprint(diagram.objects)

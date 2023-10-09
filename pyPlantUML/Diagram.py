@@ -7,7 +7,7 @@ class Diagram(DiagramObject):
 
     def __init__(self, name: str):
         super().__init__(name)
-        self.identityMap: typing.Dict[str, DiagramObject] = {}
+        self.objects: typing.Dict[str, DiagramObject] = {}
 
     def draw(self):
         for o in self.objects:
@@ -35,10 +35,8 @@ class Diagram(DiagramObject):
 
     def addObject(self, obj: DiagramObject):
 
-        if obj.name in self.identityMap:
-            pass
-        else:
-            pass
+        if obj.name not in self.objects:
+            self.objects[obj.name] = obj
 
     def setScene(self, scene: Scene):
         self.scene = scene

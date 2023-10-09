@@ -22,7 +22,12 @@ def p_uml(p):
 
     elementsFlattened = [e for tuple in elements for e in tuple]
 
-    p[0] = (name, elementsFlattened)
+    diagram = Diagram(name)
+
+    for e in elementsFlattened:
+        diagram.addObject(e)
+
+    p[0] = diagram
 
 
 def p_elements(p):
