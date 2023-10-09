@@ -37,6 +37,8 @@ class Diagram(DiagramObject):
 
         if obj.name not in self.objects:
             self.objects[obj.name] = obj
+        else:
+            self.objects[obj.name].lines += obj.lines
 
     def setScene(self, scene: Scene):
         self.scene = scene
