@@ -20,11 +20,12 @@ def p_uml(p):
         name = p[2]
         elements = p[3]
 
-    elementsFlattened = [e for tuple in elements for e in tuple]
+    if isinstance(elements[0], tuple):
+        elements = [e for tuple in elements for e in tuple]
 
     diagram = Diagram(name)
 
-    for e in elementsFlattened:
+    for e in elements:
         diagram.addObject(e)
 
     p[0] = diagram
