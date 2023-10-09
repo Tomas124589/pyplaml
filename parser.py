@@ -45,10 +45,9 @@ def p_elements(p):
         p[0] = p[1] + [p[2]]
 
 
-def p_relation(p):
+def p_left_relation(p):
     """
     relation    : IDENTIFIER REL LINE IDENTIFIER
-                | IDENTIFIER LINE REL IDENTIFIER
     """
 
     leftClassName = str(p[1])
@@ -56,15 +55,37 @@ def p_relation(p):
     lineData = p[3]
     rightClassName = str(p[4])
 
-    if isinstance(p[2], tuple):
-        relation = p[3]
-        lineData = p[2]
-
     leftClass = DiagramClass(leftClassName, 'class')
     rightClass = DiagramClass(rightClassName, 'class')
     line = DiagramLine(
         leftClassName + "-" + relation + "-" + rightClassName,
         leftClass,
+        lineData[1],
+        lineData[0],
+        "none",
+        relation
+    )
+
+    rightClass.addLine(line)
+
+    p[0] = (leftClass, rightClass)
+
+
+def p_right_relation(p):
+    """
+    relation    : IDENTIFIER LINE REL IDENTIFIER
+    """
+
+    leftClassName = str(p[1])
+    lineData = p[2]
+    relation = p[3]
+    rightClassName = str(p[4])
+
+    leftClass = DiagramClass(leftClassName, 'class')
+    rightClass = DiagramClass(rightClassName, 'class')
+    line = DiagramLine(
+        leftClassName + "-" + relation + "-" + rightClassName,
+        rightClass,
         lineData[1],
         lineData[0],
         "none",
@@ -97,7 +118,7 @@ def p_simple_relation(p):
         "none"
     )
 
-    leftClass.addLine(leftClass)
+    rightClass.addLine(leftClass)
 
     p[0] = (leftClass, rightClass)
 
@@ -124,7 +145,7 @@ def p_bi_relation(p):
         rightRelation
     )
 
-    leftClass.addLine(line)
+    rightClass.addLine(line)
 
     p[0] = (leftClass, rightClass)
 
