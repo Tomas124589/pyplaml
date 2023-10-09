@@ -11,7 +11,6 @@ class DiagramObject(ABC):
 
     def __init__(self, name: str):
         self.objects: List[DiagramObject] = []
-        self.lines: List[DiagramLine] = []
         self.name = name
         self.mobject: Mobject = None
         self.doCustomPosition = False
@@ -19,9 +18,6 @@ class DiagramObject(ABC):
     @abstractmethod
     def draw(self) -> Mobject:
         pass
-
-    def addLine(self, line: DiagramLine):
-        self.lines.append(line)
 
     def __str__(self):
         result = "Class: '" + self.__class__.__name__ + "'"
