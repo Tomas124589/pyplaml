@@ -10,7 +10,6 @@ from manim import *
 class DiagramObject(ABC):
 
     def __init__(self, name: str):
-        self.objects: List[DiagramObject] = []
         self.name = name
         self.mobject: Mobject = None
         self.doCustomPosition = False
@@ -20,7 +19,7 @@ class DiagramObject(ABC):
         pass
 
     def __str__(self):
-        result = "Class: '" + self.__class__.__name__ + "'"
+        result = "<" + self.__class__.__name__ + ">"
         result += ", Name: '" + self.name + "'"
 
         return result
