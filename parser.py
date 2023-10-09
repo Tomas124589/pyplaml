@@ -20,7 +20,9 @@ def p_uml(p):
         name = p[2]
         elements = p[3]
 
-    p[0] = (name, elements)
+    elementsFlattened = [e for tuple in elements for e in tuple]
+
+    p[0] = (name, elementsFlattened)
 
 
 def p_elements(p):
@@ -45,14 +47,27 @@ def p_relation(p):
 
     leftClassName = str(p[1])
     relation = p[2]
-    line = p[3]
+    lineData = p[3]
     rightClassName = str(p[4])
 
     if isinstance(p[2], tuple):
         relation = p[3]
-        line = p[2]
+        lineData = p[2]
 
-    p[0] = (leftClassName, relation, line, rightClassName)
+    leftClass = DiagramClass(leftClassName, 'class')
+    rightClass = DiagramClass(rightClassName, 'class')
+    line = DiagramLine(
+        leftClassName + "-" + relation + "-" + rightClassName,
+        leftClass,
+        lineData[1],
+        lineData[0],
+        "none",
+        relation
+    )
+
+    rightClass.addLine(line)
+
+    p[0] = (leftClass, rightClass)
 
 
 def p_simple_relation(p):
@@ -61,10 +76,24 @@ def p_simple_relation(p):
     """
 
     leftClassName = str(p[1])
-    line = p[2]
+    lineData = p[2]
     rightClassName = str(p[3])
 
-    p[0] = (leftClassName, line, rightClassName)
+    leftClass = DiagramClass(leftClassName, 'class')
+    rightClass = DiagramClass(rightClassName, 'class')
+
+    line = DiagramLine(
+        leftClassName + "-" + rightClassName,
+        leftClass,
+        lineData[1],
+        lineData[0],
+        "none",
+        "none"
+    )
+
+    rightClass.addLine(leftClass)
+
+    p[0] = (leftClass, rightClass)
 
 
 def p_bi_relation(p):
@@ -74,11 +103,24 @@ def p_bi_relation(p):
 
     leftClassName = str(p[1])
     leftRelation = p[2]
-    line = p[3]
+    lineData = p[3]
     rightRelation = p[4]
     rightClassName = str(p[5])
 
-    p[0] = (leftClassName, leftRelation, line, rightRelation, rightClassName)
+    leftClass = DiagramClass(leftClassName, 'class')
+    rightClass = DiagramClass(rightClassName, 'class')
+    line = DiagramLine(
+        leftClassName + "-" + leftRelation + "-" + rightRelation + "-" + rightClassName,
+        leftClass,
+        lineData[1],
+        lineData[0],
+        leftRelation,
+        rightRelation
+    )
+
+    rightClass.addLine(line)
+
+    p[0] = (leftClass, rightClass)
 
 
 def p_class(p):
@@ -111,7 +153,9 @@ def p_class(p):
         classType = "abstract_class"
         name = str(p[3])
 
-    p[0] = (classType, name)
+    classObj = DiagramClass(name, classType)
+
+    p[0] = classObj
 
 
 def p_error(p):

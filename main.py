@@ -8,7 +8,7 @@ class MainScene(Scene):
 
         self.camera.background_color = WHITE
 
-        with open('inputs/simple.puml', 'r') as file:
+        with open('inputs/01_elements.puml', 'r') as file:
             input = file.read()
 
         diagram = p.parser.parse(input)
