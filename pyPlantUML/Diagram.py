@@ -10,35 +10,52 @@ class Diagram(DiagramObject):
         self.objects: typing.Dict[str, DiagramObject] = {}
 
     def draw(self):
-        for o in self.objects:
-            self.drawObject(o, 0, 0)
 
-    def drawObject(self, obj: DiagramObject, x: int, y: int):
+        for name, obj in self.objects.items():
+            self.drawObject(obj)
 
-        mobj = obj.draw()
+        for name, obj in self.objects.items():
+            for i, edge in enumerate(obj.edges):
+                self.scene.add(edge.draw(obj))
 
-        mobj.to_edge(UP)
-        mobj.shift(RIGHT * 2 * x)
-        mobj.shift(DOWN * 2 * y)
+    def drawObject(self, obj: DiagramObject):
 
-        self.scene.add(mobj)
+        if obj.mobject is None:
+            mobj = obj.draw()
 
-        x = len(obj.objects) * -0.5 + 0.5
-        y += 1
+            mobj.to_edge(UP)
 
-        for o in obj.objects:
-            self.drawObject(o, x, y)
-            x += 1
+            mobj.shift(RIGHT * obj.x * 2)
+            mobj.shift(DOWN * obj.y * 2)
 
-        for l in obj.lines:
-            self.scene.add(l.draw())
+            edgeCount = len(obj.edges)
+            xRange = self.rangeAroundZero(edgeCount)
+            for i, edge in enumerate(obj.edges):
+
+                edge.target.x = edge.target.x + xRange[i]
+
+                if edge.target.y == 0:
+                    edge.target.y = obj.y + 1
+
+            self.scene.add(mobj)
 
     def addObject(self, obj: DiagramObject):
 
         if obj.name not in self.objects:
             self.objects[obj.name] = obj
         else:
-            self.objects[obj.name].lines += obj.lines
+
+            for edge in obj.edges:
+
+                if edge.target not in self.objects:
+                    self.addObject(edge.target)
+                edge.target = self.objects[edge.target.name]
+
+            self.objects[obj.name].edges += obj.edges
+
+    def rangeAroundZero(self, n):
+        half_n = n // 2
+        return list(range(-half_n, half_n + 1))
 
     def setScene(self, scene: Scene):
         self.scene = scene

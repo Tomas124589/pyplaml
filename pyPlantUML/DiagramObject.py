@@ -2,9 +2,12 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from typing import List
+from typing import List, TYPE_CHECKING
 
 from manim import *
+
+if TYPE_CHECKING:
+    from .DiagramEdge import DiagramEdge
 
 
 class DiagramObject(ABC):
@@ -13,10 +16,17 @@ class DiagramObject(ABC):
         self.name = name
         self.mobject: Mobject = None
         self.doCustomPosition = False
+        self.edges: List[DiagramEdge] = []
+
+        self.x = 0
+        self.y = 0
 
     @abstractmethod
     def draw(self) -> Mobject:
         pass
+
+    def addEdge(self, edge: DiagramEdge):
+        self.edges.append(edge)
 
     def __str__(self):
         result = "<" + self.__class__.__name__ + ">"

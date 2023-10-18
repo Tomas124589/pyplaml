@@ -57,7 +57,7 @@ def p_left_relation(p):
 
     leftClass = DiagramClass(leftClassName, 'class')
     rightClass = DiagramClass(rightClassName, 'class')
-    line = DiagramLine(
+    line = DiagramEdge(
         leftClassName + "-" + relation + "-" + rightClassName,
         leftClass,
         lineData[1],
@@ -66,7 +66,7 @@ def p_left_relation(p):
         relation
     )
 
-    rightClass.addLine(line)
+    rightClass.addEdge(line)
 
     p[0] = (leftClass, rightClass)
 
@@ -83,7 +83,7 @@ def p_right_relation(p):
 
     leftClass = DiagramClass(leftClassName, 'class')
     rightClass = DiagramClass(rightClassName, 'class')
-    line = DiagramLine(
+    line = DiagramEdge(
         leftClassName + "-" + relation + "-" + rightClassName,
         rightClass,
         lineData[1],
@@ -92,7 +92,7 @@ def p_right_relation(p):
         relation
     )
 
-    leftClass.addLine(line)
+    leftClass.addEdge(line)
 
     p[0] = (leftClass, rightClass)
 
@@ -109,7 +109,7 @@ def p_simple_relation(p):
     leftClass = DiagramClass(leftClassName, 'class')
     rightClass = DiagramClass(rightClassName, 'class')
 
-    line = DiagramLine(
+    line = DiagramEdge(
         leftClassName + "-" + rightClassName,
         leftClass,
         lineData[1],
@@ -118,7 +118,7 @@ def p_simple_relation(p):
         "none"
     )
 
-    rightClass.addLine(leftClass)
+    rightClass.addEdge(leftClass)
 
     p[0] = (leftClass, rightClass)
 
@@ -136,7 +136,7 @@ def p_bi_relation(p):
 
     leftClass = DiagramClass(leftClassName, 'class')
     rightClass = DiagramClass(rightClassName, 'class')
-    line = DiagramLine(
+    line = DiagramEdge(
         leftClassName + "-" + leftRelation + "-" + rightRelation + "-" + rightClassName,
         leftClass,
         lineData[1],
@@ -145,7 +145,7 @@ def p_bi_relation(p):
         rightRelation
     )
 
-    rightClass.addLine(line)
+    rightClass.addEdge(line)
 
     p[0] = (leftClass, rightClass)
 

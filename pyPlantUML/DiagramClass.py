@@ -1,18 +1,13 @@
-from .DiagramObject import DiagramObject
-from .DiagramLine import DiagramLine
+from . import *
 
 from manim import *
 
 
 class DiagramClass(DiagramObject):
 
-    def __init__(self, name: str, type:str):
+    def __init__(self, name: str, type: str):
         super().__init__(name)
         self.type = type
-        self.lines = []
-
-    def addLine(self, line: DiagramLine):
-        self.lines.append(line)
 
     def draw(self):
 
@@ -20,7 +15,7 @@ class DiagramClass(DiagramObject):
 
         text = Text(self.name, color=BLACK, font_size=24)
         header.surround(text)
-        
+
         propertyBody = Rectangle(color=GRAY, height=0.2, width=header.width)
         propertyBody.next_to(header, DOWN, buff=0)
 
