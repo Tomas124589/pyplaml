@@ -43,10 +43,14 @@ class Diagram(DiagramObject):
 
         if obj.name not in self.objects:
             self.objects[obj.name] = obj
-        else:
 
             for edge in obj.edges:
-
+                if edge.target.name in self.objects:
+                    edge.target = self.objects[edge.target.name]
+                else:
+                    self.addObject(edge.target)
+        else:
+            for edge in obj.edges:
                 if edge.target not in self.objects:
                     self.addObject(edge.target)
                 edge.target = self.objects[edge.target.name]
