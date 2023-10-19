@@ -28,6 +28,23 @@ class DiagramObject(ABC):
     def addEdge(self, edge: DiagramEdge):
         self.edges.append(edge)
 
+    def hasCycle(node: DiagramObject, visited=set(), stack=set()):
+        if node in stack:
+            return True
+
+        if node in visited:
+            return False
+
+        stack.add(node)
+        visited.add(node)
+
+        for edge in node.edges:
+            if DiagramObject.hasCycle(edge.target, visited, stack):
+                return True
+
+        stack.remove(node)
+        return False
+
     def __str__(self):
         result = "<" + self.__class__.__name__ + ">"
         result += ", Name: '" + self.name + "'"
