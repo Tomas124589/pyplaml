@@ -8,6 +8,7 @@ class Diagram(DiagramObject):
     def __init__(self, name: str):
         super().__init__(name)
         self.objects: typing.Dict[str, DiagramObject] = {}
+        self.animate = False
 
     def draw(self):
 
@@ -16,7 +17,11 @@ class Diagram(DiagramObject):
 
         for name, obj in self.objects.items():
             for i, edge in enumerate(obj.edges):
-                self.scene.add(edge.draw(obj))
+
+                if self.animate:
+                    self.scene.play(Create(edge.draw(obj)))
+                else:
+                    self.scene.add(edge.draw(obj))
 
     def drawObject(self, obj: DiagramObject):
 
@@ -31,13 +36,16 @@ class Diagram(DiagramObject):
             edgeCount = len(obj.edges)
             xRange = self.rangeAroundZero(edgeCount)
             for i, edge in enumerate(obj.edges):
-
                 edge.target.x = edge.target.x + xRange[i]
+                edge.target.y = obj.y + 1
 
-                if edge.target.y == 0:
-                    edge.target.y = obj.y + 1
+            if DiagramObject.hasCycle(obj):
+                raise Exception("Cycle found.")
 
-            self.scene.add(mobj)
+            if self.animate:
+                self.scene.play(Create(mobj))
+            else:
+                self.scene.add(mobj)
 
     def addObject(self, obj: DiagramObject):
 
