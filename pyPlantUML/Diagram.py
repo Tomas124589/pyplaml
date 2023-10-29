@@ -10,7 +10,26 @@ class Diagram(DiagramObject):
         self.objects: typing.Dict[str, DiagramObject] = {}
         self.animate = False
 
+    def setVerticalLayout(self):
+        noDependence = list(self.objects.keys())
+        for name, obj in self.objects.items():
+            for edge in obj.edges:
+                if edge.target.name in noDependence:
+                    noDependence.remove(edge.target.name)
+
+        for name in noDependence:
+            self.assignY(self.objects[name], 0)
+
+    def assignY(self, node: DiagramObject, y: int):
+        node.y = y
+
+        for edge in node.edges:
+            edge.target.y = y + 1
+            self.assignY(edge.target, y+1)
+
     def draw(self):
+
+        self.setVerticalLayout()
 
         for name, obj in self.objects.items():
             self.drawObject(obj)
@@ -37,7 +56,6 @@ class Diagram(DiagramObject):
             xRange = self.rangeAroundZero(edgeCount)
             for i, edge in enumerate(obj.edges):
                 edge.target.x = edge.target.x + xRange[i]
-                edge.target.y = obj.y + 1
 
             if DiagramObject.hasCycle(obj):
                 raise Exception("Cycle found.")

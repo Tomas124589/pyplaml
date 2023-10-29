@@ -13,7 +13,7 @@ class DiagramClass(DiagramObject):
 
         header = Rectangle(color=GRAY)
 
-        text = Text(self.name, color=BLACK, font_size=24)
+        text = Text(self.name, color=BLACK, font_size=16)
         header.surround(text)
 
         propertyBody = Rectangle(color=GRAY, height=0.2, width=header.width)
