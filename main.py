@@ -11,8 +11,6 @@ class MainScene(MovingCameraScene):
 
     def construct(self):
 
-        self.camera.background_color = WHITE
-
         with open(self.path, 'r') as file:
             input = file.read()
 
@@ -20,7 +18,7 @@ class MainScene(MovingCameraScene):
 
         diagram.setScene(self)
 
-        diagram.animate = False
+        diagram.animate = True
 
         diagram.draw()
 
@@ -29,6 +27,8 @@ class MainScene(MovingCameraScene):
 
 
 if __name__ == "__main__":
+    config.output_file = "PlantUML"
+    config.background_color = WHITE
     config.cairo_path = "media/images/"
     config.ffmpeg_path = "media/videos/"
 
