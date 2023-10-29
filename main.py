@@ -13,13 +13,7 @@ class MainScene(Scene):
 
         self.camera.background_color = WHITE
 
-        # fPath = 'inputs/01_elements.puml'
-        # fPath = 'inputs/02_relations.puml'
-        # fPath = 'inputs/03_relations_extra.puml'
-        # fPath = 'inputs/04_labels.puml'
-        fPath = 'inputs/_test.puml'
-
-        with open(fPath, 'r') as file:
+        with open(self.path, 'r') as file:
             input = file.read()
 
         diagram: Type[Diagram] = p.parser.parse(input)
@@ -27,6 +21,9 @@ class MainScene(Scene):
         diagram.setScene(self)
 
         diagram.draw()
+
+    def setInputPlantUml(self, path: str):
+        self.path = path
 
 
 if __name__ == "__main__":
@@ -36,5 +33,9 @@ if __name__ == "__main__":
     config.cairo_path = "media/images/"
     config.ffmpeg_path = "media/videos/"
 
-    scene = MainScene()
-    scene.render()
+    if (len(sys.argv) > 1):
+        scene = MainScene()
+        scene.setInputPlantUml(sys.argv[1])
+        scene.render()
+    else:
+        print("No input plant uml supplied")
