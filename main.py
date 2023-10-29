@@ -7,7 +7,7 @@ from pyPlantUML import *
 import parser as p
 
 
-class MainScene(Scene):
+class MainScene(MovingCameraScene):
 
     def construct(self):
 
@@ -20,6 +20,8 @@ class MainScene(Scene):
 
         diagram.setScene(self)
 
+        diagram.animate = False
+
         diagram.draw()
 
     def setInputPlantUml(self, path: str):
@@ -27,9 +29,6 @@ class MainScene(Scene):
 
 
 if __name__ == "__main__":
-    config.pixel_height = 720
-    config.pixel_width = 1280
-    config.save_as_gif = True
     config.cairo_path = "media/images/"
     config.ffmpeg_path = "media/videos/"
 

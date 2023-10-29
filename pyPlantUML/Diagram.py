@@ -62,8 +62,12 @@ class Diagram(DiagramObject):
 
             if self.animate:
                 self.scene.play(Create(mobj))
+                self.scene.play(self.scene.camera.auto_zoom(
+                    self.scene.mobjects, margin=0.5))
             else:
                 self.scene.add(mobj)
+                self.scene.camera.auto_zoom(
+                    self.scene.mobjects, margin=0.5, animate=False)
 
     def addObject(self, obj: DiagramObject):
 
