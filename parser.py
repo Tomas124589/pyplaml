@@ -62,8 +62,8 @@ def p_left_relation(p):
         leftClass,
         lineData[1],
         lineData[0],
-        "none",
-        relation
+        Relation["NONE"],
+        Relation[relation],
     )
 
     rightClass.addEdge(line)
@@ -88,8 +88,8 @@ def p_right_relation(p):
         rightClass,
         lineData[1],
         lineData[0],
-        "none",
-        relation
+        Relation["NONE"],
+        Relation[relation],
     )
 
     leftClass.addEdge(line)
@@ -114,8 +114,8 @@ def p_simple_relation(p):
         leftClass,
         lineData[1],
         lineData[0],
-        "none",
-        "none"
+        Relation["NONE"],
+        Relation["NONE"],
     )
 
     rightClass.addEdge(leftClass)
@@ -141,8 +141,8 @@ def p_bi_relation(p):
         leftClass,
         lineData[1],
         lineData[0],
-        leftRelation,
-        rightRelation
+        Relation[leftRelation],
+        Relation[rightRelation],
     )
 
     rightClass.addEdge(line)
