@@ -14,21 +14,10 @@ class PUMLParser(object):
             | START STRING elements END
         """
 
-        name = ""
-        elements = p[2]
         if len(p) == 5:
-            name = p[2]
-            elements = p[3]
+            self.diagram.name = p[2]
 
-        if isinstance(elements[0], tuple):
-            elements = [e for tuple in elements for e in tuple]
-
-        diagram = Diagram(name)
-
-        for e in elements:
-            diagram.addObject(e)
-
-        p[0] = diagram
+        p[0] = self.diagram
 
     def p_elements(self, p):
         """
@@ -37,11 +26,6 @@ class PUMLParser(object):
                 | elements class
                 | class
         """
-
-        if len(p) == 2:
-            p[0] = [p[1]]
-        else:
-            p[0] = p[1] + [p[2]]
 
     def p_left_relation(self, p):
         """
@@ -66,7 +50,8 @@ class PUMLParser(object):
 
         rightClass.addEdge(line)
 
-        p[0] = (leftClass, rightClass)
+        self.diagram.addObject(leftClass)
+        self.diagram.addObject(rightClass)
 
     def p_right_relation(self, p):
         """
@@ -91,7 +76,8 @@ class PUMLParser(object):
 
         leftClass.addEdge(line)
 
-        p[0] = (leftClass, rightClass)
+        self.diagram.addObject(leftClass)
+        self.diagram.addObject(rightClass)
 
     def p_simple_relation(self, p):
         """
@@ -116,7 +102,8 @@ class PUMLParser(object):
 
         rightClass.addEdge(leftClass)
 
-        p[0] = (leftClass, rightClass)
+        self.diagram.addObject(leftClass)
+        self.diagram.addObject(rightClass)
 
     def p_bi_relation(self, p):
         """
@@ -142,7 +129,8 @@ class PUMLParser(object):
 
         rightClass.addEdge(line)
 
-        p[0] = (leftClass, rightClass)
+        self.diagram.addObject(leftClass)
+        self.diagram.addObject(rightClass)
 
     def p_class(self, p):
         """
@@ -176,17 +164,17 @@ class PUMLParser(object):
 
         classObj = DiagramClass(name, classType)
 
-        p[0] = classObj
+        self.diagram.addObject(classObj)
 
     def p_error(self, p):
         print("Parser syntax error:")
-        print(p)
-        print("======")
+        print("\t", p)
 
     def __init__(self, **kwargs):
         self.lexer = PUMLexer()
         self.tokens = self.lexer.tokens
         self.parser = yacc.yacc(module=self, **kwargs)
+        self.diagram = Diagram("")
 
     def parse(self, text):
         return self.parser.parse(text)

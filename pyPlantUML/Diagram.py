@@ -10,26 +10,35 @@ class Diagram(DiagramObject):
         self.objects: typing.Dict[str, DiagramObject] = {}
         self.animate = False
 
-    def setVerticalLayout(self):
-        noDependence = list(self.objects.keys())
+    def setLayout(self):
+        firstLevelNodes = list(self.objects.keys())
         for name, obj in self.objects.items():
-            for edge in obj.edges:
-                if edge.target.name in noDependence:
-                    noDependence.remove(edge.target.name)
+            if len(obj.edges) != 0:
+                firstLevelNodes.remove(obj.name)
 
-        for name in noDependence:
-            self.assignY(self.objects[name], 0)
+        self.assignObjectCoordinates(firstLevelNodes, 0)
 
-    def assignY(self, node: DiagramObject, y: int):
-        node.y = y
+    def assignObjectCoordinates(self, nodes: list, y: int):
 
-        for edge in node.edges:
-            edge.target.y = y + 1
-            self.assignY(edge.target, y+1)
+        if len(nodes) == 0:
+            return
+
+        nextNodes = []
+        xRange = self.rangeAroundZero(len(nodes))
+        for i, name in enumerate(nodes):
+            self.objects[name].x = xRange[i]
+            self.objects[name].y = y
+
+            for _, obj in self.objects.items():
+                for edge in obj.edges:
+                    if edge.target.name == name:
+                        nextNodes.append(obj.name)
+
+        self.assignObjectCoordinates(nextNodes, y+1)
 
     def draw(self):
 
-        self.setVerticalLayout()
+        self.setLayout()
 
         for name, obj in self.objects.items():
             self.drawObject(obj)
@@ -51,11 +60,6 @@ class Diagram(DiagramObject):
 
             mobj.shift(RIGHT * obj.x * 2)
             mobj.shift(DOWN * obj.y * 2)
-
-            edgeCount = len(obj.edges)
-            xRange = self.rangeAroundZero(edgeCount)
-            for i, edge in enumerate(obj.edges):
-                edge.target.x = edge.target.x + xRange[i]
 
             if DiagramObject.hasCycle(obj):
                 raise Exception("Cycle found.")

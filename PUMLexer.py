@@ -90,7 +90,7 @@ class PUMLexer(object):
         return t
 
     def t_IDENTIFIER(self, t):
-        r'@*[a-zA-Z_][a-zA-Z_0-9]*'
+        r'@*\w+'
         t.type = self.keywords.get(t.value, 'IDENTIFIER')
         return t
 
