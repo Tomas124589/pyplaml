@@ -4,22 +4,27 @@ from typing import Type
 from PUMLParser import PUMLParser
 from pyPlantUML import *
 
+import argparse
+
 
 class MainScene(MovingCameraScene):
 
     def construct(self):
 
         parser = PUMLParser()
-        diagram: Type[Diagram] = parser.parseFile(self.path)
+        diagram: Type[Diagram] = parser.parseFile(self.file)
 
         diagram.setScene(self)
 
-        diagram.animate = False
+        diagram.animate = self.animate
 
         diagram.draw()
 
-    def setInputPlantUml(self, path: str):
-        self.path = path
+    def setFile(self, file: str):
+        self.file = file
+
+    def setAnimate(self, animate: bool):
+        self.animate = animate
 
 
 if __name__ == "__main__":
@@ -28,9 +33,19 @@ if __name__ == "__main__":
     config.cairo_path = "media/images/"
     config.ffmpeg_path = "media/videos/"
 
-    if (len(sys.argv) > 1):
-        scene = MainScene()
-        scene.setInputPlantUml(sys.argv[1])
-        scene.render()
-    else:
-        print("No input plant uml supplied")
+    argparser = argparse.ArgumentParser(
+        prog="pyPlantUML"
+    )
+
+    argparser.add_argument('-f', '--file', required=True,
+                           type=str, help="Path to source plantUml file.")
+    argparser.add_argument('-a', '--animate', action="store_true")
+
+    args = argparser.parse_args()
+
+    scene = MainScene()
+
+    scene.setFile(args.file)
+    scene.setAnimate(args.animate)
+
+    scene.render()
