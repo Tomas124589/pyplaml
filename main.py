@@ -1,24 +1,20 @@
 from manim import *
-
 from typing import Type
 
+from PUMLParser import PUMLParser
 from pyPlantUML import *
-
-import parser as p
 
 
 class MainScene(MovingCameraScene):
 
     def construct(self):
 
-        with open(self.path, 'r') as file:
-            input = file.read()
-
-        diagram: Type[Diagram] = p.parser.parse(input)
+        parser = PUMLParser()
+        diagram: Type[Diagram] = parser.parseFile(self.path)
 
         diagram.setScene(self)
 
-        diagram.animate = True
+        diagram.animate = False
 
         diagram.draw()
 
