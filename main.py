@@ -1,7 +1,6 @@
 from manim import *
 from typing import Type
 
-from PUMLParser import PUMLParser
 from pyPlantUML import *
 
 import argparse

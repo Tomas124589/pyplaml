@@ -28,7 +28,7 @@ class PUMLexer(object):
         "STRING",
         "IDENTIFIER",
         "LINE",
-        "COLON",
+        "AFTERCOLON",
     ] + list(keywords.values())
 
     def t_LINE(self, t):
@@ -90,8 +90,13 @@ class PUMLexer(object):
         return t
 
     def t_IDENTIFIER(self, t):
-        r'@*\w+'
+        r'@*\w+[()]*'
         t.type = self.keywords.get(t.value, 'IDENTIFIER')
+        return t
+
+    def t_AFTERCOLON(self, t):
+        r':.+'
+        t.value = t.value[1:].strip()
         return t
 
     def t_error(self, t):
@@ -100,8 +105,6 @@ class PUMLexer(object):
 
     t_ignore = ' \n\t'
     t_ignore_COMMENT = r"('.*)|(\/'(.|\s)*\'\/)"
-
-    t_COLON = r':'
 
     def __init__(self, **kwargs):
         self.lexer = lex.lex(module=self, **kwargs)

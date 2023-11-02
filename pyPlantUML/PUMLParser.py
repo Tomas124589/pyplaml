@@ -1,8 +1,7 @@
 import ply.yacc as yacc
 
-from PUMLexer import PUMLexer
-
-from pyPlantUML import *
+from .PUMLexer import PUMLexer
+from .Diagram import Diagram
 
 
 class PUMLParser(object):
@@ -165,6 +164,25 @@ class PUMLParser(object):
         classObj = DiagramClass(name, classType)
 
         self.diagram.addObject(classObj)
+
+    # def p_class_attr(self, p):
+    #     """
+    #     class_attr  : IDENTIFIER COLON identifier_list
+    #                 | STRING COLON identifier_list
+    #     """
+
+    #     print('cattr', list(p))
+
+    # def p_identifier_list(self, p):
+    #     """
+    #     identifier_list : identifier_list IDENTIFIER
+    #                     | IDENTIFIER
+    #     """
+
+    #     if len(p) == 2:
+    #         p[0] = [p[1]]
+    #     else:
+    #         p[0] = p[1] + [p[2]]
 
     def p_error(self, p):
         print("Parser syntax error:")
