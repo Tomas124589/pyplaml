@@ -7,7 +7,6 @@ class PUMLexer(object):
         "@startuml": "START",
         "@enduml": "END",
         "class": "CLASS",
-        "Class": "CLASS",
         "abstract": "ABS_CLASS",
         "entity": "ENTITY",
         "enum": "ENUM",
@@ -91,7 +90,7 @@ class PUMLexer(object):
 
     def t_IDENTIFIER(self, t):
         r'@*\w+[()]*'
-        t.type = self.keywords.get(t.value, 'IDENTIFIER')
+        t.type = self.keywords.get(t.value.lower(), 'IDENTIFIER')
         return t
 
     def t_AFTERCOLON(self, t):

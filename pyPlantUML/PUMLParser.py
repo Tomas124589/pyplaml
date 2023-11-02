@@ -1,7 +1,10 @@
 import ply.yacc as yacc
 
-from .PUMLexer import PUMLexer
 from .Diagram import Diagram
+from .DiagramClass import DiagramClass
+from .DiagramEdge import DiagramEdge
+from .Relation import Relation
+from .PUMLexer import PUMLexer
 
 
 class PUMLParser(object):
@@ -24,6 +27,8 @@ class PUMLParser(object):
                 | relation
                 | elements class
                 | class
+                | elements class_attr
+                | class_attr
         """
 
     def p_left_relation(self, p):
@@ -165,24 +170,40 @@ class PUMLParser(object):
 
         self.diagram.addObject(classObj)
 
-    # def p_class_attr(self, p):
-    #     """
-    #     class_attr  : IDENTIFIER COLON identifier_list
-    #                 | STRING COLON identifier_list
-    #     """
+    def p_class_attr(self, p):
+        """
+        class_attr  : IDENTIFIER AFTERCOLON
+        class_attr  : STRING AFTERCOLON
+        """
 
-    #     print('cattr', list(p))
+        o = self.diagram.objects[p[1]]
+        attr = str(p[2])
+        attrType = 'none'
+        isMethod = '(' in attr
 
-    # def p_identifier_list(self, p):
-    #     """
-    #     identifier_list : identifier_list IDENTIFIER
-    #                     | IDENTIFIER
-    #     """
+        if attr[0] == '-':
+            attr = attr[1:]
+            attrType = 'private'
+            pass
+        elif attr[0] == '~':
+            attr = attr[1:]
+            attrType = 'package_private'
+            pass
+        elif attr[0] == '#':
+            attr = attr[1:]
+            attrType = 'protected'
+            pass
+        elif attr[0] == '+':
+            attr = attr[1:]
+            attrType = 'public'
+            pass
 
-    #     if len(p) == 2:
-    #         p[0] = [p[1]]
-    #     else:
-    #         p[0] = p[1] + [p[2]]
+        attr = attr.strip()
+
+        if isMethod:
+            o.methods.append(attr)
+        else:
+            o.attributes.append(attr)
 
     def p_error(self, p):
         print("Parser syntax error:")
@@ -194,7 +215,7 @@ class PUMLParser(object):
         self.parser = yacc.yacc(module=self, **kwargs)
         self.diagram = Diagram("")
 
-    def parse(self, text):
+    def parse(self, text) -> Diagram:
         return self.parser.parse(text)
 
     def parseFile(self, path):
