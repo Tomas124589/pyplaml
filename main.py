@@ -13,6 +13,9 @@ class MainScene(MovingCameraScene):
         parser = PUMLParser()
         diagram: Type[Diagram] = parser.parseFile(self.file)
 
+        self.camera.background_color = WHITE
+        Text.set_default(font_size=16)
+
         diagram.setScene(self)
 
         diagram.animate = self.animate
@@ -28,7 +31,6 @@ class MainScene(MovingCameraScene):
 
 if __name__ == "__main__":
     config.output_file = "PlantUML"
-    config.background_color = WHITE
     config.cairo_path = "media/images/"
     config.ffmpeg_path = "media/videos/"
 

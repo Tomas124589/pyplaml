@@ -16,7 +16,7 @@ class DiagramClass(DiagramObject):
     def draw(self):
 
         header = Rectangle(color=GRAY)
-        text = Text(self.name, color=BLACK, font_size=16)
+        text = Text(self.name, color=BLACK)
         header.surround(text)
         headGroup = VGroup(header, text)
 
@@ -26,7 +26,7 @@ class DiagramClass(DiagramObject):
 
             attrs = VGroup()
             for attr in self.attributes:
-                attrs.add(Text(attr, color=BLACK, font_size=12))
+                attrs.add(Text(attr, color=BLACK).scale(0.75))
 
             attrs.arrange(DOWN, buff=0.1)
             attrGroup.add(attrs)
@@ -38,7 +38,7 @@ class DiagramClass(DiagramObject):
         if len(self.methods) != 0:
             methods = VGroup()
             for method in self.methods:
-                methods.add(Text(method, color=BLACK, font_size=12))
+                methods.add(Text(method, color=BLACK).scale(0.75))
 
             methods.arrange(DOWN, buff=0.1)
             methodGroup.add(methods)
