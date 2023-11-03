@@ -47,7 +47,7 @@ class DiagramEdge(DiagramObject):
         return self.mobject
 
     def getLineTip(self):
-        
+
         if self.targetArrowType == Relation.EXTENSION:
 
             return ArrowTriangleTip(color=BLACK, stroke_width=2, length=0.2, width=0.2)
@@ -71,13 +71,3 @@ class DiagramEdge(DiagramObject):
 
         else:
             return None
-
-    def __str__(self):
-        result = super().__str__()
-        if self.dashed:
-            result += ",dotted"
-        result += ", size: " + str(self.size)
-        result += ", sourceArrow: " + self.sourceArrowType + "'"
-        result += ", targetArrow: '" + self.targetArrowType + "'"
-
-        return result
