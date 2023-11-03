@@ -3,10 +3,10 @@ from .DiagramObject import DiagramObject
 from manim import *
 
 
-class Diagram(DiagramObject):
+class Diagram():
 
     def __init__(self, name: str):
-        super().__init__(name)
+        self.name = name
         self.objects: typing.Dict[str, DiagramObject] = {}
         self.animate = False
 
@@ -60,9 +60,6 @@ class Diagram(DiagramObject):
 
             mobj.shift(RIGHT * obj.x * 2)
             mobj.shift(DOWN * obj.y * 2)
-
-            if DiagramObject.hasCycle(obj):
-                raise Exception("Cycle found.")
 
             if self.animate:
                 self.scene.play(Create(mobj))
