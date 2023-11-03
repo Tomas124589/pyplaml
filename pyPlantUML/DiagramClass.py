@@ -1,4 +1,5 @@
 from .DiagramObject import DiagramObject
+from .DiagramEdge import DiagramEdge
 
 from manim import *
 
@@ -8,6 +9,7 @@ class DiagramClass(DiagramObject):
     def __init__(self, name: str, type: str):
         super().__init__(name)
         self.type = type
+        self.edges: List[DiagramEdge] = []
         self.attributes = []
         self.methods = []
 
@@ -55,3 +57,6 @@ class DiagramClass(DiagramObject):
         self.mobject = VGroup(headGroup, attrGroup, methodGroup)
 
         return self.mobject
+
+    def addEdge(self, edge: DiagramEdge):
+        self.edges.append(edge)
