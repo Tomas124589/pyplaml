@@ -33,3 +33,9 @@ class pyPlantUMLTest(unittest.TestCase):
         d = p.parseFile("inputs/05_class_attributes.puml")
 
         self.assertIsNotNone(d)
+
+    def test_class_tree_with_attributes(self):
+        p = PUMLParser()
+        d = p.parseFile("inputs/06_class_tree_with_attributes.puml")
+
+        self.assertIsNotNone(d)
