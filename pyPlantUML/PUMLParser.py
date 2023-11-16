@@ -5,6 +5,7 @@ from .DiagramClass import DiagramClass
 from .DiagramEdge import DiagramEdge
 from .Relation import Relation
 from .PUMLexer import PUMLexer
+from .ClassAttribute import ClassAttribute, AttributeModifier
 
 
 class PUMLParser(object):
@@ -177,33 +178,21 @@ class PUMLParser(object):
         """
 
         o = self.diagram.objects[p[1]]
-        attr = str(p[2])
-        attrType = 'none'
-        isMethod = '(' in attr
+        attrStr = str(p[2])
+        isMethod = '(' in attrStr
 
-        if attr[0] == '-':
-            attr = attr[1:]
-            attrType = 'private'
-            pass
-        elif attr[0] == '~':
-            attr = attr[1:]
-            attrType = 'package_private'
-            pass
-        elif attr[0] == '#':
-            attr = attr[1:]
-            attrType = 'protected'
-            pass
-        elif attr[0] == '+':
-            attr = attr[1:]
-            attrType = 'public'
-            pass
-
-        attr = attr.strip()
+        if attrStr[0] in ['-', '~', '#', '+']:
+            attribute = ClassAttribute(
+                isMethod, AttributeModifier.fromString(attrStr[0]), attrStr[1:])
+        else:
+            attrStr = attrStr.strip()
+            attribute = ClassAttribute(
+                isMethod, AttributeModifier.NONE, attrStr)
 
         if isMethod:
-            o.methods.append(attr)
+            o.methods.append(attribute)
         else:
-            o.attributes.append(attr)
+            o.attributes.append(attribute)
 
     def p_error(self, p):
         print("Parser syntax error:")

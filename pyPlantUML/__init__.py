@@ -6,3 +6,4 @@ from .DiagramObject import DiagramObject
 from .DiagramClass import DiagramClass
 from .DiagramEdge import DiagramEdge
 from .Relation import Relation
+from .ClassAttribute import ClassAttribute, AttributeModifier
