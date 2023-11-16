@@ -4,14 +4,19 @@ from typing import Type
 from pyPlantUML import *
 
 import argparse
+from pyPlantUML.layout.KamadaKawai import KamadaKawai
+from pyPlantUML.layout.DotLayout import DotLayout
+from pyPlantUML.layout.SpringLayout import SpringLayout
 
 
 class MainScene(MovingCameraScene):
-
     def construct(self):
-
         parser = PUMLParser()
         diagram: Type[Diagram] = parser.parseFile(self.file)
+
+        layout = SpringLayout(diagram)
+        layout.apply()
+        layout.scale(7, 5)
 
         self.camera.background_color = WHITE
         Text.set_default(font_size=16)
@@ -34,13 +39,12 @@ if __name__ == "__main__":
     config.cairo_path = "media/images/"
     config.ffmpeg_path = "media/videos/"
 
-    argparser = argparse.ArgumentParser(
-        prog="pyPlantUML"
-    )
+    argparser = argparse.ArgumentParser(prog="pyPlantUML")
 
-    argparser.add_argument('-f', '--file', required=True,
-                           type=str, help="Path to source plantUml file.")
-    argparser.add_argument('-a', '--animate', action="store_true")
+    argparser.add_argument(
+        "-f", "--file", required=True, type=str, help="Path to source plantUml file."
+    )
+    argparser.add_argument("-a", "--animate", action="store_true")
 
     args = argparser.parse_args()
 

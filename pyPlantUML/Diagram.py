@@ -2,7 +2,6 @@ from .DiagramObject import DiagramObject
 
 from manim import *
 
-
 class Diagram():
 
     def __init__(self, name: str):
@@ -10,35 +9,7 @@ class Diagram():
         self.objects: typing.Dict[str, DiagramObject] = {}
         self.animate = False
 
-    def setLayout(self):
-        firstLevelNodes = list(self.objects.keys())
-        for name, obj in self.objects.items():
-            if len(obj.edges) != 0:
-                firstLevelNodes.remove(obj.name)
-
-        self.assignObjectCoordinates(firstLevelNodes, 0)
-
-    def assignObjectCoordinates(self, nodes: list, y: int):
-
-        if len(nodes) == 0:
-            return
-
-        nextNodes = []
-        xRange = self.rangeAroundZero(len(nodes))
-        for i, name in enumerate(nodes):
-            self.objects[name].x = xRange[i]
-            self.objects[name].y = y
-
-            for _, obj in self.objects.items():
-                for edge in obj.edges:
-                    if edge.target.name == name:
-                        nextNodes.append(obj.name)
-
-        self.assignObjectCoordinates(nextNodes, y+1)
-
     def draw(self):
-
-        self.setLayout()
 
         for name, obj in self.objects.items():
             self.drawObject(obj)
@@ -58,8 +29,8 @@ class Diagram():
 
             mobj.to_edge(UP)
 
-            mobj.shift(RIGHT * obj.x * 2)
-            mobj.shift(DOWN * obj.y * 2)
+            mobj.shift(RIGHT * obj.x)
+            mobj.shift(DOWN * obj.y)
 
             if self.animate:
                 self.scene.play(Create(mobj))
