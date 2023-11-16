@@ -1,18 +1,19 @@
 from manim import *
-from typing import Type
 
 from pyPlantUML import *
 
 import argparse
-from pyPlantUML.layout.KamadaKawai import KamadaKawai
-from pyPlantUML.layout.DotLayout import DotLayout
+
 from pyPlantUML.layout.SpringLayout import SpringLayout
 
 
 class MainScene(MovingCameraScene):
+    file: str
+    animate: bool
+
     def construct(self):
         parser = PUMLParser()
-        diagram: Type[Diagram] = parser.parseFile(self.file)
+        diagram: Diagram = parser.parse_file(self.file)
 
         layout = SpringLayout(diagram)
         layout.apply()
@@ -21,16 +22,16 @@ class MainScene(MovingCameraScene):
         self.camera.background_color = WHITE
         Text.set_default(font_size=16)
 
-        diagram.setScene(self)
+        diagram.set_scene(self)
 
         diagram.animate = self.animate
 
         diagram.draw()
 
-    def setFile(self, file: str):
+    def set_file(self, file: str):
         self.file = file
 
-    def setAnimate(self, animate: bool):
+    def set_animate(self, animate: bool):
         self.animate = animate
 
 
@@ -50,7 +51,7 @@ if __name__ == "__main__":
 
     scene = MainScene()
 
-    scene.setFile(args.file)
-    scene.setAnimate(args.animate)
+    scene.set_file(args.file)
+    scene.set_animate(args.animate)
 
     scene.render()

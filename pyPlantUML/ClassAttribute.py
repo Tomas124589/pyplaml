@@ -8,11 +8,12 @@ class AttributeModifier(Enum):
     PROTECTED = "#"
     PUBLIC = "+"
 
-    def fromString(string: str):
+    @staticmethod
+    def from_string(string: str):
 
-        attrMap = {member.value: member for member in AttributeModifier}
+        attr_map = {member.value: member for member in AttributeModifier}
 
-        result = attrMap.get(string)
+        result = attr_map.get(string)
 
         if result is None:
             result = AttributeModifier.NONE
@@ -22,7 +23,7 @@ class AttributeModifier(Enum):
 
 class ClassAttribute:
 
-    def __init__(self, isMethod: bool, modifier: AttributeModifier, text: str):
-        self.isMethod = isMethod
+    def __init__(self, is_method: bool, modifier: AttributeModifier, text: str):
+        self.isMethod = is_method
         self.modifier = modifier
         self.text = text

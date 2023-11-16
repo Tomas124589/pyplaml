@@ -37,105 +37,109 @@ class PUMLParser(object):
         relation    : IDENTIFIER REL LINE IDENTIFIER
         """
 
-        leftClassName = str(p[1])
+        left_class_name = str(p[1])
         relation = p[2]
-        lineData = p[3]
-        rightClassName = str(p[4])
+        line_data = p[3]
+        right_class_name = str(p[4])
 
-        leftClass = DiagramClass(leftClassName, 'class')
-        rightClass = DiagramClass(rightClassName, 'class')
+        left_class = DiagramClass(left_class_name, 'class')
+        right_class = DiagramClass(right_class_name, 'class')
         line = DiagramEdge(
-            leftClassName + "-" + relation + "-" + rightClassName,
-            leftClass,
-            lineData[1],
-            lineData[0],
+            left_class_name + "-" + relation + "-" + right_class_name,
+            right_class,
+            left_class,
+            line_data[1],
+            line_data[0],
             Relation["NONE"],
             Relation[relation],
         )
 
-        rightClass.addEdge(line)
+        right_class.add_edge(line)
 
-        self.diagram.addObject(leftClass)
-        self.diagram.addObject(rightClass)
+        self.diagram.add_object(left_class)
+        self.diagram.add_object(right_class)
 
     def p_right_relation(self, p):
         """
         relation    : IDENTIFIER LINE REL IDENTIFIER
         """
 
-        leftClassName = str(p[1])
-        lineData = p[2]
+        left_class_name = str(p[1])
+        line_data = p[2]
         relation = p[3]
-        rightClassName = str(p[4])
+        right_class_name = str(p[4])
 
-        leftClass = DiagramClass(leftClassName, 'class')
-        rightClass = DiagramClass(rightClassName, 'class')
+        left_class = DiagramClass(left_class_name, 'class')
+        right_class = DiagramClass(right_class_name, 'class')
         line = DiagramEdge(
-            leftClassName + "-" + relation + "-" + rightClassName,
-            rightClass,
-            lineData[1],
-            lineData[0],
+            left_class_name + "-" + relation + "-" + right_class_name,
+            left_class,
+            right_class,
+            line_data[1],
+            line_data[0],
             Relation["NONE"],
             Relation[relation],
         )
 
-        leftClass.addEdge(line)
+        left_class.add_edge(line)
 
-        self.diagram.addObject(leftClass)
-        self.diagram.addObject(rightClass)
+        self.diagram.add_object(left_class)
+        self.diagram.add_object(right_class)
 
     def p_simple_relation(self, p):
         """
         relation    : IDENTIFIER LINE IDENTIFIER
         """
 
-        leftClassName = str(p[1])
-        lineData = p[2]
-        rightClassName = str(p[3])
+        left_class_name = str(p[1])
+        line_data = p[2]
+        right_class_name = str(p[3])
 
-        leftClass = DiagramClass(leftClassName, 'class')
-        rightClass = DiagramClass(rightClassName, 'class')
+        left_class = DiagramClass(left_class_name, 'class')
+        right_class = DiagramClass(right_class_name, 'class')
 
         line = DiagramEdge(
-            leftClassName + "-" + rightClassName,
-            leftClass,
-            lineData[1],
-            lineData[0],
+            left_class_name + "-" + right_class_name,
+            right_class,
+            left_class,
+            line_data[1],
+            line_data[0],
             Relation["NONE"],
             Relation["NONE"],
         )
 
-        rightClass.addEdge(leftClass)
+        right_class.add_edge(line)
 
-        self.diagram.addObject(leftClass)
-        self.diagram.addObject(rightClass)
+        self.diagram.add_object(left_class)
+        self.diagram.add_object(right_class)
 
     def p_bi_relation(self, p):
         """
         relation    : IDENTIFIER REL LINE REL IDENTIFIER
         """
 
-        leftClassName = str(p[1])
-        leftRelation = p[2]
-        lineData = p[3]
-        rightRelation = p[4]
-        rightClassName = str(p[5])
+        left_class_name = str(p[1])
+        left_relation = p[2]
+        line_data = p[3]
+        right_relation = p[4]
+        right_class_name = str(p[5])
 
-        leftClass = DiagramClass(leftClassName, 'class')
-        rightClass = DiagramClass(rightClassName, 'class')
+        left_class = DiagramClass(left_class_name, 'class')
+        right_class = DiagramClass(right_class_name, 'class')
         line = DiagramEdge(
-            leftClassName + "-" + leftRelation + "-" + rightRelation + "-" + rightClassName,
-            leftClass,
-            lineData[1],
-            lineData[0],
-            Relation[leftRelation],
-            Relation[rightRelation],
+            left_class_name + "-" + left_relation + "-" + right_relation + "-" + right_class_name,
+            right_class,
+            left_class,
+            line_data[1],
+            line_data[0],
+            Relation[left_relation],
+            Relation[right_relation],
         )
 
-        rightClass.addEdge(line)
+        right_class.add_edge(line)
 
-        self.diagram.addObject(leftClass)
-        self.diagram.addObject(rightClass)
+        self.diagram.add_object(left_class)
+        self.diagram.add_object(right_class)
 
     def p_class(self, p):
         """
@@ -161,15 +165,15 @@ class PUMLParser(object):
                 | ABS_CLASS CLASS STRING
         """
 
-        classType = str(p[1]).lower()
+        class_type = str(p[1]).lower()
         name = str(p[2])
-        if classType == "abstract":
-            classType = "abstract_class"
+        if class_type == "abstract":
+            class_type = "abstract_class"
             name = str(p[3])
 
-        classObj = DiagramClass(name, classType)
+        class_obj = DiagramClass(name, class_type)
 
-        self.diagram.addObject(classObj)
+        self.diagram.add_object(class_obj)
 
     def p_class_attr(self, p):
         """
@@ -177,24 +181,25 @@ class PUMLParser(object):
         class_attr  : STRING AFTERCOLON
         """
 
-        o = self.diagram.objects[p[1]]
-        attrStr = str(p[2])
-        isMethod = '(' in attrStr
+        o: DiagramClass = self.diagram.objects[p[1]]
+        attr_str = str(p[2])
+        is_method = '(' in attr_str
 
-        if attrStr[0] in ['-', '~', '#', '+']:
+        if attr_str[0] in ['-', '~', '#', '+']:
             attribute = ClassAttribute(
-                isMethod, AttributeModifier.fromString(attrStr[0]), attrStr[1:])
+                is_method, AttributeModifier.from_string(attr_str[0]), attr_str[1:])
         else:
-            attrStr = attrStr.strip()
+            attr_str = attr_str.strip()
             attribute = ClassAttribute(
-                isMethod, AttributeModifier.NONE, attrStr)
+                is_method, AttributeModifier.NONE, attr_str)
 
-        if isMethod:
+        if is_method:
             o.methods.append(attribute)
         else:
             o.attributes.append(attribute)
 
-    def p_error(self, p):
+    @staticmethod
+    def p_error(p):
         print("Parser syntax error:")
         print("\t", p)
 
@@ -207,7 +212,7 @@ class PUMLParser(object):
     def parse(self, text) -> Diagram:
         return self.parser.parse(text)
 
-    def parseFile(self, path):
+    def parse_file(self, path):
         with open(path, 'r') as file:
             text = file.read()
 

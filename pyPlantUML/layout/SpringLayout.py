@@ -1,16 +1,12 @@
 import networkx as nx
 
 from .DiagramLayout import DiagramLayout
-from .. import Diagram
+
 
 class SpringLayout(DiagramLayout):
 
-    def __init__(self, diagram: Diagram) -> None:
-        self.diagram = diagram
-
     def apply(self) -> None:
-
-        layout = nx.spring_layout(self.getGraph())
+        layout = nx.spring_layout(self.get_graph())
 
         for key, pos in layout.items():
             self.diagram.objects[key].x = pos[0]

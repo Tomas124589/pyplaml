@@ -1,8 +1,8 @@
 import ply.lex as lex
 
 
+# noinspection PyPep8Naming
 class PUMLexer(object):
-
     keywords = {
         "@startuml": "START",
         "@enduml": "END",
@@ -19,86 +19,98 @@ class PUMLexer(object):
     }
 
     tokens = [
-        "EXTENSION",
-        "ASSOCIATION",
-        "COMPOSITION",
-        "AGGREGATION",
-        "REL",
-        "STRING",
-        "IDENTIFIER",
-        "LINE",
-        "AFTERCOLON",
-    ] + list(keywords.values())
+                 "EXTENSION",
+                 "ASSOCIATION",
+                 "COMPOSITION",
+                 "AGGREGATION",
+                 "REL",
+                 "STRING",
+                 "IDENTIFIER",
+                 "LINE",
+                 "AFTERCOLON",
+             ] + list(keywords.values())
 
-    def t_LINE(self, t):
-        r'[-\.]+'
+    @staticmethod
+    def t_LINE(t):
+        r"""[-\.]+"""
         t.value = (int(t.value.count(".") + t.value.count("-")), "." in t.value)
         return t
 
-    def t_STRING(self, t):
-        r'"(.*?)"'
+    @staticmethod
+    def t_STRING(t):
+        r""""(.*?)\""""
         t.value = t.value.replace("\"", "")
         return t
 
-    def t_EXTENSION(self, t):
-        r'<\||\|>|\^'
+    @staticmethod
+    def t_EXTENSION(t):
+        r"""<\||\|>|\^"""
         t.type = 'REL'
         t.value = 'EXTENSION'
         return t
 
-    def t_ASSOCIATION(self, t):
-        r'<|>'
+    @staticmethod
+    def t_ASSOCIATION(t):
+        r"""<|>"""
         t.type = 'REL'
         t.value = 'ASSOCIATION'
         return t
 
-    def t_AGGREGATION(self, t):
-        r'o'
+    @staticmethod
+    def t_AGGREGATION(t):
+        r"""o"""
         t.type = 'REL'
         t.value = 'AGGREGATION'
         return t
 
-    def t_COMPOSITION(self, t):
-        r'\*'
+    @staticmethod
+    def t_COMPOSITION(t):
+        r"""\*"""
         t.type = 'REL'
         t.value = 'COMPOSITION'
         return t
 
-    def t_HASH(self, t):
-        r'\#'
+    @staticmethod
+    def t_HASH(t):
+        r"""\#"""
         t.type = 'REL'
         t.value = 'HASH'
         return t
 
-    def t_CROSS(self, t):
-        r'x'
+    @staticmethod
+    def t_CROSS(t):
+        r"""x"""
         t.type = 'REL'
         t.value = 'CROSS'
         return t
 
-    def t_CROW_FOOT(self, t):
-        r'\{|\}'
+    @staticmethod
+    def t_CROW_FOOT(t):
+        r"""\{|\}"""
         t.type = 'REL'
         t.value = 'CROW_FOOT'
         return t
 
-    def t_NEST_CLASSIFIER(self, t):
-        r'\+'
+    @staticmethod
+    def t_NEST_CLASSIFIER(t):
+        r"""\+"""
         t.type = 'REL'
         t.value = 'NEST_CLASSIFIER'
         return t
 
     def t_IDENTIFIER(self, t):
-        r'@*\w+[()]*'
+        r"""@*\w+[()]*"""
         t.type = self.keywords.get(t.value.lower(), 'IDENTIFIER')
         return t
 
-    def t_AFTERCOLON(self, t):
-        r':.+'
+    @staticmethod
+    def t_AFTERCOLON(t):
+        r""":.+"""
         t.value = t.value[1:].strip()
         return t
 
-    def t_error(self, t):
+    @staticmethod
+    def t_error(t):
         print("Illegal character: '{}'".format(t.value[0]))
         t.lexer.skip(1)
 

@@ -2,9 +2,11 @@ from .DiagramObject import DiagramObject
 
 from manim import *
 
-class Diagram():
+
+class Diagram:
 
     def __init__(self, name: str):
+        self.scene = None
         self.name = name
         self.objects: typing.Dict[str, DiagramObject] = {}
         self.animate = False
@@ -12,36 +14,36 @@ class Diagram():
     def draw(self):
 
         for name, obj in self.objects.items():
-            self.drawObject(obj)
+            self.draw_object(obj)
 
         for name, obj in self.objects.items():
             for i, edge in enumerate(obj.edges):
 
                 if self.animate:
-                    self.scene.play(Create(edge.draw(obj)))
+                    self.scene.play(Create(edge.draw()))
                 else:
-                    self.scene.add(edge.draw(obj))
+                    self.scene.add(edge.draw())
 
-    def drawObject(self, obj: DiagramObject):
+    def draw_object(self, obj: DiagramObject):
 
         if obj.mobject is None:
-            mobj = obj.draw()
+            mobject = obj.draw()
 
-            mobj.to_edge(UP)
+            mobject.to_edge(UP)
 
-            mobj.shift(RIGHT * obj.x)
-            mobj.shift(DOWN * obj.y)
+            mobject.shift(RIGHT * obj.x)
+            mobject.shift(DOWN * obj.y)
 
             if self.animate:
-                self.scene.play(Create(mobj))
+                self.scene.play(Create(mobject))
                 self.scene.play(self.scene.camera.auto_zoom(
                     self.scene.mobjects, margin=0.5))
             else:
-                self.scene.add(mobj)
+                self.scene.add(mobject)
                 self.scene.camera.auto_zoom(
                     self.scene.mobjects, margin=0.5, animate=False)
 
-    def addObject(self, obj: DiagramObject):
+    def add_object(self, obj: DiagramObject):
 
         if obj.name not in self.objects:
             self.objects[obj.name] = obj
@@ -50,18 +52,14 @@ class Diagram():
                 if edge.target.name in self.objects:
                     edge.target = self.objects[edge.target.name]
                 else:
-                    self.addObject(edge.target)
+                    self.add_object(edge.target)
         else:
             for edge in obj.edges:
                 if edge.target not in self.objects:
-                    self.addObject(edge.target)
+                    self.add_object(edge.target)
                 edge.target = self.objects[edge.target.name]
 
             self.objects[obj.name].edges += obj.edges
 
-    def rangeAroundZero(self, n):
-        half_n = n // 2
-        return list(range(-half_n, half_n + 1))
-
-    def setScene(self, scene: Scene):
+    def set_scene(self, scene: Scene):
         self.scene = scene
