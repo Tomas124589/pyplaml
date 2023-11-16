@@ -13,7 +13,6 @@ class DiagramEdge(DiagramObject):
         self.size = size
         self.sourceArrowType = sourceArrowType
         self.targetArrowType = targetArrowType
-        self.doCustomPosition = True
 
     def draw(self, source: DiagramObject):
 
