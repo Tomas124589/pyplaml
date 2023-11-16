@@ -7,6 +7,7 @@ name = "pypi"
 ply = "*"
 networkx = "*"
 pygraphviz = "*"
+manim = "*"
 
 [dev-packages]
 
