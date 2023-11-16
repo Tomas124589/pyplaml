@@ -10,7 +10,6 @@ class AttributeModifier(Enum):
 
     @staticmethod
     def from_string(string: str):
-
         attr_map = {member.value: member for member in AttributeModifier}
 
         result = attr_map.get(string)
