@@ -1,0 +1,27 @@
+@startuml "Class attributes"
+C1 <|--- C2
+C1 <|--- C3
+C1 <|--- C4
+
+C1 : -Int count
+C1 : -String name
+C1 : +getCount()
+C1 : #getName()
+
+C2 : +print()
+
+C3 : #add()
+C3 : ~getLength()
+
+C4 *-- C5
+C4 *-- C6
+
+C7 --> C2
+C8 --> C2
+
+C7 : -float price
+
+C9 --> C5
+
+C9 : show()
+@enduml
