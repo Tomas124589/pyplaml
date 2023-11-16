@@ -42,9 +42,7 @@ if __name__ == "__main__":
 
     argparser = argparse.ArgumentParser(prog="pyPlantUML")
 
-    argparser.add_argument(
-        "-f", "--file", required=True, type=str, help="Path to source plantUml file."
-    )
+    argparser.add_argument("file")
     argparser.add_argument("-a", "--animate", action="store_true")
 
     args = argparser.parse_args()
