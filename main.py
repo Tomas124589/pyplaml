@@ -5,6 +5,7 @@ from pyPlantUML import *
 import argparse
 
 from pyPlantUML.layout.SpringLayout import SpringLayout
+from pyPlantUML.layout.HierarchicalLayout import HierarchicalLayout
 
 
 class MainScene(MovingCameraScene):
@@ -17,7 +18,7 @@ class MainScene(MovingCameraScene):
 
         layout = SpringLayout(diagram)
         layout.apply()
-        layout.scale(7, 5)
+        layout.scale(2, 2)
 
         self.camera.background_color = WHITE
         Text.set_default(font_size=16)
