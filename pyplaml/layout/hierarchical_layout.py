@@ -1,4 +1,4 @@
-from .DiagramLayout import DiagramLayout
+from .diagram_layout import DiagramLayout
 
 
 class HierarchicalLayout(DiagramLayout):

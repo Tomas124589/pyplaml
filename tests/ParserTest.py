@@ -1,5 +1,5 @@
 import unittest
-from pyPlantUML import *
+from pyplaml import *
 
 
 class PyPlantUMLTest(unittest.TestCase):

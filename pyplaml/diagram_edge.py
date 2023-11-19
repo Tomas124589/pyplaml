@@ -1,5 +1,5 @@
-from .DiagramObject import DiagramObject
-from .Relation import Relation
+from .diagram_object import DiagramObject
+from .relation import Relation
 
 from manim import *
 

@@ -1,4 +1,4 @@
-from .DiagramObject import DiagramObject
+from .diagram_object import DiagramObject
 
 from manim import *
 

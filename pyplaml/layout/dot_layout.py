@@ -1,6 +1,6 @@
 from networkx.drawing.nx_agraph import graphviz_layout
 
-from .DiagramLayout import DiagramLayout
+from .diagram_layout import DiagramLayout
 
 
 class DotLayout(DiagramLayout):

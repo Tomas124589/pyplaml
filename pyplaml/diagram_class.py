@@ -1,6 +1,6 @@
-from .DiagramObject import DiagramObject
-from .DiagramEdge import DiagramEdge
-from .ClassAttribute import ClassAttribute
+from .diagram_object import DiagramObject
+from .diagram_edge import DiagramEdge
+from .class_attribute import ClassAttribute
 
 from manim import *
 

@@ -1,11 +1,11 @@
 from manim import *
 
-from pyPlantUML import *
+from pyplaml import *
 
 import argparse
 
-from pyPlantUML.layout.SpringLayout import SpringLayout
-from pyPlantUML.layout.HierarchicalLayout import HierarchicalLayout
+from pyplaml.layout.spring_layout import SpringLayout
+from pyplaml.layout.hierarchical_layout import HierarchicalLayout
 
 
 class MainScene(MovingCameraScene):
@@ -14,20 +14,20 @@ class MainScene(MovingCameraScene):
 
     def construct(self):
         parser = PUMLParser()
-        diagram: Diagram = parser.parse_file(self.file)
+        d: Diagram = parser.parse_file(self.file)
 
-        layout = SpringLayout(diagram)
+        layout = HierarchicalLayout(d)
         layout.apply()
         layout.scale(2, 2)
 
         self.camera.background_color = WHITE
         Text.set_default(font_size=16)
 
-        diagram.set_scene(self)
+        d.set_scene(self)
 
-        diagram.animate = self.animate
+        d.animate = self.animate
 
-        diagram.draw()
+        d.draw()
 
     def set_file(self, file: str):
         self.file = file
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     config.cairo_path = "media/images/"
     config.ffmpeg_path = "media/videos/"
 
-    argparser = argparse.ArgumentParser(prog="pyPlantUML")
+    argparser = argparse.ArgumentParser(prog="pyplaml")
 
     argparser.add_argument("file")
     argparser.add_argument("-a", "--animate", action="store_true")

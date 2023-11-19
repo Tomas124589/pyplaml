@@ -1,11 +1,11 @@
 import ply.yacc as yacc
 
-from .Diagram import Diagram
-from .DiagramClass import DiagramClass
-from .DiagramEdge import DiagramEdge
-from .Relation import Relation
-from .PUMLexer import PUMLexer
-from .ClassAttribute import ClassAttribute, AttributeModifier
+from .diagram import Diagram
+from .diagram_class import DiagramClass
+from .diagram_edge import DiagramEdge
+from .relation import Relation
+from .puml_lexer import PUMLexer
+from .class_attribute import ClassAttribute, AttributeModifier
 
 
 class PUMLParser(object):

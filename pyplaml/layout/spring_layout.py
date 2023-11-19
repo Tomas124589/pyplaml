@@ -1,6 +1,6 @@
 import networkx as nx
 
-from .DiagramLayout import DiagramLayout
+from .diagram_layout import DiagramLayout
 
 
 class SpringLayout(DiagramLayout):
