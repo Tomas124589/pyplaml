@@ -28,11 +28,11 @@ class DiagramClass(DiagramObject):
             attrs = VGroup()
             for attr in self.attributes:
                 text_group = VGroup(
-                    Text(attr.modifier.value, color=BLACK).scale(0.75),
-                    Text(attr.text, color=BLACK).scale(0.75)
+                    Text(attr.modifier.value, color=BLACK),
+                    Text(attr.text, color=BLACK)
                 )
 
-                text_group.arrange(RIGHT, buff=0.)
+                text_group.arrange(RIGHT, buff=0.1).scale(0.75)
                 attrs.add(text_group)
 
             attrs.arrange(DOWN, buff=0.1)
@@ -46,11 +46,11 @@ class DiagramClass(DiagramObject):
             methods = VGroup()
             for method in self.methods:
                 text_group = VGroup(
-                    Text(method.modifier.value, color=BLACK).scale(0.75),
-                    Text(method.text, color=BLACK).scale(0.75)
+                    Text(method.modifier.value, color=BLACK),
+                    Text(method.text, color=BLACK)
                 )
 
-                text_group.arrange(RIGHT, buff=0.1)
+                text_group.arrange(RIGHT, buff=0.1).scale(0.75)
                 methods.add(text_group)
 
             methods.arrange(DOWN, buff=0.1)
