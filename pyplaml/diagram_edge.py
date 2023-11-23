@@ -8,19 +8,21 @@ class DiagramEdge(DiagramObject):
 
     def __init__(self,
                  name: str,
-                 source: DiagramObject,
-                 target: DiagramObject,
                  dashed: bool,
                  size: int,
-                 source_arrow_type: Relation,
-                 target_arrow_type: Relation):
+                 ):
         DiagramObject.__init__(self, name)
-        self.source = source
-        self.target = target
         self.dashed = dashed
         self.size = size
-        self.sourceArrowType = source_arrow_type
-        self.targetArrowType = target_arrow_type
+
+        self.source = None
+        self.source_rel_type = Relation.NONE
+        self.target = None
+        self.target_rel_type = Relation.NONE
+
+        self.source_text = ""
+        self.text = ""
+        self.target_text = ""
 
     def draw(self):
 
@@ -47,34 +49,52 @@ class DiagramEdge(DiagramObject):
 
         line.color = BLACK
 
-        line.add_tip(self.get_line_tip())
+        if self.target_rel_type != Relation.NONE:
+            line.add_tip(self.get_line_tip(self.target_rel_type))
 
-        self.mobject = line
+        if self.source_rel_type != Relation.NONE:
+            line.add_tip(self.get_line_tip(self.source_rel_type), at_start=True)
+
+        group = VGroup(line)
+
+        if self.text:
+            text = Text(self.text, color=BLACK).scale(0.75)
+            text.next_to(line.get_center(), RIGHT, buff=0)
+            group.add(text)
+
+        if self.source_text:
+            text = Text(self.source_text, color=BLACK).scale(0.75)
+            text.next_to(line.get_start() + text.height, RIGHT, buff=0)
+            group.add(text)
+
+        if self.target_text:
+            text = Text(self.target_text, color=BLACK).scale(0.75)
+            text.next_to(line.get_end() - text.height, LEFT, buff=0)
+            group.add(text)
+
+        self.mobject = group
 
         return self.mobject
 
-    def get_line_tip(self):
-
-        if self.targetArrowType == Relation.EXTENSION:
+    @staticmethod
+    def get_line_tip(rel: Relation):
+        if rel == Relation.EXTENSION:
 
             return ArrowTriangleTip(color=BLACK, stroke_width=2, length=0.2, width=0.2)
 
-        elif self.targetArrowType == Relation.ASSOCIATION:
+        elif rel == Relation.ASSOCIATION:
 
             return StealthTip(color=BLACK, stroke_width=2, length=0.2)
 
-        elif self.targetArrowType == Relation.AGGREGATION:
+        elif rel == Relation.AGGREGATION:
 
             return ArrowSquareTip(color=BLACK, stroke_width=2,
                                   length=0.15)
 
-        elif self.targetArrowType == Relation.COMPOSITION:
+        elif rel == Relation.COMPOSITION:
 
             return ArrowSquareFilledTip(color=BLACK, stroke_width=2, length=0.15)
 
-        elif self.targetArrowType == Relation.HASH:
+        elif rel == Relation.HASH:
 
             return ArrowSquareTip(color=BLACK, stroke_width=2, length=0.15)
-
-        else:
-            return None

@@ -32,114 +32,99 @@ class PUMLParser(object):
                 | class_attr
         """
 
-    def p_left_relation(self, p):
+    def p_relation(self, p):
         """
-        relation    : IDENTIFIER REL LINE IDENTIFIER
-        """
-
-        left_class_name = str(p[1])
-        relation = p[2]
-        line_data = p[3]
-        right_class_name = str(p[4])
-
-        left_class = DiagramClass(left_class_name, 'class')
-        right_class = DiagramClass(right_class_name, 'class')
-        line = DiagramEdge(
-            left_class_name + "-" + relation + "-" + right_class_name,
-            right_class,
-            left_class,
-            line_data[1],
-            line_data[0],
-            Relation["NONE"],
-            Relation[relation],
-        )
-
-        right_class.add_edge(line)
-
-        self.diagram.add_object(left_class)
-        self.diagram.add_object(right_class)
-
-    def p_right_relation(self, p):
-        """
-        relation    : IDENTIFIER LINE REL IDENTIFIER
+        relation    : IDENTIFIER rel_line IDENTIFIER
+                    | IDENTIFIER rel_line IDENTIFIER AFTERCOLON
         """
 
         left_class_name = str(p[1])
-        line_data = p[2]
-        relation = p[3]
-        right_class_name = str(p[4])
-
-        left_class = DiagramClass(left_class_name, 'class')
-        right_class = DiagramClass(right_class_name, 'class')
-        line = DiagramEdge(
-            left_class_name + "-" + relation + "-" + right_class_name,
-            left_class,
-            right_class,
-            line_data[1],
-            line_data[0],
-            Relation["NONE"],
-            Relation[relation],
-        )
-
-        left_class.add_edge(line)
-
-        self.diagram.add_object(left_class)
-        self.diagram.add_object(right_class)
-
-    def p_simple_relation(self, p):
-        """
-        relation    : IDENTIFIER LINE IDENTIFIER
-        """
-
-        left_class_name = str(p[1])
-        line_data = p[2]
         right_class_name = str(p[3])
+        (edge, is_source_on_left) = p[2]
+        edge: DiagramEdge
 
-        left_class = DiagramClass(left_class_name, 'class')
-        right_class = DiagramClass(right_class_name, 'class')
+        l_class = DiagramClass(left_class_name, 'class')
+        r_class = DiagramClass(right_class_name, 'class')
 
-        line = DiagramEdge(
-            left_class_name + "-" + right_class_name,
-            right_class,
-            left_class,
-            line_data[1],
-            line_data[0],
-            Relation["NONE"],
-            Relation["NONE"],
-        )
+        edge.name = left_class_name + "-" + edge.source_rel_type.name + "-" + edge.target_rel_type.name + "-" + right_class_name
 
-        right_class.add_edge(line)
+        if is_source_on_left:
+            edge.source = l_class
+            edge.target = r_class
+            l_class.add_edge(edge)
+        else:
+            edge.source = r_class
+            edge.target = l_class
+            r_class.add_edge(edge)
 
-        self.diagram.add_object(left_class)
-        self.diagram.add_object(right_class)
+        if len(p) == 5:
+            edge.text = p[4]
 
-    def p_bi_relation(self, p):
+        self.diagram.add_object(l_class)
+        self.diagram.add_object(r_class)
+
+    @staticmethod
+    def p_rel_line(p):
         """
-        relation    : IDENTIFIER REL LINE REL IDENTIFIER
+        rel_line    : LINE
+                    | REL LINE
+                    | LINE REL
+                    | REL LINE REL
         """
 
-        left_class_name = str(p[1])
-        left_relation = p[2]
-        line_data = p[3]
-        right_relation = p[4]
-        right_class_name = str(p[5])
+        _len = len(p)
 
-        left_class = DiagramClass(left_class_name, 'class')
-        right_class = DiagramClass(right_class_name, 'class')
-        line = DiagramEdge(
-            left_class_name + "-" + left_relation + "-" + right_relation + "-" + right_class_name,
-            right_class,
-            left_class,
-            line_data[1],
-            line_data[0],
-            Relation[left_relation],
-            Relation[right_relation],
-        )
+        is_src_on_left = False
 
-        right_class.add_edge(line)
+        if _len == 2:
+            e = DiagramEdge("", p[1][1], p[1][0])
+        elif _len == 3:
+            if isinstance(p[1], str):
+                e = DiagramEdge("", p[2][1], p[2][0])
+                e.target_rel_type = Relation[p[1]]
+            else:
+                e = DiagramEdge("", p[1][1], p[1][0])
+                e.target_rel_type = Relation[p[2]]
+                is_src_on_left = True
+        else:
+            e = DiagramEdge("", p[2][0], p[2][1])
+            e.source_rel_type = Relation[p[3]]
+            e.target_rel_type = Relation[p[1]]
 
-        self.diagram.add_object(left_class)
-        self.diagram.add_object(right_class)
+        p[0] = (e, is_src_on_left)
+
+    @staticmethod
+    def p_rel_line_named(p):
+        """
+        rel_line    : STRING rel_line STRING
+                    | rel_line STRING
+                    | STRING rel_line
+        """
+
+        _len = len(p)
+
+        if _len == 3:
+            if isinstance(p[1], str):
+                (edge, is_src_on_left) = p[2]
+                l_str = p[1]
+                r_str = ""
+            else:
+                (edge, is_src_on_left) = p[1]
+                l_str = ""
+                r_str = p[2]
+        else:
+            (edge, is_src_on_left) = p[2]
+            l_str = p[1]
+            r_str = p[3]
+
+        if is_src_on_left:
+            edge.source_text = l_str
+            edge.target_text = r_str
+        else:
+            edge.source_text = r_str
+            edge.target_text = l_str
+
+        p[0] = (edge, is_src_on_left)
 
     def p_class(self, p):
         """

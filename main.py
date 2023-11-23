@@ -18,7 +18,7 @@ class MainScene(MovingCameraScene):
 
         layout = HierarchicalLayout(d)
         layout.apply()
-        layout.scale(2, 2)
+        layout.scale(2, 2.5)
 
         self.camera.background_color = WHITE
         Text.set_default(font_size=16)

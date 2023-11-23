@@ -1,11 +1,14 @@
 @startuml "Relations"
-Class03 --* Class04
-Class05 --o Class06
-' Class07 ... Class08
-' Class09 -- Class10
+Class01 "1" -- "25" Class02
+Class03 "one" --* Class04
+Class05 --o "many" Class06
+Class07 .. Class08
+Class09 -- Class10
 Class11 ..|> Class12
 Class13 --> Class14
 Class15 ..> Class16
-Class17 ..|> Class18
-Class19 <--* Class20
+Class17 "1" <|.. "25" Class18
+Class19 "one" <|.. Class20
+Class21 <|.. "many" Class22
+Class23 <--* Class24
 @enduml
