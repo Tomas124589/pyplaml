@@ -6,7 +6,7 @@ from manim import *
 class Diagram:
 
     def __init__(self, name: str):
-        self.scene = None
+        self.scene: Scene | None = None
         self.name = name
         self.objects: typing.Dict[str, DiagramObject] = {}
         self.animate = False
