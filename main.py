@@ -35,10 +35,6 @@ class MainScene(MovingCameraScene):
 
 
 if __name__ == "__main__":
-    config.output_file = "PlantUML"
-    config.cairo_path = "media/images/"
-    config.ffmpeg_path = "media/videos/"
-
     argparser = argparse.ArgumentParser(prog="pyplaml")
 
     argparser.add_argument("file")
@@ -47,6 +43,15 @@ if __name__ == "__main__":
     argparser.add_argument("-sy", "--scale-y", default=1, type=float)
 
     args = argparser.parse_args()
+
+    src_file = Path(args.file)
+
+    if not src_file.is_file():
+        raise Exception("\"{}\" is not a file.".format(args.file))
+
+    config.output_file = src_file.stem
+    config.cairo_path = "media/images/"
+    config.ffmpeg_path = "media/videos/"
 
     scene = MainScene()
 
