@@ -26,6 +26,11 @@ class DiagramEdge(DiagramObject):
 
     def draw(self):
 
+        if self.source.mobject is None:
+            raise Exception("Start object \"{}\" has not been drawn.".format(self.source.name))
+        elif self.target.mobject is None:
+            raise Exception("Target object \"{}\" has not been drawn.".format(self.target.name))
+
         start = self.source.mobject.get_top()
         target = self.target.mobject.get_bottom()
 
