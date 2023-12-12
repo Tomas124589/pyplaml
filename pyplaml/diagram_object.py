@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 
 from manim import *
 
+import pyplaml
+
 
 class DiagramObject(ABC):
 
@@ -17,3 +19,8 @@ class DiagramObject(ABC):
     @abstractmethod
     def draw(self) -> VMobject:
         pass
+
+    def append_to_diagram(self, diagram: pyplaml.Diagram) -> DiagramObject:
+        if self.name not in diagram.objects:
+            diagram[self.name] = self
+        return diagram[self.name]

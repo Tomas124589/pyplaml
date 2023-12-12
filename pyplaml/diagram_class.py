@@ -1,6 +1,7 @@
 from .diagram_object import DiagramObject
 from .diagram_edge import DiagramEdge
 from .class_attribute import ClassAttribute
+from .diagram import Diagram
 
 from manim import *
 
@@ -14,8 +15,24 @@ class DiagramClass(DiagramObject):
         self.attributes: List[ClassAttribute] = []
         self.methods: List[ClassAttribute] = []
 
-    def draw(self):
+    def append_to_diagram(self, diagram: Diagram) -> DiagramObject:
+        if self.name not in diagram.objects:
+            diagram[self.name] = self
+            for edge in self.edges:
+                if edge.target.name in diagram.objects:
+                    edge.target = diagram[edge.target.name]
+                else:
+                    edge.target.append_to_diagram(diagram)
+        else:
+            for edge in self.edges:
+                if edge.target not in diagram:
+                    edge.target.append_to_diagram(diagram)
+                edge.target = diagram[edge.target.name]
+            diagram[self.name].edges += self.edges
 
+        return diagram[self.name]
+
+    def draw(self):
         header = Rectangle(color=GRAY)
         text = Text(self.name, color=BLACK)
         header.surround(text)

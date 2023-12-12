@@ -15,13 +15,11 @@ class DiagramLayout(ABC):
 
     def get_graph(self) -> nx.DiGraph:
         g = nx.DiGraph()
-
         for name, obj in self.diagram.objects.items():
             g.add_node(name)
-
-            for e in obj.edges:
-                g.add_edge(name, e.target.name)
-
+            if hasattr(obj, 'edges'):
+                for e in obj.edges:
+                    g.add_edge(name, e.target.name)
         return g
 
     def scale(self, x: float, y: float) -> None:

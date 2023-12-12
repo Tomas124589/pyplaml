@@ -20,7 +20,7 @@ class MainScene(MovingCameraScene):
         parser = PUMLParser()
         d: Diagram = parser.parse_file(self.file)
 
-        layout = SpringLayout(d)
+        layout = HierarchicalLayout(d)
         layout.apply()
         layout.scale(self.scale_x, self.scale_y)
 

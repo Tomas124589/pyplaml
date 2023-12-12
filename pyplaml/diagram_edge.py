@@ -1,5 +1,6 @@
 from .diagram_object import DiagramObject
 from .relation import Relation
+import warnings
 
 from manim import *
 
@@ -25,11 +26,12 @@ class DiagramEdge(DiagramObject):
         self.target_text = ""
 
     def draw(self):
-
         if self.source.mobject is None:
-            raise Exception("Start object \"{}\" has not been drawn.".format(self.source.name))
+            warnings.warn("Start object \"{}\" has not been drawn.".format(self.source.name))
+            return
         elif self.target.mobject is None:
-            raise Exception("Target object \"{}\" has not been drawn.".format(self.target.name))
+            warnings.warn("Target object \"{}\" has not been drawn.".format(self.target.name))
+            return
 
         start = self.source.mobject.get_top()
         target = self.target.mobject.get_bottom()
@@ -84,22 +86,17 @@ class DiagramEdge(DiagramObject):
     @staticmethod
     def get_line_tip(rel: Relation):
         if rel == Relation.EXTENSION:
-
             return ArrowTriangleTip(color=BLACK, stroke_width=2, length=0.2, width=0.2)
 
         elif rel == Relation.ASSOCIATION:
-
             return StealthTip(color=BLACK, stroke_width=2, length=0.2)
 
         elif rel == Relation.AGGREGATION:
-
             return ArrowSquareTip(color=BLACK, stroke_width=2,
                                   length=0.15)
 
         elif rel == Relation.COMPOSITION:
-
             return ArrowSquareFilledTip(color=BLACK, stroke_width=2, length=0.15)
 
         elif rel == Relation.HASH:
-
             return ArrowSquareTip(color=BLACK, stroke_width=2, length=0.15)

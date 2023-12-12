@@ -43,10 +43,8 @@ class PUMLParser(object):
         (edge, is_source_on_left) = p[2]
         edge: DiagramEdge
 
-        l_class = DiagramClass(left_class_name, 'class')
-        r_class = DiagramClass(right_class_name, 'class')
-
-        edge.name = left_class_name + "-" + edge.source_rel_type.name + "-" + edge.target_rel_type.name + "-" + right_class_name
+        l_class = DiagramClass(left_class_name, 'class').append_to_diagram(self.diagram)
+        r_class = DiagramClass(right_class_name, 'class').append_to_diagram(self.diagram)
 
         if is_source_on_left:
             edge.source = l_class
@@ -57,11 +55,12 @@ class PUMLParser(object):
             edge.target = l_class
             r_class.add_edge(edge)
 
+        edge.name = edge.source.name + "-" + edge.source_rel_type.name + "-" + edge.target_rel_type.name + "-" + edge.target.name
+
         if len(p) == 5:
             edge.text = p[4]
 
-        self.diagram.add_object(l_class)
-        self.diagram.add_object(r_class)
+        edge.append_to_diagram(self.diagram)
 
     @staticmethod
     def p_rel_line(p):
@@ -156,9 +155,7 @@ class PUMLParser(object):
             class_type = "abstract_class"
             name = str(p[3])
 
-        class_obj = DiagramClass(name, class_type)
-
-        self.diagram.add_object(class_obj)
+        DiagramClass(name, class_type).append_to_diagram(self.diagram)
 
     def p_class_attr(self, p):
         """
