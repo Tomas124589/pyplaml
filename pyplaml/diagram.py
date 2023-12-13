@@ -32,19 +32,20 @@ class Diagram:
 
     def draw(self):
         for name, obj in self.objects_by_type('DiagramClass').items():
+
             self.draw_object(obj)
 
         for name, obj in self.objects.items():
             if hasattr(obj, 'edges'):
                 for i, edge in enumerate(obj.edges):
                     if self.animate:
-                        self.scene.play(Create(edge.draw()))
+                        self.scene.play(Create(edge.predraw()))
                     else:
-                        self.scene.add(edge.draw())
+                        self.scene.add(edge.predraw())
 
     def draw_object(self, obj: DiagramObject):
         if obj.mobject is None:
-            mobject = obj.draw()
+            mobject = obj.predraw()
             if mobject:
                 mobject.to_edge(UP)
                 mobject.shift(RIGHT * obj.x)

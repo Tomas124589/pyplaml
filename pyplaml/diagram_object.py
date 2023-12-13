@@ -17,7 +17,7 @@ class DiagramObject(ABC):
         self.y = 0
 
     @abstractmethod
-    def draw(self) -> VMobject:
+    def predraw(self) -> VMobject:
         pass
 
     def append_to_diagram(self, diagram: pyplaml.Diagram) -> DiagramObject:
