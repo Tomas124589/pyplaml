@@ -16,16 +16,16 @@ class DiagramEdge(DiagramObject):
         self.dashed = dashed
         self.size = size
 
-        self.source = None
+        self.source: DiagramObject | None = None
         self.source_rel_type = Relation.NONE
-        self.target = None
+        self.target: DiagramObject | None = None
         self.target_rel_type = Relation.NONE
 
         self.source_text = ""
         self.text = ""
         self.target_text = ""
 
-    def draw(self):
+    def predraw(self):
         if self.source.mobject is None:
             warnings.warn("Start object \"{}\" has not been drawn.".format(self.source.name))
             return
@@ -33,23 +33,15 @@ class DiagramEdge(DiagramObject):
             warnings.warn("Target object \"{}\" has not been drawn.".format(self.target.name))
             return
 
-        start = self.source.mobject.get_top()
-        target = self.target.mobject.get_bottom()
+        start = self.source.mobject.get_center()
+        target = self.target.mobject.get_center()
 
-        if self.source.mobject.get_top()[1] > self.target.mobject.get_bottom()[1]:
-            start = self.source.mobject.get_bottom()
-            target = self.target.mobject.get_top()
+        direction = target - start
+        direction /= np.linalg.norm(direction)
+        direction = direction.round(0)
 
-        start_center = self.source.mobject.get_center()
-        target_center = self.target.mobject.get_center()
-
-        if self.source.y == self.target.y:
-            if start_center[0] < target_center[0]:
-                start = self.source.mobject.get_right()
-                target = self.target.mobject.get_left()
-            else:
-                start = self.source.mobject.get_left()
-                target = self.target.mobject.get_right()
+        start = self.source.mobject.get_critical_point(direction)
+        target = self.target.mobject.get_critical_point(-direction)
 
         line = DashedLine(start, target, buff=0, stroke_width=1, tip_length=0.25) if self.dashed else Line(
             start, target, buff=0, stroke_width=1, tip_length=0.25)

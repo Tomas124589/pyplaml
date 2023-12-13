@@ -32,7 +32,7 @@ class DiagramClass(DiagramObject):
 
         return diagram[self.name]
 
-    def draw(self):
+    def predraw(self):
         header = Rectangle(color=GRAY)
         text = Text(self.name, color=BLACK)
         header.surround(text)
