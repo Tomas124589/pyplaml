@@ -7,6 +7,8 @@ class PUMLexer(object):
         "@startuml": "START",
         "@enduml": "END",
         "abstract": "ABSTRACT",
+        "implements": "IMPLEMENTS",
+        "extends": "EXTENDS",
     }
 
     tokens = [

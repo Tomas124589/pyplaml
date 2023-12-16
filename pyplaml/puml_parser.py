@@ -55,11 +55,43 @@ class PUMLParser(object):
             edge.target = l_class
             r_class.add_edge(edge)
 
-        edge.name = edge.source.name + "-" + edge.source_rel_type.name + "-" + edge.target_rel_type.name + "-" + edge.target.name
-
         if len(p) == 5:
             edge.text = p[4]
 
+        edge.append_to_diagram(self.diagram)
+
+    def p_extends(self, p):
+        """
+        relation    : class EXTENDS IDENTIFIER
+                    | class EXTENDS STRING
+        """
+        l_class: DiagramClass = p[1]
+        r_class = DiagramClass(p[3], l_class.type).append_to_diagram(self.diagram)
+
+        edge = DiagramEdge(l_class.name, False, 1)
+        edge.source = l_class
+        edge.source_rel_type = Relation.NONE
+        edge.target = r_class
+        edge.target_rel_type = Relation.EXTENSION
+
+        l_class.add_edge(edge)
+        edge.append_to_diagram(self.diagram)
+
+    def p_implements(self, p):
+        """
+        relation    : class IMPLEMENTS IDENTIFIER
+                    | class IMPLEMENTS STRING
+        """
+        l_class: DiagramClass = p[1]
+        r_class = DiagramClass(p[3], 'interface').append_to_diagram(self.diagram)
+
+        edge = DiagramEdge(l_class.name, True, 1)
+        edge.source = l_class
+        edge.source_rel_type = Relation.NONE
+        edge.target = r_class
+        edge.target_rel_type = Relation.EXTENSION
+
+        l_class.add_edge(edge)
         edge.append_to_diagram(self.diagram)
 
     @staticmethod

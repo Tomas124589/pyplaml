@@ -11,4 +11,10 @@ Class17 "1" <|.. "25" Class18
 Class19 "one" <|.. Class20
 Class21 <|.. "many" Class22
 Class23 <--* Class24
+
+class class25 extends class26
+class "class25_str" extends "class26_str"
+interface intf EXTENDS base_interface
+class class27 implements interfacex
+abstract class28 implements interfacey
 @enduml
