@@ -11,11 +11,13 @@ class Diagram:
         self.objects: typing.Dict[str, DiagramObject] = {}
         self.animate = False
 
-    def __setitem__(self, key: str, obj: DiagramObject):
-        self.objects[key] = obj
+    def __setitem__(self, key: str, val: DiagramObject):
+        if not isinstance(val, DiagramObject):
+            raise Exception('Only DiagramObject is allowed.')
+        self.objects[key] = val
 
     def __getitem__(self, key: str):
-        return self.objects[key]
+        return self.objects[str(key)]
 
     def objects_by_type(self, obj_type: str = ''):
         res = {}
@@ -32,7 +34,6 @@ class Diagram:
 
     def draw(self):
         for name, obj in self.objects_by_type('DiagramClass').items():
-
             self.draw_object(obj)
 
         for name, obj in self.objects.items():
