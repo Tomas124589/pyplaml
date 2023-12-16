@@ -24,3 +24,6 @@ class DiagramObject(ABC):
         if self.name not in diagram.objects:
             diagram[self.name] = self
         return diagram[self.name]
+
+    def __str__(self):
+        return self.name
