@@ -1,8 +1,10 @@
 @startuml "BasicElements"
 class myClass
 Class "my Class"
-abstract class myAbsClass
-abstract class "my abs class"
+abstract "myAbsClass1"
+abstract myAbsClass2
+abstract class myAbsClass3
+abstract class "my abs class4"
 enum myEnum
 enum "my Enum"
 exception myException

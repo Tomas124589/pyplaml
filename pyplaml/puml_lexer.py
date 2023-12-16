@@ -6,19 +6,11 @@ class PUMLexer(object):
     keywords = {
         "@startuml": "START",
         "@enduml": "END",
-        "class": "CLASS",
-        "abstract": "ABS_CLASS",
-        "entity": "ENTITY",
-        "enum": "ENUM",
-        "exception": "EXCEPTION",
-        "interface": "INTERFACE",
-        "metaclass": "META_CLASS",
-        "protocol": "PROTOCOL",
-        "stereotype": "STEREOTYPE",
-        "struct": "STRUCT",
+        "abstract": "ABSTRACT",
     }
 
     tokens = [
+                 "CLASS_DEF",
                  "EXTENSION",
                  "ASSOCIATION",
                  "COMPOSITION",
@@ -96,6 +88,11 @@ class PUMLexer(object):
         r"""\+"""
         t.type = 'REL'
         t.value = 'NEST_CLASSIFIER'
+        return t
+
+    @staticmethod
+    def t_CLASS_DEF(t):
+        r"""(?i)\bclass\b|\bentity\b|\benum\b|\bexception\b|\binterface\b|\bmetaclass\b|\bprotocol\b|\bstereotype\b|\bstruct\b"""
         return t
 
     def t_IDENTIFIER(self, t):

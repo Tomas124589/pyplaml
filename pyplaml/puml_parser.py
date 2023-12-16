@@ -127,35 +127,26 @@ class PUMLParser(object):
 
     def p_class(self, p):
         """
-        class   : CLASS IDENTIFIER
-                | CLASS STRING
-                | ENTITY IDENTIFIER
-                | ENTITY STRING
-                | ENUM IDENTIFIER
-                | ENUM STRING
-                | EXCEPTION IDENTIFIER
-                | EXCEPTION STRING
-                | INTERFACE IDENTIFIER
-                | INTERFACE STRING
-                | META_CLASS IDENTIFIER
-                | META_CLASS STRING
-                | PROTOCOL IDENTIFIER
-                | PROTOCOL STRING
-                | STEREOTYPE IDENTIFIER
-                | STEREOTYPE STRING
-                | STRUCT IDENTIFIER
-                | STRUCT STRING
-                | ABS_CLASS CLASS IDENTIFIER
-                | ABS_CLASS CLASS STRING
+        class   : CLASS_DEF IDENTIFIER
+                | CLASS_DEF STRING
         """
-
         class_type = str(p[1]).lower()
         name = str(p[2])
-        if class_type == "abstract":
-            class_type = "abstract_class"
-            name = str(p[3])
 
-        DiagramClass(name, class_type).append_to_diagram(self.diagram)
+        p[0] = DiagramClass(name, class_type).append_to_diagram(self.diagram)
+
+    def p_abstract_class(self, p):
+        """
+        class           : ABSTRACT IDENTIFIER
+                        | ABSTRACT STRING
+                        | ABSTRACT class
+        """
+        if type(p[2]) is str:
+            c = DiagramClass(p[2], 'abstract_class').append_to_diagram(self.diagram)
+        else:
+            c = self.diagram[p[2]]
+            c.type = 'abstract_class'
+        p[0] = c
 
     def p_class_attr(self, p):
         """
