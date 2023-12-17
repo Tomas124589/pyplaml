@@ -174,10 +174,11 @@ class PUMLParser(object):
                         | ABSTRACT class
         """
         if type(p[2]) is str:
-            c = DiagramClass(p[2], 'abstract_class').append_to_diagram(self.diagram)
+            c = DiagramClass(p[2]).append_to_diagram(self.diagram)
         else:
             c = self.diagram[p[2]]
-            c.type = 'abstract_class'
+
+        c.is_abstract = True
         p[0] = c
 
     def p_class_attr(self, p):

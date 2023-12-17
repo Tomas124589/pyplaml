@@ -2,18 +2,20 @@ from .diagram_object import DiagramObject
 from .diagram_edge import DiagramEdge
 from .class_attribute import ClassAttribute
 from .diagram import Diagram
+from .class_type import ClassType
 
 from manim import *
 
 
 class DiagramClass(DiagramObject):
 
-    def __init__(self, name: str, class_type: str):
+    def __init__(self, name: str, class_type: ClassType | str = ClassType.CLASS):
         super().__init__(name)
-        self.type = class_type
+        self.type = ClassType.from_string(class_type) if isinstance(class_type, str) else class_type
         self.edges: List[DiagramEdge] = []
         self.attributes: List[ClassAttribute] = []
         self.methods: List[ClassAttribute] = []
+        self.is_abstract = False
 
     def append_to_diagram(self, diagram: Diagram) -> DiagramObject:
         if self.name not in diagram.objects:
@@ -33,8 +35,10 @@ class DiagramClass(DiagramObject):
         return diagram[self.name]
 
     def predraw(self):
+        slant = ITALIC if self.is_abstract or self.type == ClassType.INTERFACE else NORMAL
+
         header = Rectangle(color=GRAY)
-        text = Text(self.name, color=BLACK)
+        text = Text(self.name, color=BLACK, slant=slant)
         header.surround(text)
         head_group = VGroup(header, text)
 
