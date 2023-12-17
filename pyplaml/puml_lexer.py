@@ -94,7 +94,7 @@ class PUMLexer(object):
 
     @staticmethod
     def t_CLASS_DEF(t):
-        r"""(?i)\bclass\b|\bentity\b|\benum\b|\bexception\b|\binterface\b|\bmetaclass\b|\bprotocol\b|\bstereotype\b|\bstruct\b"""
+        r"""(?i)\bclass\b|\bentity\b|\benum\b|\bexception\b|\binterface\b|\bmetaclass\b|\bprotocol\b|\bstereotype\b|\bstruct\b|\bannotation\b"""
         return t
 
     def t_IDENTIFIER(self, t):

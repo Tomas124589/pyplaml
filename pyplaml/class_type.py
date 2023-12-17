@@ -1,8 +1,11 @@
+from __future__ import annotations
 from enum import Enum
 
 
 class ClassType(Enum):
+    UNKNOWN = "unknown"
     CLASS = "class"
+    ANNOTATION = "annotation"
     ENTITY = "entity"
     ENUM = "enum"
     EXCEPTION = "exception"
@@ -13,6 +16,6 @@ class ClassType(Enum):
     STRUCT = "struct"
 
     @staticmethod
-    def from_string(string: str):
-        attr_map = {member.value: member for member in ClassType}
-        return attr_map.get(string)
+    def from_string(string: str) -> ClassType:
+        _type = {member.value: member for member in ClassType}.get(string)
+        return ClassType.UNKNOWN if _type is None else _type
