@@ -1,13 +1,15 @@
 from .diagram_layout import DiagramLayout
+from ..diagram_class import DiagramClass
 
 
 class HierarchicalLayout(DiagramLayout):
 
     def apply(self) -> None:
-        first_level_nodes = list(self.diagram.objects_by_type('DiagramClass').keys())
-        for name, obj in self.diagram.objects_by_type('DiagramClass').items():
-            if len(obj.edges) != 0:
+        first_level_nodes = list(self.diagram.objects)
+        for name, obj in self.diagram.objects.items():
+            if not isinstance(obj, DiagramClass) or len(obj.edges) != 0:
                 first_level_nodes.remove(obj.name)
+
         self.assign_object_coordinates(first_level_nodes, 0)
 
     def assign_object_coordinates(self, nodes: list, y: int):

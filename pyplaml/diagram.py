@@ -1,6 +1,7 @@
-from .diagram_object import DiagramObject
-
 from manim import *
+
+import pyplaml
+from .diagram_object import DiagramObject
 
 
 class Diagram:
@@ -33,8 +34,9 @@ class Diagram:
         return res[obj_type] if obj_type != '' else res
 
     def draw(self):
-        for name, obj in self.objects_by_type('DiagramClass').items():
-            self.draw_object(obj)
+        for name, obj in self.objects.items():
+            if isinstance(obj, pyplaml.DiagramClass):
+                self.draw_object(obj)
 
         for name, obj in self.objects.items():
             if hasattr(obj, 'edges'):

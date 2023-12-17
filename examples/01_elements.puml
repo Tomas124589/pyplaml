@@ -1,6 +1,8 @@
 @startuml "BasicElements"
 class myClass
 Class "my Class"
+annotation myAnnotation1
+annotation "myAnnotation 2"
 abstract "myAbsClass1"
 abstract myAbsClass2
 abstract class myAbsClass3
@@ -11,12 +13,12 @@ exception myException
 exception "my Exception"
 interface myInterface
 interface "my Interface"
-' metaclass myMetaClass
-' metaclass "my Meta Class"
+metaclass myMetaClass
+metaclass "my Meta Class"
 protocol myProtocol
 protocol "my Protocol"
-' stereotype myStereotype
-' stereotype "my Stereotype"
+stereotype myStereotype
+stereotype "my Stereotype"
 struct myStruct
 struct "my Struct"
 @enduml

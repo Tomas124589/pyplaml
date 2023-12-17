@@ -1,11 +1,13 @@
+import copy
 import ply.yacc as yacc
 
 from .diagram import Diagram
-from .diagram_class import DiagramClass
+from .diagram_class import DiagramClass, DiagramClassFactory
 from .diagram_edge import DiagramEdge
 from .relation import Relation
 from .puml_lexer import PUMLexer
 from .class_attribute import ClassAttribute, AttributeModifier
+from .class_type import ClassType
 
 
 class PUMLParser(object):
@@ -43,8 +45,8 @@ class PUMLParser(object):
         (edge, is_source_on_left) = p[2]
         edge: DiagramEdge
 
-        l_class = DiagramClass(left_class_name, 'class').append_to_diagram(self.diagram)
-        r_class = DiagramClass(right_class_name, 'class').append_to_diagram(self.diagram)
+        l_class = DiagramClass(left_class_name).append_to_diagram(self.diagram)
+        r_class = DiagramClass(right_class_name).append_to_diagram(self.diagram)
 
         if is_source_on_left:
             edge.source = l_class
@@ -66,7 +68,10 @@ class PUMLParser(object):
                     | class EXTENDS STRING
         """
         l_class: DiagramClass = p[1]
-        r_class = DiagramClass(p[3], l_class.type).append_to_diagram(self.diagram)
+
+        r_class = copy.deepcopy(l_class)
+        r_class.name = p[3]
+        r_class = r_class.append_to_diagram(self.diagram)
 
         edge = DiagramEdge(l_class.name, False, 1)
         edge.source = l_class
@@ -83,7 +88,7 @@ class PUMLParser(object):
                     | class IMPLEMENTS STRING
         """
         l_class: DiagramClass = p[1]
-        r_class = DiagramClass(p[3], 'interface').append_to_diagram(self.diagram)
+        r_class = DiagramClassFactory.make(p[3], ClassType.INTERFACE).append_to_diagram(self.diagram)
 
         edge = DiagramEdge(l_class.name, True, 1)
         edge.source = l_class
@@ -162,10 +167,7 @@ class PUMLParser(object):
         class   : CLASS_DEF IDENTIFIER
                 | CLASS_DEF STRING
         """
-        class_type = str(p[1]).lower()
-        name = str(p[2])
-
-        p[0] = DiagramClass(name, class_type).append_to_diagram(self.diagram)
+        p[0] = DiagramClassFactory.make(p[2], p[1]).append_to_diagram(self.diagram)
 
     def p_abstract_class(self, p):
         """
