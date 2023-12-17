@@ -9,4 +9,4 @@ class DrawTest(unittest.TestCase):
         examples = glob("../examples/*.puml")
 
         for e in examples:
-            self.assertEqual(os.system("python ../main.py " + e), 0)
+            self.assertEqual(os.system("python ../main.py " + e + " -sx 3 -sy 3"), 0)
