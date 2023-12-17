@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enum import Enum
 
 
@@ -9,15 +10,9 @@ class AttributeModifier(Enum):
     PUBLIC = "+"
 
     @staticmethod
-    def from_string(string: str):
-        attr_map = {member.value: member for member in AttributeModifier}
-
-        result = attr_map.get(string)
-
-        if result is None:
-            result = AttributeModifier.NONE
-
-        return result
+    def from_string(string: str) -> AttributeModifier:
+        _mod = {member.value: member for member in AttributeModifier}.get(string)
+        return AttributeModifier.NONE if _mod is None else _mod
 
 
 class ClassAttribute:
