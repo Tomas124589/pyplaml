@@ -39,16 +39,13 @@ class PUMLParser(object):
         relation    : IDENTIFIER rel_line IDENTIFIER
                     | IDENTIFIER rel_line IDENTIFIER AFTERCOLON
         """
+        edge: DiagramEdge = p[2]
 
-        left_class_name = str(p[1])
-        right_class_name = str(p[3])
-        (edge, is_source_on_left) = p[2]
-        edge: DiagramEdge
+        l_class = DiagramClass(p[1]).append_to_diagram(self.diagram)
+        r_class = DiagramClass(p[3]).append_to_diagram(self.diagram)
 
-        l_class = DiagramClass(left_class_name).append_to_diagram(self.diagram)
-        r_class = DiagramClass(right_class_name).append_to_diagram(self.diagram)
-
-        if is_source_on_left:
+        edge_dir = edge.get_dir()
+        if edge_dir == 1:
             edge.source = l_class
             edge.target = r_class
             l_class.add_edge(edge)
@@ -58,7 +55,16 @@ class PUMLParser(object):
             r_class.add_edge(edge)
 
         if len(p) == 5:
-            edge.text = p[4]
+            text = str(p[4]).strip()
+            if text[0] == '<':
+                edge.arrow_from_source = edge_dir != 1
+                text = text[1:]
+
+            elif text[0] == '>':
+                edge.arrow_from_source = edge_dir == 1
+                text = text[1:]
+
+            edge.text = text
 
         edge.append_to_diagram(self.diagram)
 
@@ -107,27 +113,22 @@ class PUMLParser(object):
                     | LINE REL
                     | REL LINE REL
         """
-
         _len = len(p)
-
-        is_src_on_left = False
-
         if _len == 2:
             e = DiagramEdge("", p[1][1], p[1][0])
         elif _len == 3:
             if isinstance(p[1], str):
                 e = DiagramEdge("", p[2][1], p[2][0])
-                e.target_rel_type = Relation[p[1]]
+                e.source_rel_type = Relation[p[1]]
             else:
                 e = DiagramEdge("", p[1][1], p[1][0])
                 e.target_rel_type = Relation[p[2]]
-                is_src_on_left = True
         else:
             e = DiagramEdge("", p[2][0], p[2][1])
             e.source_rel_type = Relation[p[3]]
             e.target_rel_type = Relation[p[1]]
 
-        p[0] = (e, is_src_on_left)
+        p[0] = e
 
     @staticmethod
     def p_rel_line_named(p):
@@ -136,31 +137,29 @@ class PUMLParser(object):
                     | rel_line STRING
                     | STRING rel_line
         """
-
         _len = len(p)
-
         if _len == 3:
             if isinstance(p[1], str):
-                (edge, is_src_on_left) = p[2]
+                edge = p[2]
                 l_str = p[1]
                 r_str = ""
             else:
-                (edge, is_src_on_left) = p[1]
+                edge = p[1]
                 l_str = ""
                 r_str = p[2]
         else:
-            (edge, is_src_on_left) = p[2]
+            edge = p[2]
             l_str = p[1]
             r_str = p[3]
 
-        if is_src_on_left:
+        if edge.get_dir() == 1:
             edge.source_text = l_str
             edge.target_text = r_str
         else:
             edge.source_text = r_str
             edge.target_text = l_str
 
-        p[0] = (edge, is_src_on_left)
+        p[0] = edge
 
     def p_class(self, p):
         """

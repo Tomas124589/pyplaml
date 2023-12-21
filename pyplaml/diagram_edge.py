@@ -27,6 +27,21 @@ class DiagramEdge(DiagramObject):
         self.text = ""
         self.target_text = ""
 
+        self.arrow_from_source = None
+
+    def get_dir(self):
+        is_left = self.source_rel_type != Relation.NONE
+        is_right = self.target_rel_type != Relation.NONE
+
+        if is_left and is_right:
+            return 0
+        elif is_left:
+            return -1
+        elif is_right:
+            return 1
+        else:
+            return None
+
     def predraw(self):
         if self.source.mobject is None:
             warnings.warn("Start object \"{}\" has not been drawn.".format(self.source.name))
@@ -50,18 +65,39 @@ class DiagramEdge(DiagramObject):
 
         line.color = BLACK
 
-        if self.target_rel_type != Relation.NONE:
+        _dir = self.get_dir()
+        if _dir == -1:
+            line.add_tip(self.get_line_tip(self.source_rel_type))
+
+        elif _dir == 1:
             line.add_tip(self.get_line_tip(self.target_rel_type))
 
-        if self.source_rel_type != Relation.NONE:
+        elif _dir == 0:
+            line.add_tip(self.get_line_tip(self.target_rel_type))
             line.add_tip(self.get_line_tip(self.source_rel_type), at_start=True)
 
         group = VGroup(line)
 
-        if self.text:
-            text = Text(self.text, color=BLACK).scale(0.75)
-            text.next_to(line.get_center(), RIGHT, buff=0)
-            group.add(text)
+        if self.text or self.arrow_from_source is not None:
+            t_group = VGroup(Text(self.text, color=BLACK).scale(0.75))
+
+            if self.arrow_from_source is not None:
+                arrow = RegularPolygon(n=3, color=BLACK, fill_opacity=1)
+                arrow.scale_to_fit_width(0.1)
+                arrow.stretch_to_fit_height(t_group.height or 0.1)
+
+                p1 = self.target.mobject.get_center()
+                p2 = self.source.mobject.get_center()
+                angle_to_obj = np.arctan2(p2[1] - p1[1], p2[0] - p1[0])
+
+                if not self.arrow_from_source:
+                    angle_to_obj += 180 * DEGREES
+
+                arrow.rotate(arrow.start_angle + angle_to_obj)
+
+                t_group.add(arrow)
+
+            group.add(t_group.arrange(LEFT, buff=0.1).next_to(line.get_center(), RIGHT, buff=0.1))
 
         if self.source_text:
             text = Text(self.source_text, color=BLACK).scale(0.75)
