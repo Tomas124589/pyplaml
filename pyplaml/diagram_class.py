@@ -1,6 +1,6 @@
 from .diagram_object import DiagramObject
 from .diagram_edge import DiagramEdge
-from .class_attribute import ClassAttribute
+from .class_attribute import ClassAttribute, AttributeModifier
 from .diagram import Diagram
 from .class_type import ClassType
 
@@ -103,6 +103,18 @@ class DiagramClass(DiagramObject):
 
     def add_edge(self, edge: DiagramEdge):
         self.edges.append(edge)
+
+    def add_attribute(self, attr_str: str):
+        if attr_str[0] in ['-', '~', '#', '+']:
+            attribute = ClassAttribute(AttributeModifier.from_string(attr_str[0]), attr_str[1:])
+        else:
+            attr_str = attr_str.strip()
+            attribute = ClassAttribute(AttributeModifier.NONE, attr_str)
+
+        if '(' in attr_str:
+            self.methods.append(attribute)
+        else:
+            self.attributes.append(attribute)
 
 
 class DiagramAnnotation(DiagramClass):

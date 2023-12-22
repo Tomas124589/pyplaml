@@ -17,7 +17,6 @@ class AttributeModifier(Enum):
 
 class ClassAttribute:
 
-    def __init__(self, is_method: bool, modifier: AttributeModifier, text: str):
-        self.isMethod = is_method
+    def __init__(self, modifier: AttributeModifier, text: str):
         self.modifier = modifier
         self.text = text

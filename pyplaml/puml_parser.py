@@ -6,7 +6,6 @@ from .diagram_class import DiagramClass, DiagramClassFactory
 from .diagram_edge import DiagramEdge
 from .relation import Relation
 from .puml_lexer import PUMLexer
-from .class_attribute import ClassAttribute, AttributeModifier
 from .class_type import ClassType
 
 
@@ -182,28 +181,32 @@ class PUMLParser(object):
         c.is_abstract = True
         p[0] = c
 
+    def p_class_with_body(self, p):
+        """
+        class   : class class_body
+        """
+        c: DiagramClass = self.diagram[p[1]]
+        for attr_str in p[2]:
+            c.add_attribute(attr_str)
+
+    @staticmethod
+    def p_class_body(p):
+        """
+        class_body  : class_body TEXT_LINE
+                    | TEXT_LINE
+        """
+        if len(p) == 3:
+            p[0] = p[1] + [p[2]]
+        else:
+            p[0] = [p[1]]
+
     def p_class_attr(self, p):
         """
         class_attr  : IDENTIFIER AFTERCOLON
-        class_attr  : STRING AFTERCOLON
+                    | STRING AFTERCOLON
         """
-
-        o: DiagramClass = self.diagram.objects[p[1]]
-        attr_str = str(p[2])
-        is_method = '(' in attr_str
-
-        if attr_str[0] in ['-', '~', '#', '+']:
-            attribute = ClassAttribute(
-                is_method, AttributeModifier.from_string(attr_str[0]), attr_str[1:])
-        else:
-            attr_str = attr_str.strip()
-            attribute = ClassAttribute(
-                is_method, AttributeModifier.NONE, attr_str)
-
-        if is_method:
-            o.methods.append(attribute)
-        else:
-            o.attributes.append(attribute)
+        c: DiagramClass = self.diagram[p[1]]
+        c.add_attribute(p[2])
 
     @staticmethod
     def p_error(p):

@@ -3,6 +3,10 @@ import ply.lex as lex
 
 # noinspection PyPep8Naming
 class PUMLexer(object):
+    states = (
+        ('inbrackets', 'exclusive'),
+    )
+
     keywords = {
         "@startuml": "START",
         "@enduml": "END",
@@ -13,16 +17,41 @@ class PUMLexer(object):
 
     tokens = [
                  "CLASS_DEF",
-                 "EXTENSION",
-                 "ASSOCIATION",
-                 "COMPOSITION",
-                 "AGGREGATION",
                  "REL",
                  "STRING",
                  "IDENTIFIER",
                  "LINE",
                  "AFTERCOLON",
+                 "TEXT_LINE",
              ] + list(keywords.values())
+
+    @staticmethod
+    def t_inbrackets(t):
+        r'\{'
+        t.lexer.code_start = t.lexer.lexpos
+        t.lexer.level = 1
+        t.lexer.begin('inbrackets')
+
+    @staticmethod
+    def t_inbrackets_lbrace(t):
+        r'\{'
+        t.lexer.level += 1
+
+    @staticmethod
+    def t_inbrackets_rbrace(t):
+        r'\}'
+        t.lexer.level -= 1
+
+        if t.lexer.level == 0:
+            t.value = t.lexer.lexdata[t.lexer.code_start:t.lexer.lexpos + 1]
+            t.lexer.lineno += t.value.count('\n')
+            t.lexer.begin('INITIAL')
+
+    @staticmethod
+    def t_inbrackets_TEXT_LINE(t):
+        r'.+'
+        t.value = t.value.strip()
+        return t
 
     @staticmethod
     def t_LINE(t):
@@ -113,8 +142,14 @@ class PUMLexer(object):
         print("Illegal character: '{}'".format(t.value[0]))
         t.lexer.skip(1)
 
+    @staticmethod
+    def t_inbrackets_error(t):
+        t.lexer.skip(1)
+
     t_ignore = ' \n\t'
     t_ignore_COMMENT = r"('.*)|(\/'(.|\s)*\'\/)"
+
+    t_inbrackets_ignore = ' \t\n'
 
     def __init__(self, **kwargs):
         self.lexer = lex.lex(module=self, **kwargs)
