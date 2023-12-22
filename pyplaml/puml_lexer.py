@@ -63,19 +63,19 @@ class PUMLexer(object):
 
     @staticmethod
     def t_inbrackets(t):
-        r'\{'
+        r"""\{"""
         t.lexer.code_start = t.lexer.lexpos
         t.lexer.level = 1
         t.lexer.begin('inbrackets')
 
     @staticmethod
     def t_inbrackets_lbrace(t):
-        r'\{'
+        r"""\{"""
         t.lexer.level += 1
 
     @staticmethod
     def t_inbrackets_rbrace(t):
-        r'\}'
+        r"""\}"""
         t.lexer.level -= 1
 
         if t.lexer.level == 0:
@@ -85,7 +85,7 @@ class PUMLexer(object):
 
     @staticmethod
     def t_inbrackets_TEXT_LINE(t):
-        r'.+'
+        r""".+"""
         t.value = t.value.strip()
         return t
 
