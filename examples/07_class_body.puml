@@ -1,7 +1,12 @@
 @startuml "Class Body"
 interface Dummy {
   String data
+  {field} Int propertyWithBraces()
+
   void methods()
+  {static} int staticMethod()
+  {abstract} String abstractMethod()
+  {method} methodWithoutBrackets
 }
 
 class Flight {

@@ -17,6 +17,7 @@ class PUMLexer(object):
 
     tokens = [
                  "CLASS_DEF",
+                 "FLAG",
                  "REL",
                  "STRING",
                  "IDENTIFIER",
@@ -24,6 +25,34 @@ class PUMLexer(object):
                  "AFTERCOLON",
                  "TEXT_LINE",
              ] + list(keywords.values())
+
+    @staticmethod
+    def t_inbrackets_FIELD_FLAG(t):
+        r"""(?i)\{field\}"""
+        t.value = "FIELD"
+        t.type = "FLAG"
+        return t
+
+    @staticmethod
+    def t_inbrackets_METHOD_FLAG(t):
+        r"""(?i)\{method\}"""
+        t.value = "METHOD"
+        t.type = "FLAG"
+        return t
+
+    @staticmethod
+    def t_inbrackets_ABSTRACT_FLAG(t):
+        r"""(?i)\{abstract\}"""
+        t.value = "ABSTRACT"
+        t.type = "FLAG"
+        return t
+
+    @staticmethod
+    def t_inbrackets_STATIC_FLAG(t):
+        r"""(?i)\{static\}"""
+        t.value = "STATIC"
+        t.type = "FLAG"
+        return t
 
     @staticmethod
     def t_inbrackets(t):

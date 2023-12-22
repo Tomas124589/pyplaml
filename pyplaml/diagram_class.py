@@ -43,40 +43,11 @@ class DiagramClass(DiagramObject):
 
         attr_body = Rectangle(color=GRAY, height=0.2, width=0.2)
         attr_group = VGroup(attr_body)
-        if len(self.attributes) != 0:
-
-            attrs = VGroup()
-            for attr in self.attributes:
-                text_group = VGroup(
-                    Text(attr.modifier.value, color=BLACK),
-                    Text(attr.text, color=BLACK)
-                )
-
-                text_group.arrange(RIGHT, buff=0.1).scale(0.75)
-                attrs.add(text_group)
-
-            attrs.arrange(DOWN, buff=0.1)
-            attr_group.add(attrs)
-            attr_body.surround(attrs, buff=0.2)
-            attr_body.stretch_to_fit_height(attrs.height + 0.1)
+        self.predraw_attributes(self.attributes, attr_body, attr_group)
 
         method_body = Rectangle(color=GRAY, height=0.2, width=0.2)
         method_group = VGroup(method_body)
-        if len(self.methods) != 0:
-            methods = VGroup()
-            for method in self.methods:
-                text_group = VGroup(
-                    Text(method.modifier.value, color=BLACK),
-                    Text(method.text, color=BLACK)
-                )
-
-                text_group.arrange(RIGHT, buff=0.1).scale(0.75)
-                methods.add(text_group)
-
-            methods.arrange(DOWN, buff=0.1)
-            method_group.add(methods)
-            method_body.surround(methods, buff=0.2)
-            method_body.stretch_to_fit_height(methods.height + 0.1)
+        self.predraw_attributes(self.methods, method_body, method_group)
 
         max_width = max(head_group.width, attr_group.width, method_group.width)
 
@@ -84,12 +55,30 @@ class DiagramClass(DiagramObject):
         attr_body.stretch_to_fit_width(max_width)
         method_body.stretch_to_fit_width(max_width)
 
-        attr_group.next_to(head_group, DOWN, buff=0)
-        method_group.next_to(attr_group, DOWN, buff=0)
-
-        self.mobject = VGroup(head_group, attr_group, method_group)
+        self.mobject = VGroup(head_group, attr_group, method_group).stretch_to_fit_width(max_width).arrange(DOWN, buff=0)
 
         return self.mobject
+
+    @staticmethod
+    def predraw_attributes(attributes: List[ClassAttribute], body: Rectangle, group: VGroup):
+        if len(attributes) != 0:
+            methods = VGroup()
+            for a in attributes:
+                slant = ITALIC if a.is_abstract else NORMAL
+                text = Text(a.text, color=BLACK, slant=slant)
+
+                if a.is_static:
+                    text = VGroup(text, Underline(text, color=BLACK, buff=0, stroke_width=1))
+
+                methods.add(VGroup(
+                    Text(a.modifier.value, color=BLACK),
+                    text
+                ).arrange(RIGHT, buff=0.1).scale(0.75))
+
+            methods.arrange(DOWN, buff=0.1)
+            group.add(methods)
+            body.surround(methods, buff=0.2)
+            body.stretch_to_fit_height(methods.height + 0.1)
 
     @staticmethod
     def get_icon(text: str, colour) -> VMobject:
@@ -104,17 +93,11 @@ class DiagramClass(DiagramObject):
     def add_edge(self, edge: DiagramEdge):
         self.edges.append(edge)
 
-    def add_attribute(self, attr_str: str):
-        if attr_str[0] in ['-', '~', '#', '+']:
-            attribute = ClassAttribute(AttributeModifier.from_string(attr_str[0]), attr_str[1:])
+    def add_attribute(self, attr: ClassAttribute):
+        if attr.is_method:
+            self.methods.append(attr)
         else:
-            attr_str = attr_str.strip()
-            attribute = ClassAttribute(AttributeModifier.NONE, attr_str)
-
-        if '(' in attr_str:
-            self.methods.append(attribute)
-        else:
-            self.attributes.append(attribute)
+            self.attributes.append(attr)
 
 
 class DiagramAnnotation(DiagramClass):
