@@ -1,0 +1,7 @@
+@startuml "Stereotypes"
+class Class1 << general >>
+interface Interface1 <<stereo>>
+
+Class1 ..> Interface1
+
+@enduml

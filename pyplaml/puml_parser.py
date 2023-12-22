@@ -168,6 +168,15 @@ class PUMLParser(object):
         """
         p[0] = DiagramClassFactory.make(p[2], p[1]).append_to_diagram(self.diagram)
 
+    def p_class_with_stereotype(self, p):
+        """
+        class   : class STEREOTYPE
+        """
+        c = p[1].append_to_diagram(self.diagram)
+        c.stereotype = p[2]
+
+        p[0] = c
+
     def p_abstract_class(self, p):
         """
         class           : ABSTRACT IDENTIFIER

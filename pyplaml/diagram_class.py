@@ -1,6 +1,6 @@
 from .diagram_object import DiagramObject
 from .diagram_edge import DiagramEdge
-from .class_attribute import ClassAttribute, AttributeModifier
+from .class_attribute import ClassAttribute
 from .diagram import Diagram
 from .class_type import ClassType
 
@@ -15,6 +15,7 @@ class DiagramClass(DiagramObject):
         self.attributes: List[ClassAttribute] = []
         self.methods: List[ClassAttribute] = []
         self.is_abstract = False
+        self.stereotype = ""
 
     def append_to_diagram(self, diagram: Diagram) -> DiagramObject:
         if self.name not in diagram.objects:
@@ -38,6 +39,12 @@ class DiagramClass(DiagramObject):
 
         header = Rectangle(color=GRAY)
         text = Text(self.name, color=BLACK, slant=slant)
+        if self.stereotype:
+            text = VGroup(
+                Text("<<" + self.stereotype + ">>", color=BLACK).scale(0.6),
+                text
+            ).arrange(DOWN, buff=0.1)
+
         header.surround(text, buff=0.8)
         head_group = VGroup(header, VGroup(self.prepare_icon(), text).arrange(RIGHT, buff=0.1))
 
@@ -55,7 +62,11 @@ class DiagramClass(DiagramObject):
         attr_body.stretch_to_fit_width(max_width)
         method_body.stretch_to_fit_width(max_width)
 
-        self.mobject = VGroup(head_group, attr_group, method_group).stretch_to_fit_width(max_width).arrange(DOWN, buff=0)
+        self.mobject = VGroup(
+            head_group,
+            attr_group,
+            method_group
+        ).stretch_to_fit_width(max_width).arrange(DOWN, buff=0)
 
         return self.mobject
 
