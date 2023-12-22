@@ -14,7 +14,7 @@ Class23 <--* Class24
 
 class class25 extends class26
 class "class25_str" extends "class26_str"
-'interface intf EXTENDS base_interface
+interface intf EXTENDS base_interface
 class class27 implements interfacex
 abstract class28 implements interfacey
 @enduml

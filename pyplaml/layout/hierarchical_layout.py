@@ -22,7 +22,7 @@ class HierarchicalLayout(DiagramLayout):
             self.diagram[name].x = x_range[i]
             self.diagram[name].y = y
 
-            for _, obj in self.diagram.objects_by_type('DiagramClass').items():
+            for _, obj in self.diagram.objects.items():
                 if hasattr(obj, 'edges'):
                     for edge in obj.edges:
                         if edge.target.name == name:
