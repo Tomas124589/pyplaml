@@ -46,7 +46,9 @@ class DiagramClass(DiagramObject):
             ).arrange(DOWN, buff=0.1)
 
         header.surround(text, buff=0.8)
-        head_group = VGroup(header, VGroup(self.prepare_icon(), text).arrange(RIGHT, buff=0.1))
+        text_icon = (VGroup(self.prepare_icon(), text)
+                     .arrange(RIGHT, buff=0.1))
+        head_group = VGroup(header, text_icon)
 
         attr_body = Rectangle(color=GRAY, height=0.2, width=0.2)
         attr_group = VGroup(attr_body)
@@ -59,6 +61,8 @@ class DiagramClass(DiagramObject):
         max_width = max(head_group.width, attr_group.width, method_group.width)
 
         header.stretch_to_fit_width(max_width)
+        header.stretch_to_fit_height(text_icon.height + 0.2)
+
         attr_body.stretch_to_fit_width(max_width)
         method_body.stretch_to_fit_width(max_width)
 
