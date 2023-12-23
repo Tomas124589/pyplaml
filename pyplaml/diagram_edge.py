@@ -10,11 +10,10 @@ from .relation import Relation
 class DiagramEdge(DiagramObject):
 
     def __init__(self,
-                 name: str,
                  dashed: bool,
                  size: int,
                  ):
-        DiagramObject.__init__(self, name)
+        DiagramObject.__init__(self, '')
         self.dashed = dashed
         self.size = size
 

@@ -80,7 +80,7 @@ class PUMLParser(object):
         r_class.name = p[3]
         r_class = r_class.append_to_diagram(self.diagram)
 
-        edge = DiagramEdge(l_class.name, False, 1)
+        edge = DiagramEdge(False, 1)
         edge.source = l_class
         edge.source_rel_type = Relation.NONE
         edge.target = r_class
@@ -97,7 +97,7 @@ class PUMLParser(object):
         l_class: DiagramClass = p[1]
         r_class = DiagramClassFactory.make(p[3], ClassType.INTERFACE).append_to_diagram(self.diagram)
 
-        edge = DiagramEdge(l_class.name, True, 1)
+        edge = DiagramEdge(True, 1)
         edge.source = l_class
         edge.source_rel_type = Relation.NONE
         edge.target = r_class
@@ -116,16 +116,16 @@ class PUMLParser(object):
         """
         _len = len(p)
         if _len == 2:
-            e = DiagramEdge("", p[1][1], p[1][0])
+            e = DiagramEdge(p[1][1], p[1][0])
         elif _len == 3:
             if isinstance(p[1], str):
-                e = DiagramEdge("", p[2][1], p[2][0])
+                e = DiagramEdge(p[2][1], p[2][0])
                 e.source_rel_type = Relation[p[1]]
             else:
-                e = DiagramEdge("", p[1][1], p[1][0])
+                e = DiagramEdge(p[1][1], p[1][0])
                 e.target_rel_type = Relation[p[2]]
         else:
-            e = DiagramEdge("", p[2][0], p[2][1])
+            e = DiagramEdge(p[2][0], p[2][1])
             e.source_rel_type = Relation[p[3]]
             e.target_rel_type = Relation[p[1]]
 
