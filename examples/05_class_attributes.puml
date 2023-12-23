@@ -4,8 +4,10 @@ Class01 --* Class02
 Class01 : String attribute1
 "Class01" : Int attribute2
 
-Class01 : method1()
-Class01 : method2()
+Class01 : method()
+Class01 : {static} staticMethod()
+Class01 : {static} abstractStaticMethod() {abstract}
+Class01 : {method} {static} methodWithoutBraces {abstract}
 
 Class02 : Int prop
 Class02 : method()
