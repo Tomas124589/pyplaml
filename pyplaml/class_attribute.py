@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import re
 from enum import Enum
 
 
@@ -28,8 +30,35 @@ class ClassAttribute:
     def from_string(string: str) -> ClassAttribute:
         is_method = '(' in string
 
+        sub = re.sub(r"(?i){field}", '', string)
+        field_flag = string != sub
+        string = sub
+
+        sub = re.sub(r"(?i){method}", '', string)
+        method_flag = string != sub
+        string = sub
+
+        sub = re.sub(r"(?i){static}", '', string)
+        static_flag = string != sub
+        string = sub
+
+        sub = re.sub(r"(?i){abstract}", '', string)
+        abstract_flag = string != sub
+        string = sub
+
+        string = string.strip()
         if string[0] in ['-', '~', '#', '+']:
-            return ClassAttribute(AttributeModifier.from_string(string[0]), string[1:], is_method)
+            attr = ClassAttribute(AttributeModifier.from_string(string[0]), string[1:], is_method)
         else:
             attr_str = string.strip()
-            return ClassAttribute(AttributeModifier.NONE, attr_str, is_method)
+            attr = ClassAttribute(AttributeModifier.NONE, attr_str, is_method)
+
+        if field_flag:
+            attr.is_method = False
+        elif method_flag:
+            attr.is_method = True
+
+        attr.is_static = static_flag
+        attr.is_abstract = abstract_flag
+
+        return attr

@@ -17,7 +17,7 @@ class PUMLexer(object):
 
     tokens = [
                  "CLASS_DEF",
-                 "FLAG",
+                 'IN_BRACKETS_LINES',
                  "REL",
                  "STRING",
                  "IDENTIFIER",
@@ -31,34 +31,6 @@ class PUMLexer(object):
     def t_STEREOTYPE(t):
         r"""<<(.+)>>"""
         t.value = t.lexer.lexmatch.group(2).strip()
-        return t
-
-    @staticmethod
-    def t_inbrackets_FIELD_FLAG(t):
-        r"""(?i)\{field\}"""
-        t.value = "FIELD"
-        t.type = "FLAG"
-        return t
-
-    @staticmethod
-    def t_inbrackets_METHOD_FLAG(t):
-        r"""(?i)\{method\}"""
-        t.value = "METHOD"
-        t.type = "FLAG"
-        return t
-
-    @staticmethod
-    def t_inbrackets_ABSTRACT_FLAG(t):
-        r"""(?i)\{abstract\}"""
-        t.value = "ABSTRACT"
-        t.type = "FLAG"
-        return t
-
-    @staticmethod
-    def t_inbrackets_STATIC_FLAG(t):
-        r"""(?i)\{static\}"""
-        t.value = "STATIC"
-        t.type = "FLAG"
         return t
 
     @staticmethod
@@ -79,15 +51,12 @@ class PUMLexer(object):
         t.lexer.level -= 1
 
         if t.lexer.level == 0:
-            t.value = t.lexer.lexdata[t.lexer.code_start:t.lexer.lexpos + 1]
+            t.value = t.lexer.lexdata[t.lexer.code_start:t.lexer.lexpos - 1]
             t.lexer.lineno += t.value.count('\n')
             t.lexer.begin('INITIAL')
-
-    @staticmethod
-    def t_inbrackets_TEXT_LINE(t):
-        r""".+"""
-        t.value = t.value.strip()
-        return t
+            t.type = 'IN_BRACKETS_LINES'
+            t.value = [val.strip() for val in t.value.splitlines() if val != '']
+            return t
 
     @staticmethod
     def t_LINE(t):

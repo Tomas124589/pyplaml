@@ -1,13 +1,14 @@
 import copy
+
 import ply.yacc as yacc
 
 from .class_attribute import ClassAttribute
+from .class_type import ClassType
 from .diagram import Diagram
 from .diagram_class import DiagramClass, DiagramClassFactory
 from .diagram_edge import DiagramEdge
-from .relation import Relation
 from .puml_lexer import PUMLexer
-from .class_type import ClassType
+from .relation import Relation
 
 
 class PUMLParser(object):
@@ -193,58 +194,11 @@ class PUMLParser(object):
 
     def p_class_with_body(self, p):
         """
-        class   : class class_body
+        class   : class IN_BRACKETS_LINES
         """
         c: DiagramClass = self.diagram[p[1]]
-        for attr in p[2]:
-            c.add_attribute(attr)
-
-    @staticmethod
-    def p_class_body(p):
-        """
-        class_body  : class_body body_line
-                    | body_line
-        """
-        if len(p) == 3:
-            p[0] = p[1] + [p[2]]
-        else:
-            p[0] = [p[1]]
-
-    @staticmethod
-    def p_body_line(p):
-        """
-        body_line   : TEXT_LINE
-                    | flags TEXT_LINE
-        """
-        if len(p) == 2:
-            attr = ClassAttribute.from_string(p[1])
-        else:
-            attr = ClassAttribute.from_string(p[2])
-            for f in p[1]:
-                if f == "FIELD":
-                    attr.is_method = False
-
-                elif f == "METHOD":
-                    attr.is_method = True
-
-                elif f == "ABSTRACT":
-                    attr.is_abstract = True
-
-                elif f == "STATIC":
-                    attr.is_static = True
-
-        p[0] = attr
-
-    @staticmethod
-    def p_flags(p):
-        """
-        flags   : flags FLAG
-                | FLAG
-        """
-        if len(p) == 3:
-            p[0] = p[1] + [p[2]]
-        else:
-            p[0] = [p[1]]
+        for l in p[2]:
+            c.add_attribute(ClassAttribute.from_string(l))
 
     def p_class_attr(self, p):
         """

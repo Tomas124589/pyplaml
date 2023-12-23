@@ -2,9 +2,9 @@ import warnings
 
 from manim import *
 
+from .diagram import Diagram
 from .diagram_object import DiagramObject
 from .relation import Relation
-from .diagram import Diagram
 
 
 class DiagramEdge(DiagramObject):

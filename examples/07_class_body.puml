@@ -7,6 +7,7 @@ interface Dummy {
   {static} int staticMethod()
   {abstract} String abstractMethod()
   {method} methodWithoutBrackets
+  {static} staticAbstractmethodWithoutBrackets {abstract} {method}
 }
 
 class Flight {

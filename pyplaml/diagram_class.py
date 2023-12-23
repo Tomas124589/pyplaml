@@ -1,10 +1,10 @@
-from .diagram_object import DiagramObject
-from .diagram_edge import DiagramEdge
-from .class_attribute import ClassAttribute
-from .diagram import Diagram
-from .class_type import ClassType
-
 from manim import *
+
+from .class_attribute import ClassAttribute
+from .class_type import ClassType
+from .diagram import Diagram
+from .diagram_edge import DiagramEdge
+from .diagram_object import DiagramObject
 
 
 class DiagramClass(DiagramObject):
