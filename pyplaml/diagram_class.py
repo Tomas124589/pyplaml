@@ -38,7 +38,7 @@ class DiagramClass(DiagramObject):
     def predraw(self):
         slant = ITALIC if self.is_abstract else NORMAL
 
-        header = Rectangle(color=GRAY)
+        header = Rectangle(color=GRAY, fill_color=WHITE, fill_opacity=1)
         text = Text(self.name, color=BLACK, slant=slant)
         if self.stereotype:
             text = VGroup(
@@ -51,11 +51,11 @@ class DiagramClass(DiagramObject):
                      .arrange(RIGHT, buff=0.1))
         head_group = VGroup(header, text_icon)
 
-        attr_body = Rectangle(color=GRAY, height=0.2, width=0.2)
+        attr_body = Rectangle(color=GRAY, height=0.2, width=0.2, fill_color=WHITE, fill_opacity=1)
         attr_group = VGroup(attr_body)
         self.predraw_attributes(self.attributes, attr_body, attr_group)
 
-        method_body = Rectangle(color=GRAY, height=0.2, width=0.2)
+        method_body = Rectangle(color=GRAY, height=0.2, width=0.2, fill_color=WHITE, fill_opacity=1)
         method_group = VGroup(method_body)
         self.predraw_attributes(self.methods, method_body, method_group)
 
