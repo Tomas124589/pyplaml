@@ -9,5 +9,5 @@ class KamadaKawai(DiagramLayout):
         layout = nx.kamada_kawai_layout(self.get_graph())
 
         for key, pos in layout.items():
-            self.diagram.objects[key].x = pos[0]
-            self.diagram.objects[key].y = pos[1]
+            self.diagram[key].x = pos[0]
+            self.diagram[key].y = pos[1]

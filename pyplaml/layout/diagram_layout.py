@@ -25,5 +25,5 @@ class DiagramLayout(ABC):
 
     def scale(self, x: float, y: float) -> None:
         for name, obj in self.diagram.objects.items():
-            self.diagram.objects[name].x = self.diagram.objects[name].x * x
-            self.diagram.objects[name].y = self.diagram.objects[name].y * y
+            self.diagram[name].x = self.diagram[name].x * x
+            self.diagram[name].y = self.diagram[name].y * y
