@@ -131,5 +131,5 @@ class DiagramEdge(DiagramObject):
             return ArrowSquareTip(color=BLACK, stroke_width=2, length=0.15)
 
     def append_to_diagram(self, diagram: Diagram) -> DiagramObject:
-        self.name = self.source.name + "-" + self.source_rel_type.name + "-" + self.target_rel_type.name + "-" + self.target.name
+        self.name = self.source.get_key() + "-" + self.source_rel_type.name + "-" + self.target_rel_type.name + "-" + self.target.get_key()
         return DiagramObject.append_to_diagram(self, diagram)

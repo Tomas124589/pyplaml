@@ -11,6 +11,7 @@ class DiagramObject(ABC):
 
     def __init__(self, name: str):
         self.name = name
+        self.alias = None
         self.mobject: VMobject | None = None
 
         self.x = 0
@@ -21,9 +22,13 @@ class DiagramObject(ABC):
         pass
 
     def append_to_diagram(self, diagram: pyplaml.Diagram) -> DiagramObject:
-        if self.name not in diagram.objects:
-            diagram[self.name] = self
-        return diagram[self.name]
+        key = self.get_key()
+        if key not in diagram.objects:
+            diagram[key] = self
+        return diagram[key]
 
-    def __str__(self):
-        return self.name
+    def get_key(self):
+        return self.alias or self.name
+
+    def __str__(self) -> str:
+        return str(self.name)

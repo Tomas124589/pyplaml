@@ -20,7 +20,7 @@ class DiagramLayout(ABC):
             g.add_node(name)
             if hasattr(obj, 'edges'):
                 for e in obj.edges:
-                    g.add_edge(name, e.target.name)
+                    g.add_edge(name, e.target.get_key())
         return g
 
     def scale(self, x: float, y: float) -> None:

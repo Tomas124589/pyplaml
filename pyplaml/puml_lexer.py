@@ -13,6 +13,7 @@ class PUMLexer(object):
         "abstract": "ABSTRACT",
         "implements": "IMPLEMENTS",
         "extends": "EXTENDS",
+        "as": "AS",
     }
 
     tokens = [

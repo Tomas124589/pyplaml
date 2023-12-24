@@ -18,8 +18,9 @@ class DiagramClass(DiagramObject):
         self.stereotype = ""
 
     def append_to_diagram(self, diagram: Diagram) -> DiagramObject:
-        if self.name not in diagram.objects:
-            diagram[self.name] = self
+        key = self.get_key()
+        if key not in diagram.objects:
+            diagram[key] = self
             for edge in self.edges:
                 if edge.target.name in diagram.objects:
                     edge.target = diagram[edge.target.name]
@@ -30,9 +31,9 @@ class DiagramClass(DiagramObject):
                 if edge.target not in diagram:
                     edge.target.append_to_diagram(diagram)
                 edge.target = diagram[edge.target.name]
-            diagram[self.name].edges += self.edges
+            diagram[key].edges += self.edges
 
-        return diagram[self.name]
+        return diagram[key]
 
     def predraw(self):
         slant = ITALIC if self.is_abstract else NORMAL
