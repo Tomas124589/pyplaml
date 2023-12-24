@@ -24,7 +24,6 @@ class PUMLexer(object):
                  "IDENTIFIER",
                  "LINE",
                  "AFTERCOLON",
-                 "TEXT_LINE",
                  "STEREOTYPE",
              ] + list(keywords.values())
 
