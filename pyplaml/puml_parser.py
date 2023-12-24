@@ -166,15 +166,13 @@ class PUMLParser(object):
         """
         class   : CLASS_DEF IDENTIFIER
                 | CLASS_DEF STRING
+                | CLASS_DEF IDENTIFIER STEREOTYPE
+                | CLASS_DEF STRING STEREOTYPE
         """
-        p[0] = DiagramClassFactory.make(p[2], p[1]).append_to_diagram(self.diagram)
+        c = DiagramClassFactory.make(p[2], p[1]).append_to_diagram(self.diagram)
 
-    def p_class_with_stereotype(self, p):
-        """
-        class   : class STEREOTYPE
-        """
-        c = p[1].append_to_diagram(self.diagram)
-        c.stereotype = p[2]
+        if len(p) == 4:
+            c.stereotype = p[3]
 
         p[0] = c
 
