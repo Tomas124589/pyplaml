@@ -183,15 +183,24 @@ class PUMLParser(object):
         """
         class   : CLASS_DEF IDENTIFIER
                 | CLASS_DEF STRING
-                | CLASS_DEF IDENTIFIER STEREOTYPE
-                | CLASS_DEF STRING STEREOTYPE
+                | CLASS_DEF IDENTIFIER GENERICS
+                | CLASS_DEF STRING GENERICS
         """
         c = DiagramClassFactory.make(p[2], p[1]).append_to_diagram(self.diagram)
 
         if len(p) == 4:
-            c.stereotype = p[3]
+            c.generics = p[3]
 
         p[0] = c
+
+    @staticmethod
+    def p_class_with_stereotype(p):
+        """
+        class   : class STEREOTYPE
+        """
+        p[1].stereotype = p[2]
+
+        p[0] = p[1]
 
     def p_abstract_class(self, p):
         """

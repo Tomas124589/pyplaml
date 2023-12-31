@@ -1,4 +1,10 @@
 @startuml "Class tree"
+abstract class C1
+class C2 <? extends Element> <<stereotype>>
+class C3 <extends Iterator>{
+    + void next()
+}
+
 C1 <|-- C2
 C1 <|-- C3
 C1 <|-- C4

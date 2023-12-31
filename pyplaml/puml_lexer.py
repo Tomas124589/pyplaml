@@ -29,13 +29,20 @@ class PUMLexer(object):
                  "LINE",
                  "AFTERCOLON",
                  "STEREOTYPE",
+                 "GENERICS",
                  "TAG",
              ] + list(keywords.values())
 
     @staticmethod
     def t_STEREOTYPE(t):
-        r"""<<(.+)>>"""
+        r"""<<(.+?)>>"""
         t.value = t.lexer.lexmatch.group(2).strip()
+        return t
+
+    @staticmethod
+    def t_GENERICS(t):
+        r"""<(.+?)>"""
+        t.value = t.lexer.lexmatch.group(4)
         return t
 
     @staticmethod

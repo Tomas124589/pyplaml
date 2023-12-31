@@ -17,6 +17,7 @@ class DiagramClass(DiagramObject):
         self.is_abstract = False
         self.is_interface = False
         self.stereotype = ""
+        self.generics = ""
 
     def append_to_diagram(self, diagram: Diagram) -> DiagramObject:
         key = self.get_key()
@@ -73,6 +74,24 @@ class DiagramClass(DiagramObject):
             attr_group,
             method_group
         ).stretch_to_fit_width(max_width).arrange(DOWN, buff=0)
+
+        if self.generics:
+            g_text = Text(self.generics, color=BLACK).scale(0.6)
+            g_text.set_z_index(1)
+
+            g_rect = DashedVMobject(Rectangle(color=BLACK, stroke_width=1), num_dashes=50)
+            g_rect.stretch_to_fit_width(g_text.width + 0.1)
+            g_rect.stretch_to_fit_height(g_text.height + 0.1)
+            g_rect.set_z_index(1)
+
+            g_back = Rectangle(fill_color=WHITE, fill_opacity=1)
+            g_back.stretch_to_fit_width(g_rect.width - 0.05)
+            g_back.stretch_to_fit_height(g_rect.height - 0.05)
+
+            g_group = VGroup(g_rect, g_text, g_back)
+            g_group.move_to(header.get_corner(UP + RIGHT) - (g_group.width / 2, 0, 0))
+
+            head_group.add(g_group)
 
         return self.mobject
 
