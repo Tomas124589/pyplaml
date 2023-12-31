@@ -15,6 +15,7 @@ class DiagramClass(DiagramObject):
         self.attributes: List[ClassAttribute] = []
         self.methods: List[ClassAttribute] = []
         self.is_abstract = False
+        self.is_interface = False
         self.stereotype = ""
 
     def append_to_diagram(self, diagram: Diagram) -> DiagramObject:
@@ -152,6 +153,7 @@ class DiagramInterface(DiagramClass):
     def __init__(self, name: str):
         super().__init__(name)
         self.is_abstract = True
+        self.is_interface = True
 
     def prepare_icon(self):
         return super().get_icon('I', PURPLE)

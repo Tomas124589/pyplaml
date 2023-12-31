@@ -31,6 +31,8 @@ class PUMLParser(object):
                 | relation
                 | elements class
                 | class
+                | elements abstract_class
+                | abstract_class
                 | elements class_attr
                 | class_attr
         """
@@ -82,12 +84,15 @@ class PUMLParser(object):
         """
         relation    : class EXTENDS IDENTIFIER
                     | class EXTENDS STRING
+                    | abstract_class EXTENDS IDENTIFIER
+                    | abstract_class EXTENDS STRING
         """
         l_class: DiagramClass = p[1]
 
-        r_class = copy.deepcopy(l_class)
-        r_class.name = p[3]
-        r_class = r_class.append_to_diagram(self.diagram)
+        if l_class.is_interface:
+            r_class = DiagramClassFactory.make(p[3], ClassType.INTERFACE).append_to_diagram(self.diagram)
+        else:
+            r_class = DiagramClass(p[3]).append_to_diagram(self.diagram)
 
         edge = DiagramEdge(False, 1)
         edge.source = l_class
@@ -102,6 +107,8 @@ class PUMLParser(object):
         """
         relation    : class IMPLEMENTS IDENTIFIER
                     | class IMPLEMENTS STRING
+                    | abstract_class IMPLEMENTS IDENTIFIER
+                    | abstract_class IMPLEMENTS STRING
         """
         l_class: DiagramClass = p[1]
         r_class = DiagramClassFactory.make(p[3], ClassType.INTERFACE).append_to_diagram(self.diagram)
@@ -187,7 +194,7 @@ class PUMLParser(object):
 
     def p_abstract_class(self, p):
         """
-        class           : ABSTRACT IDENTIFIER
+        abstract_class  : ABSTRACT IDENTIFIER
                         | ABSTRACT STRING
                         | ABSTRACT class
         """
