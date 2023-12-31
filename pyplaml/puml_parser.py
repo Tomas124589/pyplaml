@@ -40,6 +40,7 @@ class PUMLParser(object):
     def p_relation(self, p):
         """
         relation    : IDENTIFIER rel_line IDENTIFIER
+                    | IDENTIFIER rel_line_named IDENTIFIER
         """
         edge: DiagramEdge = p[2]
 
@@ -150,9 +151,9 @@ class PUMLParser(object):
     @staticmethod
     def p_rel_line_named(p):
         """
-        rel_line    : STRING rel_line STRING
-                    | rel_line STRING
-                    | STRING rel_line
+        rel_line_named  : STRING rel_line STRING
+                        | rel_line STRING
+                        | STRING rel_line
         """
         _len = len(p)
         if _len == 3:
