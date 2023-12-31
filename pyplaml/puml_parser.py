@@ -232,6 +232,7 @@ class PUMLParser(object):
     def p_error(p):
         print("Parser syntax error:")
         print("\t", p)
+        exit(1)
 
     def __init__(self, **kwargs):
         self.lexer = PUMLexer()
