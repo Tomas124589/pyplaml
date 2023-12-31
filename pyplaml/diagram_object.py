@@ -13,6 +13,8 @@ class DiagramObject(ABC):
         self.name = name
         self.alias = None
         self.mobject: VMobject | None = None
+        self.is_hidden = False
+        self.do_draw = True
 
         self.x = 0
         self.y = 0
@@ -32,3 +34,11 @@ class DiagramObject(ABC):
 
     def __str__(self) -> str:
         return str(self.name)
+
+    def __repr__(self):
+        return '({}) "{}", hidden: {}, draw: {}'.format(
+            self.__class__.__name__,
+            self.get_key() or 'NAME NOT SET',
+            'yes' if self.is_hidden else 'no',
+            'yes' if self.do_draw else 'no',
+        )

@@ -33,6 +33,8 @@ class PUMLParser(object):
                 | abstract_class
                 | elements class_attr
                 | class_attr
+                | elements command
+                | command
         """
 
     def p_relation(self, p):
@@ -205,6 +207,26 @@ class PUMLParser(object):
         c.is_abstract = True
         p[0] = c
 
+    def p_tagged_class(self, p):
+        """
+        class   : class tags
+        """
+        for t in p[2]:
+            self.diagram.add_to_tagged(t, p[1])
+
+        p[0] = p[1]
+
+    @staticmethod
+    def p_tags(p):
+        """
+        tags    : tags TAG
+                | TAG
+        """
+        if len(p) == 3:
+            p[0] = p[1] + [p[2]]
+        else:
+            p[0] = [p[1]]
+
     def p_class_with_body(self, p):
         """
         class   : class IN_BRACKETS_LINES
@@ -242,6 +264,54 @@ class PUMLParser(object):
         c: DiagramClass = self.diagram[p[1]]
         attr = ClassAttribute.from_string(p[2])
         c.add_attribute(attr)
+
+    def p_remove(self, p):
+        """
+        command : REMOVE IDENTIFIER
+        """
+        self.diagram[p[2]].do_draw = False
+
+    def p_remove_by_tag(self, p):
+        """
+        command : REMOVE TAG
+        """
+        self.diagram.remove_by_tag(p[2])
+
+    def p_restore(self, p):
+        """
+        command : RESTORE IDENTIFIER
+        """
+        self.diagram[p[2]].do_draw = True
+
+    def p_restore_by_tag(self, p):
+        """
+        command : RESTORE TAG
+        """
+        self.diagram.restore_by_tag(p[2])
+
+    def p_hide(self, p):
+        """
+        command : HIDE IDENTIFIER
+        """
+        self.diagram[p[2]].is_hidden = True
+
+    def p_hide_by_tag(self, p):
+        """
+        command : HIDE TAG
+        """
+        self.diagram.hide_by_tag(p[2])
+
+    def p_show(self, p):
+        """
+        command : SHOW IDENTIFIER
+        """
+        self.diagram[p[2]].is_hidden = False
+
+    def p_show_by_tag(self, p):
+        """
+        command : SHOW TAG
+        """
+        self.diagram.show_by_tag(p[2])
 
     @staticmethod
     def p_error(p):

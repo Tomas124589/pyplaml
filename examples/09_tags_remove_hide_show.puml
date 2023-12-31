@@ -1,0 +1,21 @@
+@startuml "tags, remove, hide, show"
+
+class Class1
+class Class2 $classTag $testTag
+class Class3
+
+Class3 -- Class1
+
+interface Interface1 $interfaceTag
+interface Interface2 $interfaceTag
+interface Interface3
+
+Class1 *-- Class2
+
+hide Interface3
+remove $interfaceTag
+hide Class1
+restore Interface1
+show Interface3
+
+@enduml

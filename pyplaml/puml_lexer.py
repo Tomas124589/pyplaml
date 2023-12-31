@@ -14,6 +14,10 @@ class PUMLexer(object):
         "implements": "IMPLEMENTS",
         "extends": "EXTENDS",
         "as": "AS",
+        "remove": "REMOVE",
+        "hide": "HIDE",
+        "show": "SHOW",
+        "restore": "RESTORE",
     }
 
     tokens = [
@@ -25,6 +29,7 @@ class PUMLexer(object):
                  "LINE",
                  "AFTERCOLON",
                  "STEREOTYPE",
+                 "TAG",
              ] + list(keywords.values())
 
     @staticmethod
@@ -134,6 +139,12 @@ class PUMLexer(object):
     def t_IDENTIFIER(self, t):
         r"""@*\w+[()]*"""
         t.type = self.keywords.get(t.value.lower(), 'IDENTIFIER')
+        return t
+
+    @staticmethod
+    def t_TAG(t):
+        r"""\$@*(\w+)"""
+        t.value = t.value.strip()[1:]
         return t
 
     @staticmethod

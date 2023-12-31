@@ -1,5 +1,3 @@
-import warnings
-
 from manim import *
 
 from .diagram import Diagram
@@ -42,12 +40,9 @@ class DiagramEdge(DiagramObject):
             return None
 
     def predraw(self):
-        if self.source.mobject is None:
-            warnings.warn("Start object \"{}\" has not been drawn.".format(self.source.name))
-            return
-        elif self.target.mobject is None:
-            warnings.warn("Target object \"{}\" has not been drawn.".format(self.target.name))
-            return
+        if self.source.mobject is None or self.target.mobject is None \
+                or self.source.is_hidden or self.target.is_hidden:
+            return VGroup()
 
         start = self.source.mobject.get_center()
         target = self.target.mobject.get_center()

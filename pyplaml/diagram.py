@@ -9,8 +9,9 @@ class Diagram:
     def __init__(self, name: str):
         self.scene: Scene | None = None
         self.name = name
-        self.objects: typing.Dict[str, DiagramObject] = {}
         self.animate = False
+        self.objects: typing.Dict[str, DiagramObject] = {}
+        self.tagged: typing.Dict[str, set[DiagramObject]] = {}
 
     def __setitem__(self, key: str, val: DiagramObject):
         if not isinstance(val, DiagramObject):
@@ -35,7 +36,7 @@ class Diagram:
 
     def draw(self):
         for name, obj in self.objects.items():
-            if isinstance(obj, pyplaml.DiagramClass):
+            if obj.do_draw and isinstance(obj, pyplaml.DiagramClass):
                 self.draw_object(obj)
 
         for name, obj in self.objects.items():
@@ -54,6 +55,9 @@ class Diagram:
                 mobject.shift(RIGHT * obj.x)
                 mobject.shift(DOWN * obj.y)
 
+                if obj.is_hidden:
+                    mobject.set_opacity(0)
+
                 if self.animate:
                     self.scene.play(Create(mobject))
                     self.scene.play(self.scene.camera.auto_zoom(
@@ -65,3 +69,30 @@ class Diagram:
 
     def set_scene(self, scene: Scene):
         self.scene = scene
+
+    def add_to_tagged(self, tag: str, obj: DiagramObject):
+        if tag in self.tagged:
+            self.tagged[tag].add(obj)
+        else:
+            self.tagged[tag] = set()
+            self.tagged[tag].add(obj)
+
+    def remove_by_tag(self, tag: str):
+        if tag in self.tagged:
+            for o in self.tagged[tag]:
+                o.do_draw = False
+
+    def restore_by_tag(self, tag: str):
+        if tag in self.tagged:
+            for o in self.tagged[tag]:
+                o.do_draw = True
+
+    def hide_by_tag(self, tag: str):
+        if tag in self.tagged:
+            for o in self.tagged[tag]:
+                o.is_hidden = True
+
+    def show_by_tag(self, tag: str):
+        if tag in self.tagged:
+            for o in self.tagged[tag]:
+                o.is_hidden = False
