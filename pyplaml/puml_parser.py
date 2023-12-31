@@ -1,5 +1,3 @@
-import copy
-
 import ply.yacc as yacc
 
 from .class_attribute import ClassAttribute
