@@ -38,7 +38,6 @@ class PUMLParser(object):
     def p_relation(self, p):
         """
         relation    : IDENTIFIER rel_line IDENTIFIER
-                    | IDENTIFIER rel_line IDENTIFIER AFTERCOLON
         """
         edge: DiagramEdge = p[2]
 
@@ -55,19 +54,29 @@ class PUMLParser(object):
             edge.target = l_class
             r_class.add_edge(edge)
 
-        if len(p) == 5:
-            text = str(p[4]).strip()
-            if text[0] == '<':
-                edge.arrow_from_source = edge_dir != 1
-                text = text[1:]
-
-            elif text[0] == '>':
-                edge.arrow_from_source = edge_dir == 1
-                text = text[1:]
-
-            edge.text = text
-
         edge.append_to_diagram(self.diagram)
+
+        p[0] = (l_class, r_class, edge)
+
+    @staticmethod
+    def p_relation_aftercolon(p):
+        """
+        relation    : relation AFTERCOLON
+        """
+        (l_class, r_class, edge) = p[1]
+
+        text = str(p[2]).strip()
+        if text[0] == '<':
+            edge.arrow_from_source = edge.get_dir() != 1
+            text = text[1:]
+
+        elif text[0] == '>':
+            edge.arrow_from_source = edge.get_dir() == 1
+            text = text[1:]
+
+        edge.text = text
+
+        p[0] = (l_class, r_class, edge)
 
     def p_extends(self, p):
         """

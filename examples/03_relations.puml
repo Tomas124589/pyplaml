@@ -1,6 +1,6 @@
 @startuml "Relations"
-Class01 "1" -- "25" Class02
-Class03 "one" --* Class04
+Class01 "1" -- "25" Class02 : > points to Class02
+Class03 "one" --* Class04 : < "points to Class03"
 Class05 --o "many" Class06
 Class07 .. Class08
 Class09 -- Class10
