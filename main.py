@@ -5,9 +5,7 @@ from pyplaml import *
 import argparse
 
 from pyplaml.layout.spring_layout import SpringLayout
-from pyplaml.layout.kamada_kawai import KamadaKawai
 from pyplaml.layout.dot_layout import DotLayout
-from pyplaml.layout.hierarchical_layout import HierarchicalLayout
 
 
 class MainScene(MovingCameraScene):
@@ -20,7 +18,7 @@ class MainScene(MovingCameraScene):
         parser = PUMLParser()
         d: Diagram = parser.parse_file(self.file)
 
-        layout = HierarchicalLayout(d)
+        layout = DotLayout(d)
         layout.apply()
         layout.scale(self.scale_x, self.scale_y)
 

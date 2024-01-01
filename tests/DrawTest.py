@@ -1,6 +1,6 @@
 import unittest
 
-import os, sys
+import os
 from glob import glob
 
 
@@ -9,4 +9,4 @@ class DrawTest(unittest.TestCase):
         examples = sorted(glob("../examples/*.puml"))
 
         for e in examples:
-            self.assertEqual(os.system("python ../main.py " + e + " -sx 3 -sy 3"), 0, 'Drawing "' + e + '" failed')
+            self.assertEqual(os.system("python ../main.py " + e), 0, 'Drawing "' + e + '" failed')
