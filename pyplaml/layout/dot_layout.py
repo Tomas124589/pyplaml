@@ -11,8 +11,8 @@ class DotLayout(DiagramLayout):
         scale_x, scale_y = self.calculate_scaling_factors(layout)
 
         for key, pos in layout.items():
-            self.diagram[key].x = pos[0] * scale_x * 25
-            self.diagram[key].y = pos[1] * scale_y * 3
+            self.diagram[key].x = pos[0] * scale_x * 2
+            self.diagram[key].y = pos[1] * scale_y * 2
 
     @staticmethod
     def calculate_scaling_factors(layout):

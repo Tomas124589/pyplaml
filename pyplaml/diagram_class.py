@@ -4,10 +4,10 @@ from .class_attribute import ClassAttribute
 from .class_type import ClassType
 from .diagram import Diagram
 from .diagram_edge import DiagramEdge
-from .diagram_object import DiagramObject
+from .diagram_object import DiagramObject, PositionedDiagramObject
 
 
-class DiagramClass(DiagramObject):
+class DiagramClass(PositionedDiagramObject):
 
     def __init__(self, name: str):
         super().__init__(name)

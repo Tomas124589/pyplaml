@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 import networkx as nx
 
 from .. import Diagram
+from ..diagram_object import PositionedDiagramObject
 
 
 class DiagramLayout(ABC):
@@ -17,7 +18,7 @@ class DiagramLayout(ABC):
     def get_graph(self) -> nx.DiGraph:
         g = nx.DiGraph()
         for name, obj in self.diagram.objects.items():
-            if obj.do_draw:
+            if isinstance(obj, PositionedDiagramObject) and obj.do_draw:
                 g.add_node(name)
                 if hasattr(obj, 'edges'):
                     for e in obj.edges:
@@ -26,5 +27,6 @@ class DiagramLayout(ABC):
 
     def scale(self, x: float, y: float) -> None:
         for name, obj in self.diagram.objects.items():
-            self.diagram[name].x = self.diagram[name].x * x
-            self.diagram[name].y = self.diagram[name].y * y
+            if isinstance(obj, PositionedDiagramObject):
+                self.diagram[name].x = self.diagram[name].x * x
+                self.diagram[name].y = self.diagram[name].y * y

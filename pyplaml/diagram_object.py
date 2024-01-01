@@ -16,9 +16,6 @@ class DiagramObject(ABC):
         self.is_hidden = False
         self.do_draw = True
 
-        self.x = 0
-        self.y = 0
-
     def draw(self) -> VMobject:
         self.predraw()
         self.postdraw()
@@ -53,3 +50,15 @@ class DiagramObject(ABC):
             'yes' if self.is_hidden else 'no',
             'yes' if self.do_draw else 'no',
         )
+
+
+class PositionedDiagramObject(DiagramObject):
+
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.x = 0
+        self.y = 0
+
+    @abstractmethod
+    def predraw(self) -> VMobject:
+        pass
