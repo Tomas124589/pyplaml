@@ -116,8 +116,7 @@ class DiagramEdge(DiagramObject):
             return StealthTip(color=BLACK, stroke_width=2, length=0.2)
 
         elif rel == Relation.AGGREGATION:
-            return ArrowSquareTip(color=BLACK, stroke_width=2,
-                                  length=0.15)
+            return ArrowSquareTip(color=BLACK, stroke_width=2, length=0.15)
 
         elif rel == Relation.COMPOSITION:
             return ArrowSquareFilledTip(color=BLACK, stroke_width=2, length=0.15)
