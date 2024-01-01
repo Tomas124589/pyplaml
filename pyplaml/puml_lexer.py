@@ -18,6 +18,12 @@ class PUMLexer(object):
         "hide": "HIDE",
         "show": "SHOW",
         "restore": "RESTORE",
+        "note": "NOTE",
+        "top": "TOP",
+        "right": "RIGHT",
+        "bottom": "BOTTOM",
+        "left": "LEFT",
+        "of": "OF",
     }
 
     tokens = [

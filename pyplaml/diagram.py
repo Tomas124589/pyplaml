@@ -11,11 +11,13 @@ class Diagram:
         self.animate = False
         self.objects: typing.Dict[str, DiagramObject] = {}
         self.tagged: typing.Dict[str, set[DiagramObject]] = {}
+        self.last_object: DiagramObject | None = None
 
     def __setitem__(self, key: str, val: DiagramObject):
         if not isinstance(val, DiagramObject):
             raise Exception('Only DiagramObject is allowed.')
         self.objects[key] = val
+        self.last_object = val
 
     def __getitem__(self, key: str):
         return self.objects[str(key)]

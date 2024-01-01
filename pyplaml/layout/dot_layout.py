@@ -32,7 +32,7 @@ class DotLayout(DiagramLayout):
 
             x_scaling_factor = 1.0 / average_x_distance if average_x_distance != 0 else 1.0
             y_scaling_factor = 1.0 / average_y_distance if average_y_distance != 0 else 1.0
-            
+
             return x_scaling_factor, y_scaling_factor
         else:
             return 1.0, 1.0

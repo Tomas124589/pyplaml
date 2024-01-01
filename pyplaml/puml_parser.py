@@ -5,6 +5,7 @@ from .class_type import ClassType
 from .diagram import Diagram
 from .diagram_class import DiagramClass, DiagramClassFactory
 from .diagram_edge import DiagramEdge
+from .diagram_note import DiagramNote
 from .puml_lexer import PUMLexer
 from .relation import Relation
 
@@ -33,6 +34,8 @@ class PUMLParser(object):
                 | class_attr
                 | elements command
                 | command
+                | elements note
+                | note
         """
 
     def p_relation(self, p):
@@ -259,6 +262,40 @@ class PUMLParser(object):
         c: DiagramClass = self.diagram[p[1]]
         attr = ClassAttribute.from_string(p[2])
         c.add_attribute(attr)
+
+    def p_note(self, p):
+        """
+        note    : NOTE STRING AS IDENTIFIER
+        """
+        p[0] = DiagramNote(p[4], p[2]).append_to_diagram(self.diagram)
+
+    def p_note_on_side(self, p):
+        """
+        note    : NOTE TOP OF IDENTIFIER AFTERCOLON
+                | NOTE TOP OF STRING AFTERCOLON
+                | NOTE RIGHT OF IDENTIFIER AFTERCOLON
+                | NOTE RIGHT OF STRING AFTERCOLON
+                | NOTE BOTTOM OF IDENTIFIER AFTERCOLON
+                | NOTE BOTTOM OF STRING AFTERCOLON
+                | NOTE LEFT OF IDENTIFIER AFTERCOLON
+                | NOTE LEFT OF STRING AFTERCOLON
+                | NOTE LEFT AFTERCOLON
+        """
+        _len = len(p)
+        pos = p[2]
+        text = p[5] if _len == 6 else p[3]
+        obj = self.diagram[p[4]] if _len == 6 else self.diagram.last_object
+
+        n = DiagramNote('{}-note-for-{}'.format(pos, obj.name), text)
+        e = DiagramEdge(False, 1)
+        e.source = n
+        e.target = obj
+        n.edges.append(e)
+
+        n.append_to_diagram(self.diagram)
+        e.append_to_diagram(self.diagram)
+
+        p[0] = n
 
     def p_remove(self, p):
         """
