@@ -23,10 +23,9 @@ class PUMLexer(object):
     tokens = [
                  "CLASS_DEF",
                  'IN_BRACKETS_LINES',
-                 "REL",
+                 "REL_LINE",
                  "STRING",
                  "IDENTIFIER",
-                 "LINE",
                  "AFTERCOLON",
                  "STEREOTYPE",
                  "GENERICS",
@@ -71,71 +70,19 @@ class PUMLexer(object):
             return t
 
     @staticmethod
-    def t_LINE(t):
-        r"""[-\.]+"""
-        t.value = (int(t.value.count(".") + t.value.count("-")), "." in t.value)
+    def t_REL_LINE(t):
+        r"""(<\||<|o|\*|\#|x|\}|\+|\^)*(\-+|\.+)(\|>|>|o|\*|\#|x|\{|\+|\^)*"""
+        left_type = t.lexer.lexmatch.group(7)
+        line = t.lexer.lexmatch.group(8)
+        right_type = t.lexer.lexmatch.group(9)
+
+        t.value = (left_type, line, right_type)
         return t
 
     @staticmethod
     def t_STRING(t):
         r""""(.*?)\""""
         t.value = t.value.replace("\"", "")
-        return t
-
-    @staticmethod
-    def t_EXTENSION(t):
-        r"""<\||\|>|\^"""
-        t.type = 'REL'
-        t.value = 'EXTENSION'
-        return t
-
-    @staticmethod
-    def t_ASSOCIATION(t):
-        r"""<|>"""
-        t.type = 'REL'
-        t.value = 'ASSOCIATION'
-        return t
-
-    @staticmethod
-    def t_AGGREGATION(t):
-        r"""o"""
-        t.type = 'REL'
-        t.value = 'AGGREGATION'
-        return t
-
-    @staticmethod
-    def t_COMPOSITION(t):
-        r"""\*"""
-        t.type = 'REL'
-        t.value = 'COMPOSITION'
-        return t
-
-    @staticmethod
-    def t_HASH(t):
-        r"""\#"""
-        t.type = 'REL'
-        t.value = 'HASH'
-        return t
-
-    @staticmethod
-    def t_CROSS(t):
-        r"""x"""
-        t.type = 'REL'
-        t.value = 'CROSS'
-        return t
-
-    @staticmethod
-    def t_CROW_FOOT(t):
-        r"""\{|\}"""
-        t.type = 'REL'
-        t.value = 'CROW_FOOT'
-        return t
-
-    @staticmethod
-    def t_NEST_CLASSIFIER(t):
-        r"""\+"""
-        t.type = 'REL'
-        t.value = 'NEST_CLASSIFIER'
         return t
 
     @staticmethod

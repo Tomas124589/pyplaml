@@ -67,8 +67,8 @@ class DiagramEdge(DiagramObject):
             line.add_tip(self.get_line_tip(self.target_rel_type))
 
         elif _dir == 0:
-            line.add_tip(self.get_line_tip(self.target_rel_type))
-            line.add_tip(self.get_line_tip(self.source_rel_type), at_start=True)
+            line.add_tip(self.get_line_tip(self.target_rel_type), at_start=True)
+            line.add_tip(self.get_line_tip(self.source_rel_type))
 
         group = VGroup(line)
 
