@@ -93,8 +93,6 @@ class DiagramClass(PositionedDiagramObject):
 
             head_group.add(g_group)
 
-        self.mobject.shift(RIGHT * self.x + DOWN * self.y)
-
         return self.mobject
 
     @staticmethod
@@ -127,9 +125,6 @@ class DiagramClass(PositionedDiagramObject):
 
     def prepare_icon(self):
         return self.get_icon('A' if self.is_abstract else 'C', TEAL if self.is_abstract else GREEN)
-
-    def add_edge(self, edge: DiagramEdge):
-        self.edges.append(edge)
 
     def add_attribute(self, attr: ClassAttribute):
         if attr.is_method:

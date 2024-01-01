@@ -17,7 +17,7 @@ class DiagramObject(ABC):
         self.do_draw = True
 
     def draw(self) -> VMobject:
-        self.predraw()
+        self.mobject = self.predraw()
         self.postdraw()
         return self.mobject
 
@@ -62,3 +62,8 @@ class PositionedDiagramObject(DiagramObject):
     @abstractmethod
     def predraw(self) -> VMobject:
         pass
+
+    def postdraw(self) -> VMobject:
+        super().postdraw()
+        self.mobject.shift(RIGHT * self.x + DOWN * self.y)
+        return self.mobject

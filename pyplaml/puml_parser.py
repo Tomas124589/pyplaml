@@ -45,15 +45,14 @@ class PUMLParser(object):
         l_class = DiagramClass(p[1]).append_to_diagram(self.diagram)
         r_class = DiagramClass(p[3]).append_to_diagram(self.diagram)
 
-        edge_dir = edge.get_dir()
-        if edge_dir == 1:
+        if edge.get_dir() == 1:
             edge.source = l_class
             edge.target = r_class
-            l_class.add_edge(edge)
+            l_class.edges.append(edge)
         else:
             edge.source = r_class
             edge.target = l_class
-            r_class.add_edge(edge)
+            r_class.edges.append(edge)
 
         edge.append_to_diagram(self.diagram)
 
@@ -97,7 +96,7 @@ class PUMLParser(object):
         edge.target = r_class
         edge.target_rel_type = Relation.EXTENSION
 
-        l_class.add_edge(edge)
+        l_class.edges.append(edge)
         edge.append_to_diagram(self.diagram)
 
     def p_implements(self, p):
@@ -114,7 +113,7 @@ class PUMLParser(object):
         edge.target = r_class
         edge.target_rel_type = Relation.EXTENSION
 
-        l_class.add_edge(edge)
+        l_class.edges.append(edge)
         edge.append_to_diagram(self.diagram)
 
     @staticmethod
