@@ -14,10 +14,17 @@ class DiagramClass(PositionedDiagramObject):
         self.edges: List[DiagramEdge] = []
         self.attributes: List[ClassAttribute] = []
         self.methods: List[ClassAttribute] = []
+
         self.is_abstract = False
         self.is_interface = False
+        
         self.stereotype = ""
         self.generics = ""
+
+        self.mg_header = VGroup()
+        self.mo_title = Text
+        self.mg_attributes = VGroup()
+        self.mg_methods = VGroup()
 
     def append_to_diagram(self, diagram: Diagram) -> DiagramObject:
         key = self.get_key()
@@ -38,83 +45,97 @@ class DiagramClass(PositionedDiagramObject):
         return diagram[key]
 
     def predraw(self):
-        slant = ITALIC if self.is_abstract else NORMAL
+        header = self.__prepare_header()
+        attr_body = self.__prepare_attributes_body()
+        method_body = self.__prepare_methods_body()
 
-        header = Rectangle(color=GRAY, fill_color=WHITE, fill_opacity=1)
-        text = Text(self.name, color=BLACK, slant=slant)
-        if self.stereotype:
-            text = VGroup(
-                Text("<<" + self.stereotype + ">>", color=BLACK).scale(0.6),
-                text
-            ).arrange(DOWN, buff=0.1)
-
-        header.surround(text, buff=0.8)
-        text_icon = (VGroup(self.prepare_icon(), text)
-                     .arrange(RIGHT, buff=0.1))
-        head_group = VGroup(header, text_icon)
-
-        attr_body = Rectangle(color=GRAY, height=0.2, width=0.2, fill_color=WHITE, fill_opacity=1)
-        attr_group = VGroup(attr_body)
-        self.predraw_attributes(self.attributes, attr_body, attr_group)
-
-        method_body = Rectangle(color=GRAY, height=0.2, width=0.2, fill_color=WHITE, fill_opacity=1)
-        method_group = VGroup(method_body)
-        self.predraw_attributes(self.methods, method_body, method_group)
-
-        max_width = max(head_group.width, attr_group.width, method_group.width)
+        max_width = max(self.mg_header.width, self.mg_attributes.width, self.mg_methods.width)
 
         header.stretch_to_fit_width(max_width)
-        header.stretch_to_fit_height(text_icon.height + 0.2)
-
         attr_body.stretch_to_fit_width(max_width)
         method_body.stretch_to_fit_width(max_width)
 
         self.mobject = VGroup(
-            head_group,
-            attr_group,
-            method_group
-        ).stretch_to_fit_width(max_width).arrange(DOWN, buff=0)
+            self.mg_header,
+            self.mg_attributes,
+            self.mg_methods
+        ).arrange(DOWN, buff=0)
 
         if self.generics:
-            g_text = Text(self.generics, color=BLACK).scale(0.6)
-            g_text.set_z_index(1)
-
-            g_rect = DashedVMobject(Rectangle(color=BLACK, stroke_width=1), num_dashes=50)
-            g_rect.stretch_to_fit_width(g_text.width + 0.1)
-            g_rect.stretch_to_fit_height(g_text.height + 0.1)
-            g_rect.set_z_index(1)
-
-            g_back = Rectangle(fill_color=WHITE, fill_opacity=1)
-            g_back.stretch_to_fit_width(g_rect.width - 0.05)
-            g_back.stretch_to_fit_height(g_rect.height - 0.05)
-
-            g_group = VGroup(g_rect, g_text, g_back)
-            g_group.move_to(header.get_corner(UP + RIGHT) - (g_group.width / 2, 0, 0))
-
-            head_group.add(g_group)
+            self.__prepare_generics()
 
         return self.mobject
 
+    def __prepare_header(self):
+        mo_title = self.__prepare_title()
+
+        header = Rectangle(color=GRAY, fill_color=WHITE, fill_opacity=1)
+        header.stretch_to_fit_width(mo_title.width + 0.5)
+        header.stretch_to_fit_height(mo_title.height + 0.2)
+
+        self.mg_header = VGroup(header, mo_title)
+
+        return header
+
+    def __prepare_title(self):
+        self.mo_title = Text(self.name, color=BLACK, slant=ITALIC if self.is_abstract else NORMAL)
+        if self.stereotype:
+            text_group = VGroup(
+                Text("<<" + self.stereotype + ">>", color=BLACK).scale(0.6),
+                self.mo_title
+            ).arrange(DOWN, buff=0.1)
+        else:
+            text_group = self.mo_title
+
+        return VGroup(self.prepare_icon(), text_group).arrange(RIGHT, buff=0.1)
+
+    def __prepare_attributes_body(self):
+        attributes = self.__prepare_attributes(self.attributes)
+        border = Rectangle(color=GRAY, height=attributes.height + 0.1, width=0.2, fill_color=WHITE, fill_opacity=1)
+        self.mg_attributes = VGroup(border, attributes)
+
+        return border
+
+    def __prepare_methods_body(self):
+        methods = self.__prepare_attributes(self.methods)
+        border = Rectangle(color=GRAY, height=methods.height + 0.1, width=0.2, fill_color=WHITE, fill_opacity=1)
+        self.mg_methods = VGroup(border, methods)
+
+        return border
+
+    def __prepare_generics(self):
+        g_text = Text(self.generics, color=BLACK).scale(0.6)
+        g_text.set_z_index(1)
+
+        g_rect = DashedVMobject(Rectangle(color=BLACK, stroke_width=1), num_dashes=50)
+        g_rect.stretch_to_fit_width(g_text.width + 0.1)
+        g_rect.stretch_to_fit_height(g_text.height + 0.1)
+        g_rect.set_z_index(1)
+
+        g_back = Rectangle(fill_color=WHITE, fill_opacity=1)
+        g_back.stretch_to_fit_width(g_rect.width - 0.05)
+        g_back.stretch_to_fit_height(g_rect.height - 0.05)
+
+        g_group = VGroup(g_rect, g_text, g_back)
+        g_group.move_to(self.mg_header.get_corner(UP + RIGHT) - (g_group.width / 2, 0, 0))
+
+        self.mg_header.add(g_group)
+
     @staticmethod
-    def predraw_attributes(attributes: List[ClassAttribute], body: Rectangle, group: VGroup):
-        if len(attributes) != 0:
-            methods = VGroup()
-            for a in attributes:
-                slant = ITALIC if a.is_abstract else NORMAL
-                text = Text(a.text, color=BLACK, slant=slant)
+    def __prepare_attributes(attributes: List[ClassAttribute]):
+        attr_group = VGroup()
+        for a in attributes:
+            text = Text(a.text, color=BLACK, slant=ITALIC if a.is_abstract else NORMAL)
 
-                if a.is_static:
-                    text = VGroup(text, Underline(text, color=BLACK, buff=0, stroke_width=1))
+            if a.is_static:
+                text = VGroup(text, Underline(text, color=BLACK, buff=0, stroke_width=1))
 
-                methods.add(VGroup(
-                    Text(a.modifier.value, color=BLACK),
-                    text
-                ).arrange(RIGHT, buff=0.1).scale(0.75))
+            attr_group.add(VGroup(
+                Text(a.modifier.value, color=BLACK),
+                text
+            ).arrange(RIGHT, buff=0.1).scale(0.75))
 
-            methods.arrange(DOWN, buff=0.1)
-            group.add(methods)
-            body.surround(methods, buff=0.2)
-            body.stretch_to_fit_height(methods.height + 0.1)
+        return attr_group.arrange(DOWN, buff=0.1)
 
     @staticmethod
     def get_icon(text: str, colour) -> VMobject:
