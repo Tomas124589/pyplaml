@@ -53,9 +53,6 @@ class Diagram:
                     self.scene.camera.auto_zoom(
                         self.scene.mobjects, margin=0.5, animate=False)
 
-    def set_scene(self, scene: Scene):
-        self.scene = scene
-
     def add_to_tagged(self, tag: str, obj: DiagramObject):
         if tag in self.tagged:
             self.tagged[tag].add(obj)

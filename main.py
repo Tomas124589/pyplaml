@@ -25,8 +25,7 @@ class MainScene(MovingCameraScene):
         self.camera.background_color = WHITE
         Text.set_default(font_size=16)
 
-        d.set_scene(self)
-
+        d.scene = self
         d.animate = self.animate
 
         d.draw()
