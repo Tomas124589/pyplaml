@@ -1,6 +1,5 @@
 from manim import *
 
-import pyplaml
 from .diagram_object import DiagramObject
 
 
@@ -36,28 +35,13 @@ class Diagram:
 
     def draw(self):
         for name, obj in self.objects.items():
-            if obj.do_draw and isinstance(obj, pyplaml.DiagramClass):
+            if obj.do_draw:
                 self.draw_object(obj)
-
-        for name, obj in self.objects.items():
-            if hasattr(obj, 'edges'):
-                for i, edge in enumerate(obj.edges):
-                    if self.animate:
-                        self.scene.play(Create(edge.predraw()))
-                    else:
-                        self.scene.add(edge.predraw())
 
     def draw_object(self, obj: DiagramObject):
         if obj.mobject is None:
-            mobject = obj.predraw()
+            mobject = obj.draw()
             if mobject:
-                mobject.to_edge(UP)
-                mobject.shift(RIGHT * obj.x)
-                mobject.shift(DOWN * obj.y)
-
-                if obj.is_hidden:
-                    mobject.set_opacity(0)
-
                 if self.animate:
                     self.scene.play(Create(mobject))
                     self.scene.play(self.scene.camera.auto_zoom(

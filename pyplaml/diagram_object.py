@@ -19,9 +19,20 @@ class DiagramObject(ABC):
         self.x = 0
         self.y = 0
 
+    def draw(self) -> VMobject:
+        self.predraw()
+        self.postdraw()
+        return self.mobject
+
     @abstractmethod
     def predraw(self) -> VMobject:
         pass
+
+    def postdraw(self) -> VMobject:
+        if self.is_hidden:
+            self.mobject.set_opacity(0)
+
+        return self.mobject
 
     def append_to_diagram(self, diagram: pyplaml.Diagram) -> DiagramObject:
         key = self.get_key()

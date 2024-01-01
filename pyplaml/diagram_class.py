@@ -93,6 +93,8 @@ class DiagramClass(DiagramObject):
 
             head_group.add(g_group)
 
+        self.mobject.shift(RIGHT * self.x + DOWN * self.y)
+
         return self.mobject
 
     @staticmethod
