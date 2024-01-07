@@ -22,12 +22,6 @@ class Diagram:
     def __getitem__(self, key: str):
         return self.objects[str(key)]
 
-    def mo(self, key: str):
-        return self.objects[key].mobject
-
-    def moa(self, key: str):
-        return self.objects[key].mobject.animate
-
     def objects_by_type(self, obj_type: str = ''):
         res = {}
         for name, obj in self.objects.items():

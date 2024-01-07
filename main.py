@@ -1,31 +1,11 @@
 from manim import *
-
-from pyplaml import *
-
+import pyplaml
 import argparse
 
-from pyplaml.layout.spring_layout import SpringLayout
-from pyplaml.layout.dot_layout import DotLayout
 
-
-class MainScene(MovingCameraScene):
-    file: str
-    animate: bool
-    scale_x: float
-    scale_y: float
-
-    def construct(self):
-        parser = PUMLParser()
-        d: Diagram = parser.parse_file(self.file)
-        d.scene = self
-        d.animate = self.animate
-
-        DotLayout(d).apply().scale(self.scale_x, self.scale_y)
-
-        self.camera.background_color = WHITE
-        Text.set_default(font_size=16)
-
-        d.draw()
+class MainScene(pyplaml.Scene):
+    def anims(self):
+        pass
 
 
 if __name__ == "__main__":
@@ -37,6 +17,7 @@ if __name__ == "__main__":
     argparser.add_argument("-sy", "--scale-y", default=1, type=float)
     argparser.add_argument("-fps", "--frames-per-second", default=60, type=int)
     argparser.add_argument("-fcache", "--flush-cache", action="store_true")
+    argparser.add_argument('-l', '--layout', choices=['dot', 'spring'], default='dot')
 
     args = argparser.parse_args()
 
@@ -57,5 +38,6 @@ if __name__ == "__main__":
     scene.animate = args.animate
     scene.scale_x = args.scale_x
     scene.scale_y = args.scale_y
+    scene.layout = args.layout
 
     scene.render()

@@ -108,7 +108,7 @@ class DiagramEdge(DiagramObject):
 
         return self.mo_line
 
-    def updater(self, mo: Mobject):
+    def updater(self, _: Mobject):
         if self.mo_src_text:
             self.mo_src_text.next_to(self.mo_line.get_start() + self.mo_src_text.height, RIGHT, buff=0)
 
