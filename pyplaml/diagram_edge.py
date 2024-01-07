@@ -54,12 +54,12 @@ class DiagramEdge(DiagramObject):
             buff=0, stroke_width=1, tip_length=0.25, color=BLACK)
 
         self.mobject = VGroup(self.mo_line)
-        self.mo_line.add_updater(self.updater, call_updater=True)
-
         self.__prepare_line_tips()
         self.__prepare_mid_text()
         self.__prepare_src_text()
         self.__prepare_target_text()
+
+        self.mo_line.add_updater(self.updater, call_updater=True)
 
         return self.mobject
 
@@ -124,14 +124,14 @@ class DiagramEdge(DiagramObject):
     def __prepare_line_tips(self):
         _dir = self.get_dir()
         if _dir == -1:
-            self.mo_line.add_tip(self.get_line_tip(self.source_rel_type))
+            self.mo_line.add_tip(self.get_line_tip(self.source_rel_type), tip_length=0.2, tip_width=0.2)
 
         elif _dir == 1:
-            self.mo_line.add_tip(self.get_line_tip(self.target_rel_type))
+            self.mo_line.add_tip(self.get_line_tip(self.target_rel_type), tip_length=0.2, tip_width=0.2)
 
         elif _dir == 0:
-            self.mo_line.add_tip(self.get_line_tip(self.target_rel_type), at_start=True)
-            self.mo_line.add_tip(self.get_line_tip(self.source_rel_type))
+            self.mo_line.add_tip(self.get_line_tip(self.target_rel_type), at_start=True, tip_length=0.2, tip_width=0.2)
+            self.mo_line.add_tip(self.get_line_tip(self.source_rel_type), tip_length=0.2, tip_width=0.2, )
 
     @staticmethod
     def get_line_tip(rel: Relation):
