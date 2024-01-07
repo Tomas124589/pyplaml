@@ -26,6 +26,12 @@ class DiagramEdge(DiagramObject):
 
         self.arrow_from_source = None
 
+        self.mo_line: Line | None = None
+        self.mo_src_text: Text | None = None
+        self.mg_mid_text = VGroup()
+        self.mo_mid_text_arrow: RegularPolygon | None = None
+        self.mo_target_text: Text | None = None
+
     def get_dir(self):
         is_left = self.source_rel_type != Relation.NONE
         is_right = self.target_rel_type != Relation.NONE
@@ -44,68 +50,88 @@ class DiagramEdge(DiagramObject):
                 or self.source.is_hidden or self.target.is_hidden:
             return VGroup()
 
-        start = self.source.mobject.get_center()
-        target = self.target.mobject.get_center()
+        self.mo_line = DashedLine(buff=0, stroke_width=1, tip_length=0.25, color=BLACK) if self.dashed else Line(
+            buff=0, stroke_width=1, tip_length=0.25, color=BLACK)
 
-        direction = target - start
-        direction /= np.linalg.norm(direction)
-        direction = direction.round(0)
+        self.mobject = VGroup(self.mo_line)
+        self.mo_line.add_updater(self.updater, call_updater=True)
 
-        start = self.source.mobject.get_critical_point(direction)
-        target = self.target.mobject.get_critical_point(-direction)
-
-        line = DashedLine(start, target, buff=0, stroke_width=1, tip_length=0.25) if self.dashed else Line(
-            start, target, buff=0, stroke_width=1, tip_length=0.25)
-
-        line.color = BLACK
-
-        _dir = self.get_dir()
-        if _dir == -1:
-            line.add_tip(self.get_line_tip(self.source_rel_type))
-
-        elif _dir == 1:
-            line.add_tip(self.get_line_tip(self.target_rel_type))
-
-        elif _dir == 0:
-            line.add_tip(self.get_line_tip(self.target_rel_type), at_start=True)
-            line.add_tip(self.get_line_tip(self.source_rel_type))
-
-        group = VGroup(line)
-
-        if self.text or self.arrow_from_source is not None:
-            t_group = VGroup(Text(self.text, color=BLACK).scale(0.75))
-
-            if self.arrow_from_source is not None:
-                arrow = RegularPolygon(n=3, color=BLACK, fill_opacity=1)
-                arrow.scale_to_fit_width(0.1)
-                arrow.stretch_to_fit_height(t_group.height or 0.1)
-
-                p1 = self.target.mobject.get_center()
-                p2 = self.source.mobject.get_center()
-                angle_to_obj = np.arctan2(p2[1] - p1[1], p2[0] - p1[0])
-
-                if not self.arrow_from_source:
-                    angle_to_obj += 180 * DEGREES
-
-                arrow.rotate(arrow.start_angle + angle_to_obj)
-
-                t_group.add(arrow)
-
-            group.add(t_group.arrange(LEFT, buff=0.1).next_to(line.get_center(), RIGHT, buff=0.1))
-
-        if self.source_text:
-            text = Text(self.source_text, color=BLACK).scale(0.75)
-            text.next_to(line.get_start() + text.height, RIGHT, buff=0)
-            group.add(text)
-
-        if self.target_text:
-            text = Text(self.target_text, color=BLACK).scale(0.75)
-            text.next_to(line.get_end() - text.height, LEFT, buff=0)
-            group.add(text)
-
-        self.mobject = group
+        self.__prepare_line_tips()
+        self.__prepare_mid_text()
+        self.__prepare_src_text()
+        self.__prepare_target_text()
 
         return self.mobject
+
+    def __prepare_target_text(self):
+        if self.target_text:
+            self.mo_target_text = Text(self.target_text, color=BLACK).scale(0.75)
+            self.mo_target_text.next_to(self.mo_line.get_end() - self.mo_target_text.height, LEFT, buff=0)
+            self.mobject.add(self.mo_target_text)
+
+    def __prepare_src_text(self):
+        if self.source_text:
+            self.mo_src_text = Text(self.source_text, color=BLACK).scale(0.75)
+            self.mo_src_text.next_to(self.mo_line.get_start() + self.mo_src_text.height, RIGHT, buff=0)
+            self.mobject.add(self.mo_src_text)
+
+    def __prepare_mid_text(self):
+        if self.text or self.arrow_from_source is not None:
+            self.mg_mid_text = VGroup(Text(self.text, color=BLACK).scale(0.75))
+
+            if self.arrow_from_source is not None:
+                self.mo_mid_text_arrow = RegularPolygon(n=3, color=BLACK, fill_opacity=1)
+                self.mo_mid_text_arrow.scale_to_fit_width(0.1)
+                self.mo_mid_text_arrow.stretch_to_fit_height(self.mg_mid_text.height or 0.1)
+
+                self.__set_mid_arrow_angle()
+
+                self.mg_mid_text.add(self.mo_mid_text_arrow)
+
+            self.mobject.add(
+                self.mg_mid_text.arrange(LEFT, buff=0.1).next_to(self.mo_line.get_center(), RIGHT, buff=0.1))
+
+    def __set_mid_arrow_angle(self):
+        p1 = self.target.mobject.get_center()
+        p2 = self.source.mobject.get_center()
+        angle_to_obj = np.arctan2(p2[1] - p1[1], p2[0] - p1[0])
+        if not self.arrow_from_source:
+            angle_to_obj += 180 * DEGREES
+        self.mo_mid_text_arrow.rotate(self.mo_mid_text_arrow.start_angle + angle_to_obj)
+
+    def updater(self, mo: Mobject):
+        (start, target) = self.get_source_target_critical_points()
+        self.mo_line.put_start_and_end_on(start, target)
+
+        if self.mo_src_text:
+            self.mo_src_text.next_to(self.mo_line.get_start() + self.mo_src_text.height, RIGHT, buff=0)
+
+        if self.mg_mid_text:
+            self.mg_mid_text.next_to(self.mo_line.get_center(), RIGHT, buff=0.1)
+
+        if self.mo_target_text:
+            self.mo_target_text.next_to(self.mo_line.get_end() - self.mo_target_text.height, LEFT, buff=0)
+
+    def get_source_target_critical_points(self):
+        direction = self.target.mobject.get_center() - self.source.mobject.get_center()
+        direction = direction.round(0)
+
+        source_cp = self.source.mobject.get_critical_point(direction)
+        target_cp = self.target.mobject.get_critical_point(-direction)
+
+        return source_cp, target_cp
+
+    def __prepare_line_tips(self):
+        _dir = self.get_dir()
+        if _dir == -1:
+            self.mo_line.add_tip(self.get_line_tip(self.source_rel_type))
+
+        elif _dir == 1:
+            self.mo_line.add_tip(self.get_line_tip(self.target_rel_type))
+
+        elif _dir == 0:
+            self.mo_line.add_tip(self.get_line_tip(self.target_rel_type), at_start=True)
+            self.mo_line.add_tip(self.get_line_tip(self.source_rel_type))
 
     @staticmethod
     def get_line_tip(rel: Relation):
