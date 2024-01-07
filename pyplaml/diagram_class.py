@@ -17,7 +17,7 @@ class DiagramClass(PositionedDiagramObject):
 
         self.is_abstract = False
         self.is_interface = False
-        
+
         self.stereotype = ""
         self.generics = ""
 
@@ -93,6 +93,7 @@ class DiagramClass(PositionedDiagramObject):
         attributes = self.__prepare_attributes(self.attributes)
         border = Rectangle(color=GRAY, height=attributes.height + 0.1, width=0.2, fill_color=WHITE, fill_opacity=1)
         self.mg_attributes = VGroup(border, attributes)
+        border.stretch_to_fit_width(self.mg_attributes.width + 0.1)
 
         return border
 
@@ -100,6 +101,7 @@ class DiagramClass(PositionedDiagramObject):
         methods = self.__prepare_attributes(self.methods)
         border = Rectangle(color=GRAY, height=methods.height + 0.1, width=0.2, fill_color=WHITE, fill_opacity=1)
         self.mg_methods = VGroup(border, methods)
+        border.stretch_to_fit_width(self.mg_methods.width + 0.1)
 
         return border
 
