@@ -119,13 +119,15 @@ class DiagramEdge(DiagramObject):
             self.mo_target_text.next_to(self.mo_line.get_end() - self.mo_target_text.height, LEFT, buff=0)
 
     def get_source_target_critical_points(self):
-        direction = self.target.mobject.get_center() - self.source.mobject.get_center()
-        direction = direction.round(0)
-
-        source_cp = self.source.mobject.get_critical_point(direction)
-        target_cp = self.target.mobject.get_critical_point(-direction)
+        source_cp = self.closest_point_to_points(self.target.mobject.get_center(), self.source.get_boundary_points())
+        target_cp = self.closest_point_to_points(self.source.mobject.get_center(), self.target.get_boundary_points())
 
         return source_cp, target_cp
+
+    @staticmethod
+    def closest_point_to_points(p, points):
+        distances = np.linalg.norm(points - p, axis=1)
+        return points[np.argmin(distances)]
 
     def __prepare_line_tips(self):
         _dir = self.get_dir()

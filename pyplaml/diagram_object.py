@@ -31,21 +31,26 @@ class DiagramObject(ABC):
 
         return self.mobject
 
-    def add_critical_points(self):
+    def add_boundary_points(self, colour=None):
         if self.mobject is not None:
-            critical_points = [
-                self.mobject.get_critical_point(direction=UL),
-                self.mobject.get_critical_point(direction=UP),
-                self.mobject.get_critical_point(direction=UR),
-                self.mobject.get_critical_point(direction=LEFT),
-                self.mobject.get_critical_point(direction=LEFT),
-                self.mobject.get_critical_point(direction=ORIGIN),
-                self.mobject.get_critical_point(direction=RIGHT),
-                self.mobject.get_critical_point(direction=DL),
-                self.mobject.get_critical_point(direction=DOWN),
-                self.mobject.get_critical_point(direction=DR),
-            ]
-            self.mobject.add(VGroup(*[Dot(point, color=RED) for point in critical_points]))
+            self.mobject.add(VGroup(*[Dot(point, color=colour or RED) for point in self.get_boundary_points()]))
+
+    def get_boundary_points(self):
+        ul = self.mobject.get_boundary_point(direction=UL)
+        ur = self.mobject.get_boundary_point(direction=UR)
+        dl = self.mobject.get_boundary_point(direction=DL)
+        dr = self.mobject.get_boundary_point(direction=DR)
+
+        t = self.lerp(0.5, ul, ur)
+        r = self.lerp(0.5, ur, dr)
+        d = self.lerp(0.5, dl, dr)
+        l = self.lerp(0.5, ul, dl)
+
+        return np.array([ul, ur, t, dl, dr, r, d, l])
+
+    @staticmethod
+    def lerp(t: float, a, b):
+        return (1 - t) * a + t * b
 
     def append_to_diagram(self, diagram: pyplaml.Diagram) -> DiagramObject:
         key = self.get_key()
