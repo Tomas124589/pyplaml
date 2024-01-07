@@ -31,6 +31,22 @@ class DiagramObject(ABC):
 
         return self.mobject
 
+    def add_critical_points(self):
+        if self.mobject is not None:
+            critical_points = [
+                self.mobject.get_critical_point(direction=UL),
+                self.mobject.get_critical_point(direction=UP),
+                self.mobject.get_critical_point(direction=UR),
+                self.mobject.get_critical_point(direction=LEFT),
+                self.mobject.get_critical_point(direction=LEFT),
+                self.mobject.get_critical_point(direction=ORIGIN),
+                self.mobject.get_critical_point(direction=RIGHT),
+                self.mobject.get_critical_point(direction=DL),
+                self.mobject.get_critical_point(direction=DOWN),
+                self.mobject.get_critical_point(direction=DR),
+            ]
+            self.mobject.add(VGroup(*[Dot(point, color=RED) for point in critical_points]))
+
     def append_to_diagram(self, diagram: pyplaml.Diagram) -> DiagramObject:
         key = self.get_key()
         if key not in diagram.objects:
