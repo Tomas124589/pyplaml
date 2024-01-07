@@ -5,7 +5,7 @@ from .diagram_layout import DiagramLayout
 
 class DotLayout(DiagramLayout):
 
-    def apply(self) -> None:
+    def apply(self):
         layout = graphviz_layout(self.get_graph(), prog='dot')
 
         scale_x, scale_y = self.calculate_scaling_factors(layout)
@@ -13,6 +13,8 @@ class DotLayout(DiagramLayout):
         for key, pos in layout.items():
             self.diagram[key].x = pos[0] * scale_x * 2
             self.diagram[key].y = pos[1] * scale_y * 2
+
+        return self
 
     @staticmethod
     def calculate_scaling_factors(layout):

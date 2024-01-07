@@ -17,16 +17,13 @@ class MainScene(MovingCameraScene):
     def construct(self):
         parser = PUMLParser()
         d: Diagram = parser.parse_file(self.file)
+        d.scene = self
+        d.animate = self.animate
 
-        layout = DotLayout(d)
-        layout.apply()
-        layout.scale(self.scale_x, self.scale_y)
+        DotLayout(d).apply().scale(self.scale_x, self.scale_y)
 
         self.camera.background_color = WHITE
         Text.set_default(font_size=16)
-
-        d.scene = self
-        d.animate = self.animate
 
         d.draw()
 

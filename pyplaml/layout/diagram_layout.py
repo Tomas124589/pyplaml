@@ -1,5 +1,6 @@
-from abc import ABC, abstractmethod
+from __future__ import annotations
 
+from abc import ABC, abstractmethod
 import networkx as nx
 
 from .. import Diagram
@@ -12,7 +13,7 @@ class DiagramLayout(ABC):
         self.diagram = diagram
 
     @abstractmethod
-    def apply(self) -> None:
+    def apply(self) -> DiagramLayout:
         pass
 
     def get_graph(self) -> nx.DiGraph:
@@ -25,8 +26,9 @@ class DiagramLayout(ABC):
                         g.add_edge(name, e.target.get_key())
         return g
 
-    def scale(self, x: float, y: float) -> None:
+    def scale(self, x: float, y: float) -> DiagramLayout:
         for name, obj in self.diagram.objects.items():
             if isinstance(obj, PositionedDiagramObject):
                 self.diagram[name].x = self.diagram[name].x * x
                 self.diagram[name].y = self.diagram[name].y * y
+        return self
