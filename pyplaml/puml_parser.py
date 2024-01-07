@@ -14,9 +14,9 @@ class PUMLParser(object):
 
     def p_uml(self, p):
         """
-        uml : START elements END
-            | START IDENTIFIER elements END
-            | START STRING elements END
+        uml : STARTUML elements ENDUML
+            | STARTUML IDENTIFIER elements ENDUML
+            | STARTUML STRING elements ENDUML
         """
 
         if len(p) == 5:

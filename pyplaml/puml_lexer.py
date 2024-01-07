@@ -8,8 +8,8 @@ class PUMLexer(object):
     )
 
     keywords = {
-        "@startuml": "START",
-        "@enduml": "END",
+        "@startuml": "STARTUML",
+        "@enduml": "ENDUML",
         "abstract": "ABSTRACT",
         "implements": "IMPLEMENTS",
         "extends": "EXTENDS",
@@ -24,6 +24,7 @@ class PUMLexer(object):
         "bottom": "BOTTOM",
         "left": "LEFT",
         "of": "OF",
+        "end": "END",
     }
 
     tokens = [
@@ -36,6 +37,7 @@ class PUMLexer(object):
                  "STEREOTYPE",
                  "GENERICS",
                  "TAG",
+                 "MEMBER",
              ] + list(keywords.values())
 
     @staticmethod
@@ -83,6 +85,12 @@ class PUMLexer(object):
         right_type = t.lexer.lexmatch.group(9)
 
         t.value = (left_type, line, right_type)
+        return t
+
+    @staticmethod
+    def t_MEMBER(t):
+        r"""(\w)::(.+)"""
+        t.value = t.lexer.lexmatch.group(11), t.lexer.lexmatch.group(12)
         return t
 
     @staticmethod
