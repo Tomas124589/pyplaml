@@ -50,11 +50,9 @@ class DiagramEdge(DiagramObject):
                 or self.source.is_hidden or self.target.is_hidden:
             return VGroup()
 
-        self.mo_line = DashedLine(buff=0, stroke_width=1, tip_length=0.25, color=BLACK) if self.dashed else Line(
-            buff=0, stroke_width=1, tip_length=0.25, color=BLACK)
+        always_redraw(self.line_updater)
 
         self.mobject = VGroup(self.mo_line)
-        self.__prepare_line_tips()
         self.__prepare_mid_text()
         self.__prepare_src_text()
         self.__prepare_target_text()
@@ -99,10 +97,18 @@ class DiagramEdge(DiagramObject):
             angle_to_obj += 180 * DEGREES
         self.mo_mid_text_arrow.rotate(self.mo_mid_text_arrow.start_angle + angle_to_obj)
 
-    def updater(self, mo: Mobject):
+    def line_updater(self):
         (start, target) = self.get_source_target_critical_points()
+
+        self.mo_line = DashedLine(buff=0, stroke_width=1, tip_length=0.25, color=BLACK) if self.dashed \
+            else Line(buff=0, stroke_width=1, tip_length=0.25, color=BLACK)
         self.mo_line.put_start_and_end_on(start, target)
 
+        self.__prepare_line_tips()
+
+        return self.mo_line
+
+    def updater(self, mo: Mobject):
         if self.mo_src_text:
             self.mo_src_text.next_to(self.mo_line.get_start() + self.mo_src_text.height, RIGHT, buff=0)
 
