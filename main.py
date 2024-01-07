@@ -38,6 +38,8 @@ if __name__ == "__main__":
     argparser.add_argument("-a", "--animate", action="store_true")
     argparser.add_argument("-sx", "--scale-x", default=1, type=float)
     argparser.add_argument("-sy", "--scale-y", default=1, type=float)
+    argparser.add_argument("-fps", "--frames-per-second", default=60, type=int)
+    argparser.add_argument("-fcache", "--flush-cache", action="store_true")
 
     args = argparser.parse_args()
 
@@ -49,6 +51,8 @@ if __name__ == "__main__":
     config.output_file = src_file.stem
     config.cairo_path = "media/images/"
     config.ffmpeg_path = "media/videos/"
+    config.frame_rate = args.frames_per_second
+    config.flush_cache = args.flush_cache
 
     scene = MainScene()
 
