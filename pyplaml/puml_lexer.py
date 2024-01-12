@@ -47,12 +47,6 @@ class PUMLexer(object):
         return t
 
     @staticmethod
-    def t_GENERICS(t):
-        r"""<(.+?)>"""
-        t.value = t.lexer.lexmatch.group(4)
-        return t
-
-    @staticmethod
     def t_inbrackets(t):
         r"""\{"""
         t.lexer.code_start = t.lexer.lexpos
@@ -80,11 +74,17 @@ class PUMLexer(object):
     @staticmethod
     def t_REL_LINE(t):
         r"""(<\||<|o|\*|\#|x|\}|\+|\^)*(\-+|\.+)(\|>|>|o|\*|\#|x|\{|\+|\^)*"""
-        left_type = t.lexer.lexmatch.group(7)
-        line = t.lexer.lexmatch.group(8)
-        right_type = t.lexer.lexmatch.group(9)
+        left_type = t.lexer.lexmatch.group(5)
+        line = t.lexer.lexmatch.group(6)
+        right_type = t.lexer.lexmatch.group(7)
 
         t.value = (left_type, line, right_type)
+        return t
+
+    @staticmethod
+    def t_GENERICS(t):
+        r"""<(.+?)>"""
+        t.value = t.lexer.lexmatch.group(9)
         return t
 
     @staticmethod
