@@ -126,10 +126,7 @@ class PUMLParser(object):
         """
         (left_type, line, right_type) = p[1]
 
-        is_dashed = "." in line
-        line_length = len(line)
-
-        e = DiagramEdge(is_dashed, line_length)
+        e = DiagramEdge("." in line, len(line))
         e.source_rel_type = Relation.from_string(left_type)
         e.target_rel_type = Relation.from_string(right_type)
 

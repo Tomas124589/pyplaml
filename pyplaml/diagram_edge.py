@@ -8,11 +8,11 @@ from .relation import Relation
 class DiagramEdge(DiagramObject):
 
     def __init__(self,
-                 dashed: bool,
+                 dotted: bool,
                  size: int,
                  ):
         DiagramObject.__init__(self, '')
-        self.dashed = dashed
+        self.dotted = dotted
         self.size = size
 
         self.source: DiagramObject | None = None
@@ -100,7 +100,7 @@ class DiagramEdge(DiagramObject):
     def line_updater(self):
         (start, target) = self.get_source_target_critical_points()
 
-        self.mo_line = DashedLine(buff=0, stroke_width=1, tip_length=0.25, color=BLACK) if self.dashed \
+        self.mo_line = DashedLine(buff=0, stroke_width=1, tip_length=0.25, color=BLACK) if self.dotted \
             else Line(buff=0, stroke_width=1, tip_length=0.25, color=BLACK)
         self.mo_line.put_start_and_end_on(start, target)
 
