@@ -138,16 +138,16 @@ class PUMLexer(object):
     def __init__(self, **kwargs):
         self.lexer = lex.lex(module=self, **kwargs)
 
-    def test(self, text):
+    def test(self, text: str, output: bool = True):
         self.lexer.input(text)
-        while True:
+        while output:
             tok = self.lexer.token()
             if not tok:
                 break
             print(tok)
 
-    def testFile(self, path):
+    def testFile(self, path: str, output: bool = True):
         with open(path, 'r') as file:
             text = file.read()
 
-        return self.test(text)
+        return self.test(text, output)
