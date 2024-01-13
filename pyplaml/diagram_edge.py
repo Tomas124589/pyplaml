@@ -131,15 +131,22 @@ class DiagramEdge(DiagramObject):
 
     def __prepare_line_tips(self):
         _dir = self.get_dir()
+        def_params = {'tip_length': 0.2, 'tip_width': 0.2}
+
         if _dir == -1:
-            self.mo_line.add_tip(self.get_line_tip(self.source_rel_type), tip_length=0.2, tip_width=0.2)
+            self.mo_line.add_tip(self.get_line_tip(self.source_rel_type), **def_params)
 
         elif _dir == 1:
-            self.mo_line.add_tip(self.get_line_tip(self.target_rel_type), tip_length=0.2, tip_width=0.2)
+            self.mo_line.add_tip(self.get_line_tip(self.target_rel_type), **def_params)
 
         elif _dir == 0:
-            self.mo_line.add_tip(self.get_line_tip(self.target_rel_type), at_start=True, tip_length=0.2, tip_width=0.2)
-            self.mo_line.add_tip(self.get_line_tip(self.source_rel_type), tip_length=0.2, tip_width=0.2, )
+            if self.dotted:
+                self.mo_line.add_tip(self.get_line_tip(self.source_rel_type), **def_params)
+                self.mo_line.add_tip(self.get_line_tip(self.target_rel_type), **def_params, at_start=True)
+
+            else:
+                self.mo_line.add_tip(self.get_line_tip(self.target_rel_type), **def_params, at_start=True)
+                self.mo_line.add_tip(self.get_line_tip(self.source_rel_type), **def_params)
 
     @staticmethod
     def get_line_tip(rel: Relation):
