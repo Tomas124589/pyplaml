@@ -1,3 +1,5 @@
+import re
+
 import ply.lex as lex
 
 
@@ -101,7 +103,7 @@ class PUMLexer(object):
 
     @staticmethod
     def t_CLASS_DEF(t):
-        r"""(?i)\bclass\b|\bentity\b|\benum\b|\bexception\b|\binterface\b|\bmetaclass\b|\bprotocol\b|\bstereotype\b|\bstruct\b|\bannotation\b"""
+        r"""\bclass\b|\bentity\b|\benum\b|\bexception\b|\binterface\b|\bmetaclass\b|\bprotocol\b|\bstereotype\b|\bstruct\b|\bannotation\b"""
         return t
 
     def t_IDENTIFIER(self, t):
@@ -136,7 +138,7 @@ class PUMLexer(object):
     t_inbrackets_ignore = ' \t\n'
 
     def __init__(self, **kwargs):
-        self.lexer = lex.lex(module=self, **kwargs)
+        self.lexer = lex.lex(module=self, reflags=re.IGNORECASE, **kwargs)
 
     def test(self, text: str, output: bool = True):
         self.lexer.input(text)
