@@ -41,7 +41,9 @@ class PUMLParser(object):
     def p_relation(self, p):
         """
         relation    : IDENTIFIER rel_line IDENTIFIER
-                    | IDENTIFIER rel_line_named IDENTIFIER
+                    | STRING rel_line STRING
+                    | STRING rel_line IDENTIFIER
+                    | IDENTIFIER rel_line STRING
         """
         edge: DiagramEdge = p[2]
 
@@ -123,45 +125,44 @@ class PUMLParser(object):
     def p_rel_line(p):
         """
         rel_line    : REL_LINE
+                    | STRING REL_LINE
+                    | REL_LINE STRING
+                    | STRING REL_LINE STRING
         """
-        (left_type, line, right_type) = p[1]
+        _len = len(p)
+        if _len == 2:
+            (left_type, line, right_type) = p[1]
+            l_str = ""
+            r_str = ""
+
+        elif _len == 3:
+            if isinstance(p[1], str):
+                (left_type, line, right_type) = p[2]
+                l_str = p[1]
+                r_str = ""
+
+            else:
+                (left_type, line, right_type) = p[1]
+                l_str = ""
+                r_str = p[2]
+
+        else:
+            (left_type, line, right_type) = p[2]
+            l_str = p[1]
+            r_str = p[3]
 
         e = DiagramEdge("." in line, len(line))
         e.source_rel_type = Relation.from_string(left_type)
         e.target_rel_type = Relation.from_string(right_type)
 
+        if e.get_dir() == 1:
+            e.source_text = l_str
+            e.target_text = r_str
+        else:
+            e.source_text = r_str
+            e.target_text = l_str
+
         p[0] = e
-
-    @staticmethod
-    def p_rel_line_named(p):
-        """
-        rel_line_named  : STRING rel_line STRING
-                        | rel_line STRING
-                        | STRING rel_line
-        """
-        _len = len(p)
-        if _len == 3:
-            if isinstance(p[1], str):
-                edge = p[2]
-                l_str = p[1]
-                r_str = ""
-            else:
-                edge = p[1]
-                l_str = ""
-                r_str = p[2]
-        else:
-            edge = p[2]
-            l_str = p[1]
-            r_str = p[3]
-
-        if edge.get_dir() == 1:
-            edge.source_text = l_str
-            edge.target_text = r_str
-        else:
-            edge.source_text = r_str
-            edge.target_text = l_str
-
-        p[0] = edge
 
     def p_class(self, p):
         """
