@@ -13,6 +13,9 @@ class Diagram:
         self.tagged: typing.Dict[str, set[DiagramObject]] = {}
         self.last_object: DiagramObject | None = None
 
+        self.hide_unlinked = False
+        self.remove_unlinked = False
+
     def __setitem__(self, key: str, val: DiagramObject):
         if not isinstance(val, DiagramObject):
             raise Exception("Only DiagramObject is allowed.")
@@ -35,7 +38,34 @@ class Diagram:
 
         return res[obj_type] if obj_type != "" else res
 
+    def objects_degree(self):
+        degrees = {}
+        for n, o in self.objects.items():
+            if hasattr(o, "edges"):
+                if n in degrees:
+                    degrees[n] += len(o.edges)
+                else:
+                    degrees[n] = len(o.edges)
+
+                for e in o.edges:
+                    if e.target.name in degrees:
+                        degrees[e.target.name] += 1
+                    else:
+                        degrees[e.target.name] = 1
+
+        return degrees
+
     def draw(self):
+        if self.remove_unlinked:
+            for n, deg in self.objects_degree().items():
+                if deg == 0:
+                    self[n].do_draw = False
+
+        elif self.hide_unlinked:
+            for n, deg in self.objects_degree().items():
+                if deg == 0:
+                    self[n].is_hidden = True
+
         for name, obj in self.objects.items():
             if obj.do_draw:
                 self.draw_object(obj)

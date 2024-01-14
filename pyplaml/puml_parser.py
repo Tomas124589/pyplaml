@@ -299,6 +299,13 @@ class PUMLParser(object):
         """
         command : REMOVE IDENTIFIER
         """
+        print(p[2])
+        if p[2][0] == "@":
+            if p[2] == "@unlinked":
+                self.diagram.remove_unlinked = True
+
+            return
+
         self.diagram[p[2]].do_draw = False
 
     def p_remove_by_tag(self, p):
@@ -311,6 +318,12 @@ class PUMLParser(object):
         """
         command : RESTORE IDENTIFIER
         """
+        if p[2][0] == "@":
+            if p[2] == "@unlinked":
+                self.diagram.remove_unlinked = False
+
+            return
+
         self.diagram[p[2]].do_draw = True
 
     def p_restore_by_tag(self, p):
@@ -323,6 +336,12 @@ class PUMLParser(object):
         """
         command : HIDE IDENTIFIER
         """
+        if p[2][0] == "@":
+            if p[2] == "@unlinked":
+                self.diagram.hide_unlinked = True
+
+            return
+
         self.diagram[p[2]].is_hidden = True
 
     def p_hide_by_tag(self, p):
@@ -335,6 +354,12 @@ class PUMLParser(object):
         """
         command : SHOW IDENTIFIER
         """
+        if p[2][0] == "@":
+            if p[2] == "@unlinked":
+                self.diagram.hide_unlinked = False
+
+            return
+
         self.diagram[p[2]].is_hidden = False
 
     def p_show_by_tag(self, p):
