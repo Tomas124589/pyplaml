@@ -7,6 +7,7 @@ import ply.lex as lex
 class PUMLexer(object):
     states = (
         ("inbrackets", "exclusive"),
+        ("NOTE", "exclusive"),
     )
 
     keywords = {
@@ -20,13 +21,11 @@ class PUMLexer(object):
         "hide": "HIDE",
         "show": "SHOW",
         "restore": "RESTORE",
-        "note": "NOTE",
+        "note": "NOTE_KW",
         "top": "TOP",
         "right": "RIGHT",
         "bottom": "BOTTOM",
         "left": "LEFT",
-        "of": "OF",
-        "end": "END",
     }
 
     tokens = [
@@ -41,6 +40,10 @@ class PUMLexer(object):
                  "TAG",
                  "MEMBER",
                  "SKINPARAM",
+                 "LINE_NOTE",
+                 "FLOAT_NOTE",
+                 "NOTE_CONTENT",
+                 "NOTE"
              ] + list(keywords.values())
 
     @staticmethod
@@ -55,6 +58,48 @@ class PUMLexer(object):
         t.lexer.code_start = t.lexer.lexpos
         t.lexer.level = 1
         t.lexer.begin("inbrackets")
+
+    @staticmethod
+    def t_LINE_NOTE(t):
+        r"""note\s+(?:(top|right|bottom|left) of)\s+("[^"]*"|\w+)(?:\s*:\s*(.*))"""
+        pos = t.lexer.lexmatch.group(5)
+        obj_name = t.lexer.lexmatch.group(6)
+        text = t.lexer.lexmatch.group(7)
+
+        t.value = (pos, obj_name, text)
+        return t
+
+    @staticmethod
+    def t_NOTE(t):
+        r"""note\s+(?:(top|right|bottom|left) of)\s+("[^"]*"|\w+)"""
+        t.lexer.begin("NOTE")
+        t.lexer.note_start = t.lexer.lexpos
+
+        pos = t.lexer.lexmatch.group(9)
+        obj_name = t.lexer.lexmatch.group(10)
+        t.value = (pos, obj_name)
+        return t
+
+    @staticmethod
+    def t_FLOAT_NOTE(t):
+        r"""note\s+"([^"]*)"\s+AS\s+(.*)"""
+        text = t.lexer.lexmatch.group(12)
+        alias = t.lexer.lexmatch.group(13)
+
+        t.value = (text, alias)
+        return t
+
+    @staticmethod
+    def t_NOTE_CONTENT(t):
+        r"""end note"""
+        t.lexer.begin("INITIAL")
+        t.lexer.lineno += t.value.count("\n")
+
+        t.type = "NOTE_CONTENT"
+
+        t.value = t.lexer.lexdata[t.lexer.note_start:t.lexer.lexpos]
+        t.value = [val.strip() for val in t.value.splitlines() if val != ""][:-1]
+        return t
 
     @staticmethod
     def t_inbrackets_lbrace(t):
@@ -77,9 +122,9 @@ class PUMLexer(object):
     @staticmethod
     def t_REL_LINE(t):
         r"""(<\||<|o|\*|\#|x|\}|\+|\^)*(\-+|\.+)(\|>|>|o|\*|\#|x|\{|\+|\^)*"""
-        left_type = t.lexer.lexmatch.group(5)
-        line = t.lexer.lexmatch.group(6)
-        right_type = t.lexer.lexmatch.group(7)
+        left_type = t.lexer.lexmatch.group(15)
+        line = t.lexer.lexmatch.group(16)
+        right_type = t.lexer.lexmatch.group(17)
 
         t.value = (left_type, line, right_type)
         return t
@@ -87,13 +132,13 @@ class PUMLexer(object):
     @staticmethod
     def t_GENERICS(t):
         r"""<(.+?)>"""
-        t.value = t.lexer.lexmatch.group(9)
+        t.value = t.lexer.lexmatch.group(19)
         return t
 
     @staticmethod
     def t_MEMBER(t):
         r"""(\w)::(.+)"""
-        t.value = t.lexer.lexmatch.group(11), t.lexer.lexmatch.group(12)
+        t.value = t.lexer.lexmatch.group(21), t.lexer.lexmatch.group(22)
         return t
 
     @staticmethod
@@ -105,8 +150,8 @@ class PUMLexer(object):
     @staticmethod
     def t_CLASS_DEF(t):
         r"""(class|entity|enum|exception|interface|metaclass|protocol|stereotype|struct|annotation|object)\s+("[^"]*"|\w+)"""
-        class_type = t.lexer.lexmatch.group(16)
-        name = t.lexer.lexmatch.group(17).replace("\"", "")
+        class_type = t.lexer.lexmatch.group(26)
+        name = t.lexer.lexmatch.group(27).replace("\"", "")
 
         t.value = (class_type, name)
         return t
@@ -142,10 +187,15 @@ class PUMLexer(object):
     def t_inbrackets_error(t):
         t.lexer.skip(1)
 
+    @staticmethod
+    def t_NOTE_error(t):
+        t.lexer.skip(1)
+
     t_ignore = " \n\t"
     t_ignore_COMMENT = r"('.*)|(\/'(.|\s)*\'\/)"
 
     t_inbrackets_ignore = " \t\n"
+    t_NOTE_ignore = " \t\n"
 
     def __init__(self, **kwargs):
         self.lexer = lex.lex(module=self, reflags=re.IGNORECASE, **kwargs)

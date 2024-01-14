@@ -2,7 +2,11 @@
 class Object << general >>
 Object <|--- ArrayList
 
-note top of Object : Top note.
+note top of Object
+    Multi line note definition
+    A + B = C!
+end note
+
 note right of Object : Right note.
 note bottom of Object : Bottom note.
 note left of Object : Left note.

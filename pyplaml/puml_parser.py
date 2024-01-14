@@ -262,30 +262,61 @@ class PUMLParser(object):
         attr = ClassAttribute.from_string(p[2])
         c.add_attribute(attr)
 
+    def p_float_note(self, p):
+        """
+        note    : FLOAT_NOTE
+        """
+        p[0] = DiagramNote(p[1][1], p[1][0]).append_to_diagram(self.diagram)
+
+    def p_line_note(self, p):
+        """
+        note    : LINE_NOTE
+        """
+        (pos, obj_name, text) = p[1]
+        obj = self.diagram[obj_name]
+
+        n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
+        e = DiagramEdge(False, 1)
+        e.source = n
+        e.target = obj
+        n.edges.append(e)
+
+        n.append_to_diagram(self.diagram)
+        e.append_to_diagram(self.diagram)
+
+        p[0] = n
+
     def p_note(self, p):
         """
-        note    : NOTE STRING AS IDENTIFIER
+        note    : NOTE NOTE_CONTENT
         """
-        p[0] = DiagramNote(p[4], p[2]).append_to_diagram(self.diagram)
+        (pos, obj_name) = p[1]
+        obj = self.diagram[obj_name]
+        text = "\n".join(p[2])
 
-    def p_note_on_side(self, p):
+        n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
+        e = DiagramEdge(False, 1)
+        e.source = n
+        e.target = obj
+        n.edges.append(e)
+
+        n.append_to_diagram(self.diagram)
+        e.append_to_diagram(self.diagram)
+
+        p[0] = n
+
+    def p_note_last_object(self, p):
         """
-        note    : NOTE TOP OF IDENTIFIER AFTERCOLON
-                | NOTE TOP OF STRING AFTERCOLON
-                | NOTE RIGHT OF IDENTIFIER AFTERCOLON
-                | NOTE RIGHT OF STRING AFTERCOLON
-                | NOTE BOTTOM OF IDENTIFIER AFTERCOLON
-                | NOTE BOTTOM OF STRING AFTERCOLON
-                | NOTE LEFT OF IDENTIFIER AFTERCOLON
-                | NOTE LEFT OF STRING AFTERCOLON
-                | NOTE LEFT AFTERCOLON
+        note    : NOTE_KW TOP AFTERCOLON
+                | NOTE_KW RIGHT AFTERCOLON
+                | NOTE_KW BOTTOM AFTERCOLON
+                | NOTE_KW LEFT AFTERCOLON
         """
-        _len = len(p)
+        obj = self.diagram.last_object
         pos = p[2]
-        text = p[5] if _len == 6 else p[3]
-        obj = self.diagram[p[4]] if _len == 6 else self.diagram.last_object
+        text = p[3]
 
-        n = DiagramNote("{}-note-for-{}".format(pos, obj.name), text)
+        n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
         e = DiagramEdge(False, 1)
         e.source = n
         e.target = obj
