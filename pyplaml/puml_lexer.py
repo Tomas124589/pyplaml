@@ -40,6 +40,7 @@ class PUMLexer(object):
                  "GENERICS",
                  "TAG",
                  "MEMBER",
+                 "SKINPARAM",
              ] + list(keywords.values())
 
     @staticmethod
@@ -108,6 +109,11 @@ class PUMLexer(object):
         name = t.lexer.lexmatch.group(17).replace("\"", "")
 
         t.value = (class_type, name)
+        return t
+
+    @staticmethod
+    def t_SKINPARAM(t):
+        r"""skinparam\s+.+"""
         return t
 
     def t_IDENTIFIER(self, t):

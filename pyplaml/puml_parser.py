@@ -36,6 +36,8 @@ class PUMLParser(object):
                 | command
                 | elements note
                 | note
+                | elements skinparam
+                | skinparam
         """
 
     def p_relation(self, p):
@@ -370,6 +372,13 @@ class PUMLParser(object):
         command : SHOW TAG
         """
         self.diagram.show_by_tag(p[2])
+
+    @staticmethod
+    def p_skinparam(p):
+        """
+        skinparam   : SKINPARAM
+        """
+        skinparam = p[1].split(" ")[1::]
 
     @staticmethod
     def p_error(p):
