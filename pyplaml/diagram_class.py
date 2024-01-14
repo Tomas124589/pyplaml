@@ -234,6 +234,15 @@ class DiagramStruct(DiagramClass):
         return super().get_icon("S", LIGHT_GRAY)
 
 
+class DiagramPlainObject(DiagramClass):
+    def __init__(self, name):
+        super().__init__(name)
+        self.show_icon = False
+
+    def prepare_icon(self):
+        return VGroup()
+
+
 class DiagramClassFactory:
     @staticmethod
     def make(name: str, class_type: ClassType | str = ClassType.CLASS):
@@ -268,5 +277,8 @@ class DiagramClassFactory:
 
         elif class_type == ClassType.STRUCT:
             return DiagramStruct(name)
+
+        elif class_type == ClassType.OBJECT:
+            return DiagramPlainObject(name)
 
         raise Exception("Undefined class type.")

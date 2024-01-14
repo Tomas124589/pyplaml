@@ -103,7 +103,11 @@ class PUMLexer(object):
 
     @staticmethod
     def t_CLASS_DEF(t):
-        r"""\bclass\b|\bentity\b|\benum\b|\bexception\b|\binterface\b|\bmetaclass\b|\bprotocol\b|\bstereotype\b|\bstruct\b|\bannotation\b"""
+        r"""(class|entity|enum|exception|interface|metaclass|protocol|stereotype|struct|annotation|object)\s+("[^"]*"|\w+)"""
+        class_type = t.lexer.lexmatch.group(16)
+        name = t.lexer.lexmatch.group(17).replace("\"", "")
+
+        t.value = (class_type, name)
         return t
 
     def t_IDENTIFIER(self, t):

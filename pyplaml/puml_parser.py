@@ -166,15 +166,14 @@ class PUMLParser(object):
 
     def p_class(self, p):
         """
-        class   : CLASS_DEF IDENTIFIER
-                | CLASS_DEF STRING
-                | CLASS_DEF IDENTIFIER GENERICS
-                | CLASS_DEF STRING GENERICS
+        class   : CLASS_DEF
+                | CLASS_DEF GENERICS
         """
-        c = DiagramClassFactory.make(p[2], p[1]).append_to_diagram(self.diagram)
+        (class_type, name) = p[1]
+        c = DiagramClassFactory.make(name, class_type).append_to_diagram(self.diagram)
 
-        if len(p) == 4:
-            c.generics = p[3]
+        if len(p) == 3:
+            c.generics = p[2]
 
         p[0] = c
 

@@ -15,6 +15,7 @@ class ClassType(Enum):
     PROTOCOL = "protocol"
     STEREOTYPE = "stereotype"
     STRUCT = "struct"
+    OBJECT = "object"
 
     @staticmethod
     def from_string(string: str) -> ClassType:
