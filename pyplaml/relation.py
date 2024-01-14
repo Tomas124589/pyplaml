@@ -17,21 +17,21 @@ class Relation(Enum):
         if string is None:
             return Relation.NONE
 
-        if string in ['<|', '|>', '^']:
+        if string in ["<|", "|>", "^"]:
             return Relation.EXTENSION
-        elif string in ['<', '>']:
+        elif string in ["<", ">"]:
             return Relation.ASSOCIATION
-        elif string in ['o']:
+        elif string in ["o"]:
             return Relation.AGGREGATION
-        elif string in ['*']:
+        elif string in ["*"]:
             return Relation.COMPOSITION
-        elif string in ['#']:
+        elif string in ["#"]:
             return Relation.HASH
-        elif string in ['x']:
+        elif string in ["x"]:
             return Relation.CROSS
-        elif string in ['{', '}']:
+        elif string in ["{", "}"]:
             return Relation.CROW_FOOT
-        elif string in ['+']:
+        elif string in ["+"]:
             return Relation.NEST_CLASSIFIER
         else:
-            raise Exception('Undefined relation "{}"'.format(string))
+            raise Exception("Undefined relation \"{}\"".format(string))

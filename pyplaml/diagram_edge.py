@@ -11,7 +11,7 @@ class DiagramEdge(DiagramObject):
                  dotted: bool,
                  size: int,
                  ):
-        DiagramObject.__init__(self, '')
+        DiagramObject.__init__(self, "")
         self.dotted = dotted
         self.size = size
 
@@ -131,7 +131,7 @@ class DiagramEdge(DiagramObject):
 
     def __prepare_line_tips(self):
         _dir = self.get_dir()
-        def_params = {'tip_length': 0.2, 'tip_width': 0.2}
+        def_params = {"tip_length": 0.2, "tip_width": 0.2}
 
         if _dir == -1:
             self.mo_line.add_tip(self.get_line_tip(self.source_rel_type), **def_params)

@@ -69,11 +69,11 @@ class PUMLParser(object):
         (l_class, r_class, edge) = p[1]
 
         text = str(p[2]).strip()
-        if text[0] == '<':
+        if text[0] == "<":
             edge.arrow_from_source = edge.get_dir() != 1
             text = text[1:]
 
-        elif text[0] == '>':
+        elif text[0] == ">":
             edge.arrow_from_source = edge.get_dir() == 1
             text = text[1:]
 
@@ -283,7 +283,7 @@ class PUMLParser(object):
         text = p[5] if _len == 6 else p[3]
         obj = self.diagram[p[4]] if _len == 6 else self.diagram.last_object
 
-        n = DiagramNote('{}-note-for-{}'.format(pos, obj.name), text)
+        n = DiagramNote("{}-note-for-{}".format(pos, obj.name), text)
         e = DiagramEdge(False, 1)
         e.source = n
         e.target = obj
@@ -358,7 +358,7 @@ class PUMLParser(object):
         return self.parser.parse(text)
 
     def parse_file(self, path):
-        with open(path, 'r') as file:
+        with open(path, "r") as file:
             text = file.read()
 
         return self.parse(text)

@@ -147,7 +147,7 @@ class DiagramClass(PositionedDiagramObject):
         return VGroup(c, t)
 
     def prepare_icon(self):
-        return self.get_icon('A' if self.is_abstract else 'C', TEAL if self.is_abstract else GREEN)
+        return self.get_icon("A" if self.is_abstract else "C", TEAL if self.is_abstract else GREEN)
 
     def add_attribute(self, attr: ClassAttribute):
         if attr.is_method:
@@ -161,7 +161,7 @@ class DiagramAnnotation(DiagramClass):
         super().__init__(name)
 
     def prepare_icon(self):
-        return super().get_icon('@', ORANGE)
+        return super().get_icon("@", ORANGE)
 
 
 class DiagramEntity(DiagramClass):
@@ -169,7 +169,7 @@ class DiagramEntity(DiagramClass):
         super().__init__(name)
 
     def prepare_icon(self):
-        return super().get_icon('E', GREEN)
+        return super().get_icon("E", GREEN)
 
 
 class DiagramEnum(DiagramClass):
@@ -177,7 +177,7 @@ class DiagramEnum(DiagramClass):
         super().__init__(name)
 
     def prepare_icon(self):
-        return super().get_icon('E', ORANGE)
+        return super().get_icon("E", ORANGE)
 
 
 class DiagramException(DiagramClass):
@@ -185,7 +185,7 @@ class DiagramException(DiagramClass):
         super().__init__(name)
 
     def prepare_icon(self):
-        return super().get_icon('X', RED)
+        return super().get_icon("X", RED)
 
 
 class DiagramInterface(DiagramClass):
@@ -195,7 +195,7 @@ class DiagramInterface(DiagramClass):
         self.is_interface = True
 
     def prepare_icon(self):
-        return super().get_icon('I', PURPLE)
+        return super().get_icon("I", PURPLE)
 
 
 class DiagramMetaClass(DiagramClass):
@@ -203,7 +203,7 @@ class DiagramMetaClass(DiagramClass):
         super().__init__(name)
 
     def prepare_icon(self):
-        return super().get_icon('M', GRAY)
+        return super().get_icon("M", GRAY)
 
 
 class DiagramProtocol(DiagramClass):
@@ -211,7 +211,7 @@ class DiagramProtocol(DiagramClass):
         super().__init__(name)
 
     def prepare_icon(self):
-        return super().get_icon('P', LIGHT_GRAY)
+        return super().get_icon("P", LIGHT_GRAY)
 
 
 class DiagramStereoType(DiagramClass):
@@ -219,7 +219,7 @@ class DiagramStereoType(DiagramClass):
         super().__init__(name)
 
     def prepare_icon(self):
-        return super().get_icon('S', PINK)
+        return super().get_icon("S", PINK)
 
 
 class DiagramStruct(DiagramClass):
@@ -227,7 +227,7 @@ class DiagramStruct(DiagramClass):
         super().__init__(name)
 
     def prepare_icon(self):
-        return super().get_icon('S', LIGHT_GRAY)
+        return super().get_icon("S", LIGHT_GRAY)
 
 
 class DiagramClassFactory:
@@ -265,4 +265,4 @@ class DiagramClassFactory:
         elif class_type == ClassType.STRUCT:
             return DiagramStruct(name)
 
-        raise Exception('Undefined class type.')
+        raise Exception("Undefined class type.")

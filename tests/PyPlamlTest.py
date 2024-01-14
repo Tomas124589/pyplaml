@@ -30,4 +30,4 @@ class PyPlamlTest(unittest.TestCase):
         examples = sorted(glob("../examples/*.puml"))
 
         for e in examples:
-            self.assertEqual(os.system("python ../main.py " + e), 0, 'Drawing "' + e + '" failed')
+            self.assertEqual(os.system("python ../main.py " + e), 0, "Drawing \"{}\" failed".format(e))

@@ -17,7 +17,7 @@ if __name__ == "__main__":
     argparser.add_argument("-sy", "--scale-y", default=1, type=float)
     argparser.add_argument("-fps", "--frames-per-second", default=60, type=int)
     argparser.add_argument("-fcache", "--flush-cache", action="store_true")
-    argparser.add_argument('-l', '--layout', choices=['dot', 'spring'], default='dot')
+    argparser.add_argument("-l", "--layout", choices=["dot", "spring"], default="dot")
 
     args = argparser.parse_args()
 

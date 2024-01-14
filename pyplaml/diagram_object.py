@@ -65,11 +65,11 @@ class DiagramObject(ABC):
         return str(self.name)
 
     def __repr__(self):
-        return '({}) "{}", hidden: {}, draw: {}'.format(
+        return "({}) \"{}\", hidden: {}, draw: {}".format(
             self.__class__.__name__,
-            self.get_key() or 'NAME NOT SET',
-            'yes' if self.is_hidden else 'no',
-            'yes' if self.do_draw else 'no',
+            self.get_key() or "NAME NOT SET",
+            "yes" if self.is_hidden else "no",
+            "yes" if self.do_draw else "no",
         )
 
 

@@ -15,14 +15,14 @@ class Diagram:
 
     def __setitem__(self, key: str, val: DiagramObject):
         if not isinstance(val, DiagramObject):
-            raise Exception('Only DiagramObject is allowed.')
+            raise Exception("Only DiagramObject is allowed.")
         self.objects[key] = val
         self.last_object = val
 
     def __getitem__(self, key: str):
         return self.objects[str(key)]
 
-    def objects_by_type(self, obj_type: str = ''):
+    def objects_by_type(self, obj_type: str = ""):
         res = {}
         for name, obj in self.objects.items():
             _type = type(obj).__name__
@@ -33,7 +33,7 @@ class Diagram:
                 res[_type] = {}
                 res[_type][name] = obj
 
-        return res[obj_type] if obj_type != '' else res
+        return res[obj_type] if obj_type != "" else res
 
     def draw(self):
         for name, obj in self.objects.items():

@@ -22,7 +22,7 @@ class DiagramLayout(ABC):
         for name, obj in self.diagram.objects.items():
             if isinstance(obj, PositionedDiagramObject) and obj.do_draw:
                 g.add_node(name)
-                if hasattr(obj, 'edges'):
+                if hasattr(obj, "edges"):
                     for e in obj.edges:
                         g.add_edge(name, e.target.get_key())
         return g
@@ -37,7 +37,7 @@ class DiagramLayout(ABC):
 
 class DotLayout(DiagramLayout):
     def apply(self):
-        layout = graphviz_layout(self.get_graph(), prog='dot')
+        layout = graphviz_layout(self.get_graph(), prog="dot")
 
         scale_x, scale_y = self.calculate_scaling_factors(layout)
 
@@ -85,9 +85,9 @@ class SpringLayout(DiagramLayout):
 class DiagramLayoutFactory:
     @staticmethod
     def make(name: str, diagram: Diagram):
-        if name == 'dot':
+        if name == "dot":
             return DotLayout(diagram)
-        elif name == 'spring':
+        elif name == "spring":
             return SpringLayout(diagram)
 
-        raise Exception('Undefined layout "{}"'.format(name))
+        raise Exception("Undefined layout \"{}\"".format(name))
