@@ -90,6 +90,16 @@ class PUMLexer(object):
         return t
 
     @staticmethod
+    def t_FLOAT_NOTE_MULTILINE(t):
+        r"""note\s+AS\s+(.*)"""
+        t.lexer.begin("NOTE")
+        t.lexer.note_start = t.lexer.lexpos
+
+        t.type = "FLOAT_NOTE"
+        t.value = t.lexer.lexmatch.group(15)
+        return t
+
+    @staticmethod
     def t_NOTE_CONTENT(t):
         r"""end note"""
         t.lexer.begin("INITIAL")
@@ -122,9 +132,9 @@ class PUMLexer(object):
     @staticmethod
     def t_REL_LINE(t):
         r"""(<\||<|o|\*|\#|x|\}|\+|\^)*(\-+|\.+)(\|>|>|o|\*|\#|x|\{|\+|\^)*"""
-        left_type = t.lexer.lexmatch.group(15)
-        line = t.lexer.lexmatch.group(16)
-        right_type = t.lexer.lexmatch.group(17)
+        left_type = t.lexer.lexmatch.group(17)
+        line = t.lexer.lexmatch.group(18)
+        right_type = t.lexer.lexmatch.group(19)
 
         t.value = (left_type, line, right_type)
         return t
@@ -132,13 +142,13 @@ class PUMLexer(object):
     @staticmethod
     def t_GENERICS(t):
         r"""<(.+?)>"""
-        t.value = t.lexer.lexmatch.group(19)
+        t.value = t.lexer.lexmatch.group(21)
         return t
 
     @staticmethod
     def t_MEMBER(t):
         r"""(\w)::(.+)"""
-        t.value = t.lexer.lexmatch.group(21), t.lexer.lexmatch.group(22)
+        t.value = t.lexer.lexmatch.group(23), t.lexer.lexmatch.group(24)
         return t
 
     @staticmethod
@@ -150,8 +160,8 @@ class PUMLexer(object):
     @staticmethod
     def t_CLASS_DEF(t):
         r"""(class|entity|enum|exception|interface|metaclass|protocol|stereotype|struct|annotation|object)\s+("[^"]*"|\w+)"""
-        class_type = t.lexer.lexmatch.group(26)
-        name = t.lexer.lexmatch.group(27).replace("\"", "")
+        class_type = t.lexer.lexmatch.group(28)
+        name = t.lexer.lexmatch.group(29).replace("\"", "")
 
         t.value = (class_type, name)
         return t

@@ -265,8 +265,12 @@ class PUMLParser(object):
     def p_float_note(self, p):
         """
         note    : FLOAT_NOTE
+                | FLOAT_NOTE NOTE_CONTENT
         """
-        p[0] = DiagramNote(p[1][1], p[1][0]).append_to_diagram(self.diagram)
+        if len(p) == 2:
+            p[0] = DiagramNote(p[1][1], p[1][0]).append_to_diagram(self.diagram)
+        else:
+            p[0] = DiagramNote(p[1], "\n".join(p[2])).append_to_diagram(self.diagram)
 
     def p_line_note(self, p):
         """

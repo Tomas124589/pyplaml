@@ -12,6 +12,11 @@ note bottom of Object : Bottom note.
 note left of Object : Left note.
 
 note "This is a floating note" as N1
+note AS float_note
+    Multi line
+    floating note
+end note
+
 note "This note is connected\nto several objects." as N2
 Object .. N2
 N2 .. ArrayList
