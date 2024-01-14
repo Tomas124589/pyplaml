@@ -336,13 +336,15 @@ class PUMLParser(object):
         """
         command : HIDE IDENTIFIER
         """
-        if p[2][0] == "@":
-            if p[2] == "@unlinked":
+        name = p[2]
+
+        if name[0] == "@":
+            if name == "@unlinked":
                 self.diagram.hide_unlinked = True
-
-            return
-
-        self.diagram[p[2]].is_hidden = True
+        elif name == "circle":
+            self.diagram.hide_icons = True
+        else:
+            self.diagram[name].is_hidden = True
 
     def p_hide_by_tag(self, p):
         """
@@ -354,13 +356,15 @@ class PUMLParser(object):
         """
         command : SHOW IDENTIFIER
         """
-        if p[2][0] == "@":
-            if p[2] == "@unlinked":
+        name = p[2]
+
+        if name[0] == "@":
+            if name == "@unlinked":
                 self.diagram.hide_unlinked = False
-
-            return
-
-        self.diagram[p[2]].is_hidden = False
+        elif name == "circle":
+            self.diagram.hide_icons = False
+        else:
+            self.diagram[p[2]].is_hidden = False
 
     def p_show_by_tag(self, p):
         """

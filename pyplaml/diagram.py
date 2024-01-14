@@ -1,7 +1,7 @@
 from manim import *
 
+import pyplaml
 from .diagram_object import DiagramObject
-
 
 class Diagram:
 
@@ -15,6 +15,7 @@ class Diagram:
 
         self.hide_unlinked = False
         self.remove_unlinked = False
+        self.hide_icons = False
 
     def __setitem__(self, key: str, val: DiagramObject):
         if not isinstance(val, DiagramObject):
@@ -65,6 +66,11 @@ class Diagram:
             for n, deg in self.objects_degree().items():
                 if deg == 0:
                     self[n].is_hidden = True
+
+        if self.hide_icons:
+            for n, o in self.objects.items():
+                if isinstance(o, pyplaml.DiagramClass):
+                    o.show_icon = False
 
         for name, obj in self.objects.items():
             if obj.do_draw:

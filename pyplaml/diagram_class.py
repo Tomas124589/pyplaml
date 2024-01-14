@@ -21,6 +21,8 @@ class DiagramClass(PositionedDiagramObject):
         self.stereotype = ""
         self.generics = ""
 
+        self.show_icon = True
+
         self.mg_header = VGroup()
         self.mo_title = Text
         self.mg_attributes = VGroup()
@@ -87,7 +89,9 @@ class DiagramClass(PositionedDiagramObject):
         else:
             text_group = self.mo_title
 
-        return VGroup(self.prepare_icon(), text_group).arrange(RIGHT, buff=0.1)
+        return VGroup(
+            self.prepare_icon() if self.show_icon else VGroup(),
+            text_group).arrange(RIGHT, buff=0.1)
 
     def __prepare_attributes_body(self):
         attributes = self.__prepare_attributes(self.attributes)
