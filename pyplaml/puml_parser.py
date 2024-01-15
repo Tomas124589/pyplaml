@@ -15,8 +15,7 @@ class PUMLParser(object):
     def p_uml(self, p):
         """
         uml : STARTUML elements ENDUML
-            | STARTUML IDENTIFIER elements ENDUML
-            | STARTUML STRING elements ENDUML
+            | STARTUML strid elements ENDUML
         """
 
         if len(p) == 5:
@@ -40,12 +39,17 @@ class PUMLParser(object):
                 | skinparam
         """
 
+    @staticmethod
+    def p_strid(p):
+        """
+        strid   : IDENTIFIER
+                | STRING
+        """
+        p[0] = p[1]
+
     def p_relation(self, p):
         """
-        relation    : IDENTIFIER rel_line IDENTIFIER
-                    | STRING rel_line STRING
-                    | STRING rel_line IDENTIFIER
-                    | IDENTIFIER rel_line STRING
+        relation    : strid rel_line strid
         """
         edge: DiagramEdge = p[2]
 
@@ -87,8 +91,7 @@ class PUMLParser(object):
 
     def p_extends(self, p):
         """
-        relation    : class EXTENDS IDENTIFIER
-                    | class EXTENDS STRING
+        relation    : class EXTENDS strid
         """
         l_class: DiagramClass = p[1]
 
@@ -108,8 +111,7 @@ class PUMLParser(object):
 
     def p_implements(self, p):
         """
-        relation    : class IMPLEMENTS IDENTIFIER
-                    | class IMPLEMENTS STRING
+        relation    : class IMPLEMENTS strid
         """
         l_class: DiagramClass = p[1]
         r_class = DiagramClassFactory.make(p[3], ClassType.INTERFACE).append_to_diagram(self.diagram)
@@ -190,8 +192,7 @@ class PUMLParser(object):
 
     def p_abstract_class(self, p):
         """
-        class           : ABSTRACT IDENTIFIER
-                        | ABSTRACT STRING
+        class           : ABSTRACT strid
                         | ABSTRACT class
         """
         if type(p[2]) is str:
@@ -255,8 +256,7 @@ class PUMLParser(object):
 
     def p_class_attr(self, p):
         """
-        class_attr  : IDENTIFIER AFTERCOLON
-                    | STRING AFTERCOLON
+        class_attr  : strid AFTERCOLON
         """
         c: DiagramClass = self.diagram[p[1]]
         attr = ClassAttribute.from_string(p[2])
