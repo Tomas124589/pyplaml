@@ -5,7 +5,7 @@ from .diagram_object import DiagramObject
 
 class Diagram:
 
-    def __init__(self, name: str):
+    def __init__(self, name: str = ''):
         self.scene: Scene | None = None
         self.name = name
         self.animate = False
