@@ -30,6 +30,11 @@ class DiagramEdge(DiagramObject):
         self.mo_mid_text_arrow: RegularPolygon | None = None
         self.mo_target_text: Text | None = None
 
+    def between(self, source: DiagramObject, target: DiagramObject):
+        self.source = source
+        self.target = target
+        return self
+
     def get_dir(self):
         is_left = self.source_rel_type != Relation.NONE
         is_right = self.target_rel_type != Relation.NONE

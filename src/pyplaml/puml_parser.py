@@ -57,12 +57,10 @@ class PUMLParser(object):
         r_class = DiagramClass(p[3]).append_to_diagram(self.diagram)
 
         if edge.get_dir() == 1:
-            edge.source = l_class
-            edge.target = r_class
+            edge.between(l_class, r_class)
             l_class.edges.append(edge)
         else:
-            edge.source = r_class
-            edge.target = l_class
+            edge.between(r_class, l_class)
             r_class.edges.append(edge)
 
         edge.append_to_diagram(self.diagram)
@@ -100,10 +98,8 @@ class PUMLParser(object):
         else:
             r_class = DiagramClass(p[3]).append_to_diagram(self.diagram)
 
-        edge = DiagramEdge(False)
-        edge.source = l_class
+        edge = DiagramEdge(False).between(l_class, r_class)
         edge.source_rel_type = Relation.NONE
-        edge.target = r_class
         edge.target_rel_type = Relation.EXTENSION
 
         l_class.edges.append(edge)
@@ -268,9 +264,7 @@ class PUMLParser(object):
         obj = self.diagram[obj_name]
 
         n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
-        e = DiagramEdge(False)
-        e.source = n
-        e.target = obj
+        e = DiagramEdge(False).between(n, obj)
         n.edges.append(e)
 
         n.append_to_diagram(self.diagram)
@@ -287,9 +281,7 @@ class PUMLParser(object):
         text = "\n".join(p[2])
 
         n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
-        e = DiagramEdge(False)
-        e.source = n
-        e.target = obj
+        e = DiagramEdge(False).between(n, obj)
         n.edges.append(e)
 
         n.append_to_diagram(self.diagram)
@@ -309,9 +301,7 @@ class PUMLParser(object):
         text = p[3]
 
         n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
-        e = DiagramEdge(False)
-        e.source = n
-        e.target = obj
+        e = DiagramEdge(False).between(n, obj)
         n.edges.append(e)
 
         n.append_to_diagram(self.diagram)
