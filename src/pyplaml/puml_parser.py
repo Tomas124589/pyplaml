@@ -100,7 +100,7 @@ class PUMLParser(object):
         else:
             r_class = DiagramClass(p[3]).append_to_diagram(self.diagram)
 
-        edge = DiagramEdge(False, 1)
+        edge = DiagramEdge(False)
         edge.source = l_class
         edge.source_rel_type = Relation.NONE
         edge.target = r_class
@@ -116,7 +116,7 @@ class PUMLParser(object):
         l_class: DiagramClass = p[1]
         r_class = DiagramClassFactory.make(p[3], ClassType.INTERFACE).append_to_diagram(self.diagram)
 
-        edge = DiagramEdge(True, 1)
+        edge = DiagramEdge(True)
         edge.source = l_class
         edge.source_rel_type = Relation.NONE
         edge.target = r_class
@@ -155,7 +155,7 @@ class PUMLParser(object):
             l_str = p[1]
             r_str = p[3]
 
-        e = DiagramEdge("." in line, len(line))
+        e = DiagramEdge("." in line)
         e.source_rel_type = Relation.from_string(left_type)
         e.target_rel_type = Relation.from_string(right_type)
 
@@ -268,7 +268,7 @@ class PUMLParser(object):
         obj = self.diagram[obj_name]
 
         n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
-        e = DiagramEdge(False, 1)
+        e = DiagramEdge(False)
         e.source = n
         e.target = obj
         n.edges.append(e)
@@ -287,7 +287,7 @@ class PUMLParser(object):
         text = "\n".join(p[2])
 
         n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
-        e = DiagramEdge(False, 1)
+        e = DiagramEdge(False)
         e.source = n
         e.target = obj
         n.edges.append(e)
@@ -309,7 +309,7 @@ class PUMLParser(object):
         text = p[3]
 
         n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
-        e = DiagramEdge(False, 1)
+        e = DiagramEdge(False)
         e.source = n
         e.target = obj
         n.edges.append(e)

@@ -9,11 +9,9 @@ class DiagramEdge(DiagramObject):
 
     def __init__(self,
                  dotted: bool,
-                 size: int,
                  ):
         DiagramObject.__init__(self, "")
         self.dotted = dotted
-        self.size = size
 
         self.source: DiagramObject | None = None
         self.source_rel_type = Relation.NONE
