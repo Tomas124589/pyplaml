@@ -1,9 +1,19 @@
-from manim import *
-import pyplaml
 import argparse
 
+from manim import *
 
-class MainScene(pyplaml.Scene):
+from pyplaml import Scene, Diagram
+
+
+class MainScene(Scene):
+    file: str
+
+    def prepare_diagram(self) -> Diagram:
+        diagram = self.parser.parse_file(self.file)
+        diagram.animate = self.animate
+        self.set_layout(self.layout, self.scale_x, self.scale_y)
+        return diagram
+
     def anims(self):
         pass
 
