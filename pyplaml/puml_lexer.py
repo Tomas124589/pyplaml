@@ -13,7 +13,6 @@ class PUMLexer(object):
     keywords = {
         "@startuml": "STARTUML",
         "@enduml": "ENDUML",
-        "abstract": "ABSTRACT",
         "implements": "IMPLEMENTS",
         "extends": "EXTENDS",
         "as": "AS",
@@ -159,11 +158,16 @@ class PUMLexer(object):
 
     @staticmethod
     def t_CLASS_DEF(t):
-        r"""(class|entity|enum|exception|interface|metaclass|protocol|stereotype|struct|annotation|object)\s+("[^"]*"|\w+)"""
-        class_type = t.lexer.lexmatch.group(28)
-        name = t.lexer.lexmatch.group(29).replace("\"", "")
+        r"""(?:(abstract)\s+)?(class|abstract|entity|enum|exception|interface|metaclass|protocol|stereotype|struct|annotation|object)\s+("[^"]*"|\w+)"""
+        is_abstract = t.lexer.lexmatch.group(28) == 'abstract'
+        class_type = t.lexer.lexmatch.group(29)
+        name = t.lexer.lexmatch.group(30).replace("\"", "")
 
-        t.value = (class_type, name)
+        if class_type == 'abstract':
+            is_abstract = True
+            class_type = 'class'
+
+        t.value = (class_type, name, is_abstract)
         return t
 
     @staticmethod

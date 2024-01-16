@@ -173,8 +173,9 @@ class PUMLParser(object):
         class   : CLASS_DEF
                 | CLASS_DEF GENERICS
         """
-        (class_type, name) = p[1]
+        (class_type, name, is_abstract) = p[1]
         c = DiagramClassFactory.make(name, class_type).append_to_diagram(self.diagram)
+        c.is_abstract = is_abstract
 
         if len(p) == 3:
             c.generics = p[2]
@@ -189,19 +190,6 @@ class PUMLParser(object):
         p[1].stereotype = p[2]
 
         p[0] = p[1]
-
-    def p_abstract_class(self, p):
-        """
-        class           : ABSTRACT strid
-                        | ABSTRACT class
-        """
-        if type(p[2]) is str:
-            c = DiagramClass(p[2]).append_to_diagram(self.diagram)
-        else:
-            c = p[2]
-
-        c.is_abstract = True
-        p[0] = c
 
     def p_tagged_class(self, p):
         """
