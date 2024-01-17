@@ -41,12 +41,12 @@ class DiagramObject(ABC):
         dl = self.mobject.get_boundary_point(direction=DL)
         dr = self.mobject.get_boundary_point(direction=DR)
 
-        t = self.lerp(0.5, ul, ur)
+        u = self.lerp(0.5, ul, ur)
         r = self.lerp(0.5, ur, dr)
         d = self.lerp(0.5, dl, dr)
         l = self.lerp(0.5, ul, dl)
 
-        return np.array([ul, ur, t, dl, dr, r, d, l])
+        return {'UL': ul, 'UR': ur, 'UP': u, 'DL': dl, 'DR': dr, 'R': r, 'D': d, 'L': l, }
 
     @staticmethod
     def lerp(t: float, a, b):

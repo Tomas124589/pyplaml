@@ -101,7 +101,7 @@ class DiagramEdge(DiagramObject):
         self.mo_mid_text_arrow.rotate(self.mo_mid_text_arrow.start_angle + angle_to_obj)
 
     def line_updater(self):
-        (start, target) = self.get_source_target_critical_points()
+        (start, target) = self.get_closest_points()
 
         self.mo_line = DashedLine(buff=0, stroke_width=1, tip_length=0.25, color=BLACK) if self.dotted \
             else Line(buff=0, stroke_width=1, tip_length=0.25, color=BLACK)
@@ -121,16 +121,28 @@ class DiagramEdge(DiagramObject):
         if self.mo_target_text:
             self.mo_target_text.next_to(self.mo_line.get_end() - self.mo_target_text.height, LEFT, buff=0)
 
-    def get_source_target_critical_points(self):
-        source_cp = self.closest_point_to_points(self.target.mobject.get_center(), self.source.get_boundary_points())
-        target_cp = self.closest_point_to_points(self.source.mobject.get_center(), self.target.get_boundary_points())
+    def get_closest_points(self):
+        min_dist = float('inf')
+        points = (None, None)
 
-        return source_cp, target_cp
+        weight_map = {
+            'UL': 0.05, 'UR': 0.05, 'DL': 0.05, 'DR': 0.05,
+            'UP': 0, 'R': 0, 'D': 0, 'L': 0,
+        }
 
-    @staticmethod
-    def closest_point_to_points(p, points):
-        distances = np.linalg.norm(points - p, axis=1)
-        return points[np.argmin(distances)]
+        for n1, p1 in self.source.get_boundary_points().items():
+            w1 = weight_map[n1]
+
+            for n2, p2 in self.target.get_boundary_points().items():
+                w2 = weight_map[n2]
+
+                dist = (p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2
+                dist += w1 + w2
+                if dist < min_dist:
+                    min_dist = dist
+                    points = (p1, p2)
+
+        return points
 
     def __prepare_line_tips(self):
         _dir = self.get_dir()
