@@ -16,9 +16,9 @@ class DiagramEdge(DiagramObject):
         self.dotted = dotted
 
         self.source: DiagramObject | None = None
-        self.source_rel_type = Relation.NONE
+        self.source_rel_type: Relation = Relation.NONE
         self.target: DiagramObject | None = None
-        self.target_rel_type = Relation.NONE
+        self.target_rel_type: Relation = Relation.NONE
 
         self.source_text = ""
         self.text = ""
