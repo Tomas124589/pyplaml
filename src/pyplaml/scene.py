@@ -23,8 +23,11 @@ class Scene(MovingCameraScene):
     def prepare_diagram(self) -> Diagram:
         pass
 
+    def o(self, key: str):
+        return self.diagram.objects[key]
+
     def mo(self, key: str):
-        return self.diagram.objects[key].mobject
+        return self.o(key).mobject
 
     def moa(self, key: str):
         return self.mo(key).animate
