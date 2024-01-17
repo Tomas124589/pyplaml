@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 from manim import *
 
 from .class_attribute import ClassAttribute
 from .class_type import ClassType
 from .diagram import Diagram
 from .diagram_edge import DiagramEdge
-from .diagram_object import DiagramObject, PositionedDiagramObject
+from .diagram_object import PositionedDiagramObject
 
 
 class DiagramClass(PositionedDiagramObject):
@@ -28,7 +30,7 @@ class DiagramClass(PositionedDiagramObject):
         self.mg_attributes = VGroup()
         self.mg_methods = VGroup()
 
-    def append_to_diagram(self, diagram: Diagram) -> DiagramObject:
+    def append_to_diagram(self, diagram: Diagram) -> DiagramClass:
         key = self.get_key()
         if key not in diagram.objects:
             diagram[key] = self

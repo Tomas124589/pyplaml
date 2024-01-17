@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from manim import *
 
 from .diagram import Diagram
@@ -180,6 +182,7 @@ class DiagramEdge(DiagramObject):
         elif rel == Relation.HASH:
             return ArrowSquareTip(color=BLACK, stroke_width=2, length=0.15)
 
-    def append_to_diagram(self, diagram: Diagram) -> DiagramObject:
+    def append_to_diagram(self, diagram: Diagram) -> DiagramEdge:
         self.name = self.source.get_key() + "-" + self.source_rel_type.name + "-" + self.target_rel_type.name + "-" + self.target.get_key()
-        return DiagramObject.append_to_diagram(self, diagram)
+        DiagramObject.append_to_diagram(self, diagram)
+        return diagram[self.name]
