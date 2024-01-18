@@ -54,6 +54,12 @@ class DiagramClass(PositionedDiagramObject):
         self.edges.append(edge)
         return edge
 
+    def get_edge_to(self, target: DiagramObject) -> DiagramEdge | None:
+        for e in self.edges:
+            if e.target == target:
+                return e
+        return None
+
     def predraw(self):
         header = self.__prepare_header()
         attr_body = self.__prepare_attributes_body()
