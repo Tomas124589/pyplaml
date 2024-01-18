@@ -6,6 +6,7 @@ from .class_attribute import ClassAttribute
 from .class_type import ClassType
 from .diagram import Diagram
 from .diagram_edge import DiagramEdge
+from .diagram_object import DiagramObject
 from .diagram_object import PositionedDiagramObject
 
 
@@ -47,6 +48,11 @@ class DiagramClass(PositionedDiagramObject):
             diagram[key].edges += self.edges
 
         return diagram[key]
+
+    def add_egde(self, edge: DiagramEdge, target: DiagramObject) -> DiagramEdge:
+        edge.between(self, target)
+        self.edges.append(edge)
+        return edge
 
     def predraw(self):
         header = self.__prepare_header()
