@@ -79,6 +79,14 @@ class DiagramClass(DiagramObject):
         self.redraw()
         return self
 
+    def set_abstract(self, is_abstract: bool):
+        self.__is_abstract = is_abstract
+        self.redraw()
+
+    def set_generics(self, generics: str):
+        self.__generics = generics
+        self.redraw()
+
     def redraw(self):
         super().redraw()
 

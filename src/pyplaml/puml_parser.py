@@ -3,7 +3,7 @@ import ply.yacc as yacc
 from .class_attribute import ClassAttribute
 from .class_type import ClassType
 from .diagram import Diagram
-from .diagram_class import DiagramClass, DiagramClassFactory
+from .diagram_class import DiagramClass, DiagramInterface, DiagramClassFactory
 from .diagram_edge import DiagramEdge
 from .diagram_note import DiagramNote
 from .puml_lexer import PUMLexer
@@ -137,7 +137,7 @@ class PUMLParser(object):
         """
         l_class: DiagramClass = p[1]
         if l_class.is_interface:
-            r_class = DiagramClassFactory.make(p[3], ClassType.INTERFACE)
+            r_class = DiagramInterface(p[3])
         else:
             r_class = DiagramClass(p[3])
 
@@ -168,10 +168,10 @@ class PUMLParser(object):
         """
         (class_type, name, is_abstract) = p[1]
         c = DiagramClassFactory.make(name, class_type)
-        c.__is_abstract = is_abstract
+        c.set_abstract(is_abstract)
 
         if len(p) == 3:
-            c.__generics = p[2]
+            c.set_generics(p[2])
 
         self.diagram.add(c)
 
