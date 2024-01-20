@@ -49,21 +49,65 @@ class PUMLParser(object):
 
     def p_relation(self, p):
         """
-        relation    : strid rel_line strid
+        relation    : strid REL_LINE strid
+                    | strid STRING REL_LINE strid
+                    | strid REL_LINE STRING strid
+                    | strid STRING REL_LINE STRING strid
         """
-        edge: DiagramEdge = p[2]
+        left_class_name = p[1]
+        right_class_name = p[len(p) - 1]
+        line = p[2]
+        l_text = ''
+        r_text = ''
 
-        l_class = DiagramClass(p[1]).append_to_diagram(self.diagram)
-        r_class = DiagramClass(p[3]).append_to_diagram(self.diagram)
+        _len = len(p)
+        if _len > 4:
+            if isinstance(p[2], str):
+                if len(p) == 5:
+                    l_text = p[2]
+                    line = p[3]
+                    r_text = ''
+                else:
+                    l_text = p[2]
+                    line = p[3]
+                    r_text = p[4]
+            else:
+                l_text = ''
+                line = p[2]
+                r_text = p[3]
 
-        if edge.get_dir() == 1:
-            edge.between(l_class, r_class)
-            l_class.edges.append(edge)
+        l_class = DiagramClass(left_class_name)
+        r_class = DiagramClass(right_class_name)
+
+        (left_rel, line, right_rel) = line
+
+        source_rel = Relation.from_string(left_rel)
+        target_rel = Relation.from_string(right_rel)
+
+        is_left = source_rel != Relation.NONE
+        is_right = target_rel != Relation.NONE
+
+        if is_right:
+            _dir = 1
         else:
-            edge.between(r_class, l_class)
-            r_class.edges.append(edge)
+            _dir = 0
 
-        edge.append_to_diagram(self.diagram)
+        if _dir == 1:
+            edge = DiagramEdge("." in line, l_class, r_class, source_rel, target_rel)
+
+            edge.source_text = l_text
+            edge.target_text = r_text
+
+            l_class.add_edge(edge)
+        else:
+            edge = DiagramEdge("." in line, r_class, l_class, source_rel, target_rel)
+
+            edge.source_text = r_text
+            edge.target_text = l_text
+
+            r_class.add_edge(edge)
+
+        self.diagram.add(l_class, r_class)
 
         p[0] = (l_class, r_class, edge)
 
@@ -83,7 +127,7 @@ class PUMLParser(object):
             edge.arrow_from_source = edge.get_dir() == 1
             text = text[1:]
 
-        edge.text = text
+        edge.edge_text = text
 
         p[0] = (l_class, r_class, edge)
 
@@ -92,77 +136,30 @@ class PUMLParser(object):
         relation    : class EXTENDS strid
         """
         l_class: DiagramClass = p[1]
-
         if l_class.is_interface:
-            r_class = DiagramClassFactory.make(p[3], ClassType.INTERFACE).append_to_diagram(self.diagram)
+            r_class = DiagramClassFactory.make(p[3], ClassType.INTERFACE)
         else:
-            r_class = DiagramClass(p[3]).append_to_diagram(self.diagram)
+            r_class = DiagramClass(p[3])
 
-        edge = DiagramEdge(False).between(l_class, r_class)
-        edge.source_rel_type = Relation.NONE
-        edge.target_rel_type = Relation.EXTENSION
+        self.diagram.add(r_class)
 
-        l_class.edges.append(edge)
-        edge.append_to_diagram(self.diagram)
+        edge = DiagramEdge(False, l_class, r_class, source_rel=Relation.NONE, target_rel=Relation.EXTENSION)
+
+        l_class.add_edge(edge)
+        self.diagram.add(edge)
 
     def p_implements(self, p):
         """
         relation    : class IMPLEMENTS strid
         """
         l_class: DiagramClass = p[1]
-        r_class = DiagramClassFactory.make(p[3], ClassType.INTERFACE).append_to_diagram(self.diagram)
+        r_class = DiagramClassFactory.make(p[3], ClassType.INTERFACE)
+        self.diagram.add(r_class)
 
-        edge = DiagramEdge(True)
-        edge.source = l_class
-        edge.source_rel_type = Relation.NONE
-        edge.target = r_class
-        edge.target_rel_type = Relation.EXTENSION
+        edge = DiagramEdge(True, l_class, r_class, Relation.NONE, Relation.EXTENSION)
+        l_class.add_edge(edge)
 
-        l_class.edges.append(edge)
-        edge.append_to_diagram(self.diagram)
-
-    @staticmethod
-    def p_rel_line(p):
-        """
-        rel_line    : REL_LINE
-                    | STRING REL_LINE
-                    | REL_LINE STRING
-                    | STRING REL_LINE STRING
-        """
-        _len = len(p)
-        if _len == 2:
-            (left_type, line, right_type) = p[1]
-            l_str = ""
-            r_str = ""
-
-        elif _len == 3:
-            if isinstance(p[1], str):
-                (left_type, line, right_type) = p[2]
-                l_str = p[1]
-                r_str = ""
-
-            else:
-                (left_type, line, right_type) = p[1]
-                l_str = ""
-                r_str = p[2]
-
-        else:
-            (left_type, line, right_type) = p[2]
-            l_str = p[1]
-            r_str = p[3]
-
-        e = DiagramEdge("." in line)
-        e.source_rel_type = Relation.from_string(left_type)
-        e.target_rel_type = Relation.from_string(right_type)
-
-        if e.get_dir() == 1:
-            e.source_text = l_str
-            e.target_text = r_str
-        else:
-            e.source_text = r_str
-            e.target_text = l_str
-
-        p[0] = e
+        self.diagram.add(edge)
 
     def p_class(self, p):
         """
@@ -170,11 +167,13 @@ class PUMLParser(object):
                 | CLASS_DEF GENERICS
         """
         (class_type, name, is_abstract) = p[1]
-        c = DiagramClassFactory.make(name, class_type).append_to_diagram(self.diagram)
-        c.is_abstract = is_abstract
+        c = DiagramClassFactory.make(name, class_type)
+        c.__is_abstract = is_abstract
 
         if len(p) == 3:
-            c.generics = p[2]
+            c.__generics = p[2]
+
+        self.diagram.add(c)
 
         p[0] = c
 
@@ -183,9 +182,7 @@ class PUMLParser(object):
         """
         class   : class STEREOTYPE
         """
-        p[1].stereotype = p[2]
-
-        p[0] = p[1]
+        p[0] = p[1].set_stereotype(p[2])
 
     def p_tagged_class(self, p):
         """
@@ -212,10 +209,7 @@ class PUMLParser(object):
         class   : class IN_BRACKETS_LINES
         """
         c: DiagramClass = self.diagram[p[1]]
-        for l in p[2]:
-            c.add_attribute(ClassAttribute.from_string(l))
-
-        p[0] = c
+        p[0] = c.add_attributes([ClassAttribute.from_string(a) for a in p[2]])
 
     def p_class_alias(self, p):
         """
@@ -225,7 +219,7 @@ class PUMLParser(object):
 
         self.diagram.objects.pop(str(c))
         c.alias = p[3]
-        c.append_to_diagram(self.diagram)
+        self.diagram.add(c)
 
         p[0] = p[1]
 
@@ -243,8 +237,7 @@ class PUMLParser(object):
         class_attr  : strid AFTERCOLON
         """
         c: DiagramClass = self.diagram[p[1]]
-        attr = ClassAttribute.from_string(p[2])
-        c.add_attribute(attr)
+        p[0] = c.add_attributes([ClassAttribute.from_string(p[2])])
 
     def p_float_note(self, p):
         """
@@ -252,9 +245,12 @@ class PUMLParser(object):
                 | FLOAT_NOTE NOTE_CONTENT
         """
         if len(p) == 2:
-            p[0] = DiagramNote(p[1][1], p[1][0]).append_to_diagram(self.diagram)
+            note = DiagramNote(p[1][1], p[1][0])
         else:
-            p[0] = DiagramNote(p[1], "\n".join(p[2])).append_to_diagram(self.diagram)
+            note = DiagramNote(p[1], "\n".join(p[2]))
+
+        self.diagram.add(note)
+        p[0] = note
 
     def p_line_note(self, p):
         """
@@ -264,11 +260,10 @@ class PUMLParser(object):
         obj = self.diagram[obj_name]
 
         n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
-        e = DiagramEdge(False).between(n, obj)
+        e = DiagramEdge(False, n, obj)
         n.edges.append(e)
 
-        n.append_to_diagram(self.diagram)
-        e.append_to_diagram(self.diagram)
+        self.diagram.add(n, e)
 
         p[0] = n
 
@@ -281,11 +276,10 @@ class PUMLParser(object):
         text = "\n".join(p[2])
 
         n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
-        e = DiagramEdge(False).between(n, obj)
+        e = DiagramEdge(False, n, obj)
         n.edges.append(e)
 
-        n.append_to_diagram(self.diagram)
-        e.append_to_diagram(self.diagram)
+        self.diagram.add(n, e)
 
         p[0] = n
 
@@ -301,11 +295,10 @@ class PUMLParser(object):
         text = p[3]
 
         n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
-        e = DiagramEdge(False).between(n, obj)
+        e = DiagramEdge(False, n, obj)
         n.edges.append(e)
 
-        n.append_to_diagram(self.diagram)
-        e.append_to_diagram(self.diagram)
+        self.diagram.add(n, e)
 
         p[0] = n
 
@@ -313,7 +306,6 @@ class PUMLParser(object):
         """
         command : REMOVE IDENTIFIER
         """
-        print(p[2])
         if p[2][0] == "@":
             if p[2] == "@unlinked":
                 self.diagram.remove_unlinked = True
@@ -403,7 +395,7 @@ class PUMLParser(object):
         self.lexer = PUMLexer()
         self.tokens = self.lexer.tokens
         self.parser = yacc.yacc(module=self, **kwargs)
-        self.diagram = Diagram("")
+        self.diagram = Diagram()
 
     def parse(self, text) -> Diagram:
         return self.parser.parse(text)

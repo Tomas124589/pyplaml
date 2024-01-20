@@ -2,20 +2,21 @@ import argparse
 
 from manim import *
 
-from pyplaml import Scene, Diagram
+from pyplaml import Scene
+from pyplaml.diagram_layout import DotLayout
 
 
 class MainScene(Scene):
     file: str
 
-    def prepare_diagram(self) -> Diagram:
-        diagram = self.parser.parse_file(self.file)
-        diagram.animate = self.animate
-        self.set_layout(self.layout, self.scale_x, self.scale_y)
-        return diagram
-
     def anims(self):
-        pass
+        diagram = self.parser.parse_file(self.file)
+        diagram.layout = DotLayout()
+        diagram.apply_layout(self.scale_x, self.scale_y)
+
+        self.add(diagram)
+
+        self.camera.auto_zoom(self.mobjects, margin=0.5, animate=False)
 
 
 if __name__ == "__main__":

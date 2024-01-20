@@ -1,51 +1,40 @@
 from __future__ import annotations
 
+import typing
 from abc import ABC, abstractmethod
 
 import networkx as nx
 from networkx.drawing.nx_agraph import graphviz_layout
 
-from pyplaml import Diagram
-from pyplaml.diagram_object import PositionedDiagramObject
+from pyplaml import *
 
 
 class DiagramLayout(ABC):
-    def __init__(self, diagram: Diagram) -> None:
-        self.diagram = diagram
+    objects: typing.Dict[str, DiagramObject]
 
     @abstractmethod
-    def apply(self) -> DiagramLayout:
-        pass
+    def apply(self, objects: typing.Dict[str, DiagramObject], scale_x: float = 1, scale_y: float = 1):
+        self.objects = objects
 
     def get_graph(self) -> nx.DiGraph:
         g = nx.DiGraph()
-        for name, obj in self.diagram.objects.items():
-            if isinstance(obj, PositionedDiagramObject) and obj.do_draw:
-                g.add_node(name)
-                if hasattr(obj, "edges"):
-                    for e in obj.edges:
-                        g.add_edge(name, e.target.get_key())
+        for name, o in self.objects.items():
+            g.add_node(o.name)
+            for e in o.edges:
+                g.add_edge(e.target.get_key(), o.name)
         return g
-
-    def scale(self, x: float, y: float) -> DiagramLayout:
-        for name, obj in self.diagram.objects.items():
-            if isinstance(obj, PositionedDiagramObject):
-                self.diagram[name].x = self.diagram[name].x * x
-                self.diagram[name].y = self.diagram[name].y * y
-        return self
 
 
 class DotLayout(DiagramLayout):
-    def apply(self):
+    def apply(self, objects: typing.Dict[str, DiagramObject], scale_x: float = 1, scale_y: float = 1):
+        super().apply(objects)
         layout = graphviz_layout(self.get_graph(), prog="dot")
-
-        scale_x, scale_y = self.calculate_scaling_factors(layout)
+        x, y = self.calculate_scaling_factors(layout)
 
         for key, pos in layout.items():
-            self.diagram[key].x = pos[0] * scale_x * 2
-            self.diagram[key].y = pos[1] * scale_y * 2
+            layout[key] = (pos[0] * scale_x * x * 2, pos[1] * scale_y * y * 2)
 
-        return self
+        return layout
 
     @staticmethod
     def calculate_scaling_factors(layout):
@@ -72,22 +61,6 @@ class DotLayout(DiagramLayout):
 
 
 class SpringLayout(DiagramLayout):
-    def apply(self):
-        layout = nx.spring_layout(self.get_graph())
-
-        for key, pos in layout.items():
-            self.diagram[key].x = pos[0]
-            self.diagram[key].y = pos[1]
-
-        return self
-
-
-class DiagramLayoutFactory:
-    @staticmethod
-    def make(name: str, diagram: Diagram):
-        if name == "dot":
-            return DotLayout(diagram)
-        elif name == "spring":
-            return SpringLayout(diagram)
-
-        raise Exception("Undefined layout \"{}\"".format(name))
+    def apply(self, objects: typing.Dict[str, DiagramObject], scale_x: float = 1, scale_y: float = 1):
+        super().apply(objects)
+        return nx.spring_layout(self.get_graph())

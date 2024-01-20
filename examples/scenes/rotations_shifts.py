@@ -1,32 +1,23 @@
 import pyplaml
 from pyplaml.diagram_class import *
+from pyplaml.diagram_layout import *
+from pyplaml.relation import Relation
 
 
 class MyScene(pyplaml.Scene):
-    def prepare_diagram(self) -> Diagram:
-        self.set_layout('dot')
-
-        d = Diagram()
-
-        c1 = DiagramClass('Class1').append_to_diagram(d)
-        c2 = DiagramClass('Class2').append_to_diagram(d)
-        c1.edges.append(DiagramEdge(False).between(c1, c2).append_to_diagram(d))
-
-        return d
-
     def anims(self):
-        self.play(self.moa('Class1').shift(2 * LEFT).rotate(45 * DEGREES), run_time=2)
-        self.play(self.camera.auto_zoom(self.mobjects))
-        self.play(self.moa('Class1').shift(UP).rotate(90 * DEGREES), run_time=2)
-        self.play(self.moa('Class1').rotate(45 * DEGREES), run_time=1)
-        self.play(self.moa('Class1').rotate(90 * DEGREES), run_time=1)
-        self.play(self.moa('Class1').rotate(90 * DEGREES), run_time=2)
+        c1 = DiagramClass('C1')
+        c2 = DiagramClass('C2')
+        c3 = DiagramClass('C3')
 
-        self.play(self.moa('Class2').shift(DOWN * 2).rotate(45 * DEGREES), run_time=2)
-        self.play(self.moa('Class2').rotate(45 * DEGREES), run_time=1)
-        self.play(self.moa('Class2').rotate(45 * DEGREES), run_time=1)
-        self.play(self.moa('Class2').rotate(45 * DEGREES), run_time=1)
-        self.play(self.moa('Class2').rotate(90 * DEGREES), run_time=2)
-        self.play(self.moa('Class2').rotate(90 * DEGREES), run_time=2)
+        c2.add_edge(DiagramEdge(False, c2, c1, target_rel=Relation.EXTENSION))
+        c3.add_edge(DiagramEdge(True, c3, c1, target_rel=Relation.ASSOCIATION))
 
-        self.wait(3)
+        diagram = Diagram(DotLayout())
+        diagram.add(c1, c2, c3)
+        diagram.add(c2.get_edge_to(c1), c3.get_edge_to(c1))
+        diagram.apply_layout(3, 2)
+
+        self.add(diagram)
+
+        self.camera.auto_zoom(self.mobjects, animate=False)

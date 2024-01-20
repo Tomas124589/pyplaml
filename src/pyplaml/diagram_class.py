@@ -7,50 +7,58 @@ from .class_type import ClassType
 from .diagram import Diagram
 from .diagram_edge import DiagramEdge
 from .diagram_object import DiagramObject
-from .diagram_object import PositionedDiagramObject
 
 
-class DiagramClass(PositionedDiagramObject):
+class DiagramClass(DiagramObject):
 
-    def __init__(self, name: str):
-        super().__init__(name)
-        self.edges: List[DiagramEdge] = []
-        self.attributes: List[ClassAttribute] = []
-        self.methods: List[ClassAttribute] = []
+    def __init__(self,
+                 name: str,
+                 edges: List[DiagramEdge] = None,
+                 attributes: List[ClassAttribute] = None,
+                 stereotype: str = "",
+                 generics: str = "",
+                 **kwargs):
+        super().__init__(name, **kwargs)
+        if edges is None:
+            edges: List[DiagramEdge] = []
+        self.edges = edges
 
-        self.is_abstract = False
+        if attributes is None:
+            attributes: List[ClassAttribute] = []
+        self.__attributes = attributes
+
+        self.__stereotype = stereotype
+        self.__generics = generics
+
+        self.__show_icon = True
+        self.__is_abstract = False
         self.is_interface = False
 
-        self.stereotype = ""
-        self.generics = ""
+        self.__mg_header = VGroup()
+        self.__mo_title = Text
+        self.__mg_attributes = VGroup()
+        self.__mg_methods = VGroup()
 
-        self.show_icon = True
-
-        self.mg_header = VGroup()
-        self.mo_title = Text
-        self.mg_attributes = VGroup()
-        self.mg_methods = VGroup()
-
-    def append_to_diagram(self, diagram: Diagram) -> DiagramClass:
+    def append_to_diagram(self, diagram: Diagram) -> bool:
         key = self.get_key()
-        if key not in diagram.objects:
+        exists = key in diagram.objects
+        if not exists:
             diagram[key] = self
             for edge in self.edges:
                 if edge.target.name in diagram.objects:
                     edge.target = diagram[edge.target.name]
                 else:
-                    edge.target.append_to_diagram(diagram)
+                    diagram.add(edge.target)
         else:
             for edge in self.edges:
                 if edge.target not in diagram:
-                    edge.target.append_to_diagram(diagram)
+                    diagram.add(edge.target)
                 edge.target = diagram[edge.target.name]
             diagram[key].edges += self.edges
 
-        return diagram[key]
+        return exists
 
-    def add_egde(self, edge: DiagramEdge, target: DiagramObject) -> DiagramEdge:
-        edge.between(self, target)
+    def add_edge(self, edge: DiagramEdge) -> DiagramEdge:
         self.edges.append(edge)
         return edge
 
@@ -60,27 +68,38 @@ class DiagramClass(PositionedDiagramObject):
                 return e
         return None
 
-    def predraw(self):
+    def add_attributes(self, attributes: List[ClassAttribute]) -> DiagramClass:
+        for a in attributes:
+            self.__attributes.append(a)
+        self.redraw()
+        return self
+
+    def set_stereotype(self, stereotype: str) -> DiagramClass:
+        self.__stereotype = stereotype
+        self.redraw()
+        return self
+
+    def redraw(self):
+        super().redraw()
+
         header = self.__prepare_header()
         attr_body = self.__prepare_attributes_body()
         method_body = self.__prepare_methods_body()
 
-        max_width = max(self.mg_header.width, self.mg_attributes.width, self.mg_methods.width)
+        max_width = max(self.__mg_header.width, self.__mg_attributes.width, self.__mg_methods.width)
 
         header.stretch_to_fit_width(max_width)
         attr_body.stretch_to_fit_width(max_width)
         method_body.stretch_to_fit_width(max_width)
 
-        self.mobject = VGroup(
-            self.mg_header,
-            self.mg_attributes,
-            self.mg_methods
+        self.add(
+            self.__mg_header,
+            self.__mg_attributes,
+            self.__mg_methods
         ).arrange(DOWN, buff=0)
 
-        if self.generics:
+        if self.__generics:
             self.__prepare_generics()
-
-        return self.mobject
 
     def __prepare_header(self):
         mo_title = self.__prepare_title()
@@ -89,42 +108,42 @@ class DiagramClass(PositionedDiagramObject):
         header.stretch_to_fit_width(mo_title.width + 0.5)
         header.stretch_to_fit_height(mo_title.height + 0.2)
 
-        self.mg_header = VGroup(header, mo_title)
+        self.__mg_header = VGroup(header, mo_title)
 
         return header
 
     def __prepare_title(self):
-        self.mo_title = Text(self.name, color=BLACK, slant=ITALIC if self.is_abstract else NORMAL)
-        if self.stereotype:
+        self.__mo_title = Text(self.name, color=BLACK, slant=ITALIC if self.__is_abstract else NORMAL)
+        if self.__stereotype:
             text_group = VGroup(
-                Text("<<" + self.stereotype + ">>", color=BLACK).scale(0.6),
-                self.mo_title
+                Text("<<" + self.__stereotype + ">>", color=BLACK).scale(0.6),
+                self.__mo_title
             ).arrange(DOWN, buff=0.1)
         else:
-            text_group = self.mo_title
+            text_group = self.__mo_title
 
         return VGroup(
-            self.prepare_icon() if self.show_icon else VGroup(),
+            self.prepare_icon() if self.__show_icon else VGroup(),
             text_group).arrange(RIGHT, buff=0.1)
 
     def __prepare_attributes_body(self):
-        attributes = self.__prepare_attributes(self.attributes)
+        attributes = self.__prepare_attributes([a for a in self.__attributes if not a.is_method])
         border = Rectangle(color=GRAY, height=attributes.height + 0.1, width=0.2, fill_color=WHITE, fill_opacity=1)
-        self.mg_attributes = VGroup(border, attributes)
-        border.stretch_to_fit_width(self.mg_attributes.width + 0.1)
+        self.__mg_attributes = VGroup(border, attributes)
+        border.stretch_to_fit_width(self.__mg_attributes.width + 0.1)
 
         return border
 
     def __prepare_methods_body(self):
-        methods = self.__prepare_attributes(self.methods)
+        methods = self.__prepare_attributes([a for a in self.__attributes if a.is_method])
         border = Rectangle(color=GRAY, height=methods.height + 0.1, width=0.2, fill_color=WHITE, fill_opacity=1)
-        self.mg_methods = VGroup(border, methods)
-        border.stretch_to_fit_width(self.mg_methods.width + 0.1)
+        self.__mg_methods = VGroup(border, methods)
+        border.stretch_to_fit_width(self.__mg_methods.width + 0.1)
 
         return border
 
     def __prepare_generics(self):
-        g_text = Text(self.generics, color=BLACK).scale(0.6)
+        g_text = Text(self.__generics, color=BLACK).scale(0.6)
         g_text.set_z_index(1)
 
         g_rect = DashedVMobject(Rectangle(color=BLACK, stroke_width=1), num_dashes=50)
@@ -137,9 +156,9 @@ class DiagramClass(PositionedDiagramObject):
         g_back.stretch_to_fit_height(g_rect.height - 0.05)
 
         g_group = VGroup(g_rect, g_text, g_back)
-        g_group.move_to(self.mg_header.get_corner(UP + RIGHT) - (g_group.width / 2, 0, 0))
+        g_group.move_to(self.__mg_header.get_corner(UP + RIGHT) - (g_group.width / 2, 0, 0))
 
-        self.mg_header.add(g_group)
+        self.__mg_header.add(g_group)
 
     @staticmethod
     def __prepare_attributes(attributes: List[ClassAttribute]):
@@ -165,13 +184,7 @@ class DiagramClass(PositionedDiagramObject):
         return VGroup(c, t)
 
     def prepare_icon(self):
-        return self.get_icon("A" if self.is_abstract else "C", TEAL if self.is_abstract else GREEN)
-
-    def add_attribute(self, attr: ClassAttribute):
-        if attr.is_method:
-            self.methods.append(attr)
-        else:
-            self.attributes.append(attr)
+        return self.get_icon("A" if self.__is_abstract else "C", TEAL if self.__is_abstract else GREEN)
 
 
 class DiagramAnnotation(DiagramClass):
