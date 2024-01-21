@@ -13,7 +13,7 @@ class DiagramNote(DiagramObject):
 
         self.edges: List[DiagramEdge] = []
 
-        self.__prepare()
+        self.redraw()
 
     def redraw(self):
         rect = Rectangle(fill_color="#feffdd", fill_opacity=1, stroke_color="#8c8c83", stroke_width=1)
