@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from manim import *
 
-from .diagram import Diagram
+from . import Diagram
 from .diagram_object import DiagramObject
 from .relation import Relation
 
@@ -39,6 +39,10 @@ class DiagramEdge(DiagramObject):
         self.mo_mid_text_arrow: RegularPolygon | None = None
         self.mo_target_text: Text | None = None
 
+        self.name = self.source.get_key() + "-" + self.source_rel.name + "-" + self.target_rel.name + "-" + self.target.get_key()
+
+        self.redraw()
+
     def get_dir(self):
         is_left = self.source_rel != Relation.NONE
         is_right = self.target_rel != Relation.NONE
@@ -51,10 +55,6 @@ class DiagramEdge(DiagramObject):
             return 1
         else:
             return None
-
-    def append_to_diagram(self, diagram: Diagram) -> bool:
-        self.name = self.source.get_key() + "-" + self.source_rel.name + "-" + self.target_rel.name + "-" + self.target.get_key()
-        return DiagramObject.append_to_diagram(self, diagram)
 
     def redraw(self):
         super().redraw()
@@ -70,6 +70,15 @@ class DiagramEdge(DiagramObject):
         self.__prepare_target_text()
 
         self.mo_line.add_updater(self.__updater)
+
+    def append_to_diagram(self, diagram: Diagram) -> DiagramEdge:
+        if self.source.name in diagram.objects:
+            self.source = diagram.objects[self.source.name]
+
+        if self.target.name in diagram.objects:
+            self.target = diagram.objects[self.target.name]
+
+        return super().append_to_diagram(diagram)
 
     def __prepare_target_text(self):
         if self.target_text:

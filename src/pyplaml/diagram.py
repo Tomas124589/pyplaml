@@ -20,8 +20,8 @@ class Diagram(VGroup):
 
     def add(self, *vmobjects: DiagramObject):
         for o in vmobjects:
-            o.redraw()
-            exists = o.append_to_diagram(self)
+            exists = o.get_key() in self.objects
+            o = o.append_to_diagram(self)
             if not exists:
                 super().add(o)
 
@@ -35,6 +35,8 @@ class Diagram(VGroup):
             for name, pos in positions.items():
                 _pos = (pos[0], pos[1], 0)
                 self[name].move_to(_pos)
+
+            for name, pos in positions.items():
                 for e in self[name].edges:
                     e.redraw()
 

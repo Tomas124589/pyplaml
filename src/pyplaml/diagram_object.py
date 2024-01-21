@@ -37,12 +37,11 @@ class DiagramObject(VGroup):
     def lerp(t: float, a, b):
         return (1 - t) * a + t * b
 
-    def append_to_diagram(self, diagram: pyplaml.Diagram) -> bool:
+    def append_to_diagram(self, diagram: pyplaml.Diagram):
         key = self.get_key()
-        exists = key in diagram.objects
-        if not exists:
+        if not key in diagram.objects:
             diagram[key] = self
-        return exists
+        return self
 
     def get_key(self):
         return self.alias or self.name

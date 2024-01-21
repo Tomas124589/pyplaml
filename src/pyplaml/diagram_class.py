@@ -39,28 +39,32 @@ class DiagramClass(DiagramObject):
         self.__mg_attributes = VGroup()
         self.__mg_methods = VGroup()
 
-    def append_to_diagram(self, diagram: Diagram) -> bool:
+        self.redraw()
+
+    def append_to_diagram(self, diagram: Diagram) -> DiagramClass:
         key = self.get_key()
         exists = key in diagram.objects
         if not exists:
             diagram[key] = self
             for edge in self.edges:
-                if edge.target.name in diagram.objects:
-                    edge.target = diagram[edge.target.name]
-                else:
+                if edge.target.name not in diagram.objects:
                     diagram.add(edge.target)
+                edge.target = diagram[edge.target.name]
         else:
             for edge in self.edges:
-                if edge.target not in diagram:
+                if edge.target.name not in diagram.objects:
                     diagram.add(edge.target)
                 edge.target = diagram[edge.target.name]
             diagram[key].edges += self.edges
 
-        return exists
+        return diagram[key]
 
     def add_edge(self, edge: DiagramEdge) -> DiagramEdge:
         self.edges.append(edge)
         return edge
+
+    def get_edges(self) -> List[DiagramEdge]:
+        return self.edges
 
     def get_edge_to(self, target: DiagramObject) -> DiagramEdge | None:
         for e in self.edges:
@@ -71,25 +75,19 @@ class DiagramClass(DiagramObject):
     def add_attributes(self, attributes: List[ClassAttribute]) -> DiagramClass:
         for a in attributes:
             self.__attributes.append(a)
-        self.redraw()
         return self
 
     def set_stereotype(self, stereotype: str) -> DiagramClass:
         self.__stereotype = stereotype
-        self.redraw()
         return self
 
     def set_abstract(self, is_abstract: bool):
         self.__is_abstract = is_abstract
-        self.redraw()
 
     def set_generics(self, generics: str):
         self.__generics = generics
-        self.redraw()
 
-    def redraw(self):
-        super().redraw()
-
+    def draw(self):
         header = self.__prepare_header()
         attr_body = self.__prepare_attributes_body()
         method_body = self.__prepare_methods_body()
@@ -100,14 +98,19 @@ class DiagramClass(DiagramObject):
         attr_body.stretch_to_fit_width(max_width)
         method_body.stretch_to_fit_width(max_width)
 
-        self.add(
+        mgroup = VGroup(
             self.__mg_header,
             self.__mg_attributes,
             self.__mg_methods
         ).arrange(DOWN, buff=0)
 
         if self.__generics:
-            self.__prepare_generics()
+            self.__mg_header.add(self.__prepare_generics())
+
+        return mgroup
+
+    def redraw(self):
+        self.become(self.draw(), match_center=True)
 
     def __prepare_header(self):
         mo_title = self.__prepare_title()
@@ -166,7 +169,7 @@ class DiagramClass(DiagramObject):
         g_group = VGroup(g_rect, g_text, g_back)
         g_group.move_to(self.__mg_header.get_corner(UP + RIGHT) - (g_group.width / 2, 0, 0))
 
-        self.__mg_header.add(g_group)
+        return g_group
 
     @staticmethod
     def __prepare_attributes(attributes: List[ClassAttribute]):

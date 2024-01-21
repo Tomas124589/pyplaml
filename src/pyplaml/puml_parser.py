@@ -107,7 +107,7 @@ class PUMLParser(object):
 
             r_class.add_edge(edge)
 
-        self.diagram.add(l_class, r_class)
+        self.diagram.add(l_class, r_class, edge)
 
         p[0] = (l_class, r_class, edge)
 
@@ -144,7 +144,6 @@ class PUMLParser(object):
         self.diagram.add(r_class)
 
         edge = DiagramEdge(False, l_class, r_class, source_rel=Relation.NONE, target_rel=Relation.EXTENSION)
-
         l_class.add_edge(edge)
         self.diagram.add(edge)
 
@@ -158,7 +157,6 @@ class PUMLParser(object):
 
         edge = DiagramEdge(True, l_class, r_class, Relation.NONE, Relation.EXTENSION)
         l_class.add_edge(edge)
-
         self.diagram.add(edge)
 
     def p_class(self, p):
