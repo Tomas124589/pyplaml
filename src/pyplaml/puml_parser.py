@@ -306,11 +306,12 @@ class PUMLParser(object):
         """
         if p[2][0] == "@":
             if p[2] == "@unlinked":
-                self.diagram.remove_unlinked = True
+                self.diagram.remove_unlinked()
 
             return
 
         self.diagram[p[2]].do_draw = False
+        self.diagram[p[2]].set_opacity(0)
 
     def p_remove_by_tag(self, p):
         """
@@ -324,11 +325,12 @@ class PUMLParser(object):
         """
         if p[2][0] == "@":
             if p[2] == "@unlinked":
-                self.diagram.remove_unlinked = False
+                self.diagram.restore_unlinked()
 
             return
 
         self.diagram[p[2]].do_draw = True
+        self.diagram[p[2]].set_opacity(1)
 
     def p_restore_by_tag(self, p):
         """
@@ -344,11 +346,12 @@ class PUMLParser(object):
 
         if name[0] == "@":
             if name == "@unlinked":
-                self.diagram.hide_unlinked = True
+                self.diagram.hide_unlinked()
         elif name == "circle":
-            self.diagram.hide_icons = True
+            self.diagram.show_icons(False)
         else:
             self.diagram[name].is_hidden = True
+            self.diagram[name].set_opacity(0)
 
     def p_hide_by_tag(self, p):
         """
@@ -364,11 +367,12 @@ class PUMLParser(object):
 
         if name[0] == "@":
             if name == "@unlinked":
-                self.diagram.hide_unlinked = False
+                self.diagram.show_unlinked()
         elif name == "circle":
-            self.diagram.hide_icons = False
+            self.diagram.show_icons(True)
         else:
             self.diagram[p[2]].is_hidden = False
+            self.diagram[p[2]].set_opacity(1)
 
     def p_show_by_tag(self, p):
         """

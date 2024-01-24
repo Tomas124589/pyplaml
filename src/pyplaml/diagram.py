@@ -14,21 +14,22 @@ class Diagram(VGroup):
         self.tagged: typing.Dict[str, set[DiagramObject]] = {}
         self.last_object: DiagramObject | None = None
 
-        self.hide_unlinked = False
-        self.remove_unlinked = False
-        self.hide_icons = False
+        self.do_show_icons = True
 
     def add(self, *vmobjects: DiagramObject):
         for o in vmobjects:
             exists = o.get_key() in self.objects
             o = o.append_to_diagram(self)
             if not exists:
+                if isinstance(o, pyplaml.DiagramClass):
+                    o.set_show_icon(self.do_show_icons)
+
                 super().add(o)
 
     def apply_layout(self, scale_x: float = 1, scale_y: float = 1):
         if self.layout is not None:
             positions = self.layout.apply(
-                {k: v for k, v in self.objects.items() if isinstance(v, pyplaml.DiagramClass)},
+                {k: v for k, v in self.objects.items() if isinstance(v, pyplaml.DiagramClass) and v.do_draw},
                 scale_x,
                 scale_y
             )
@@ -68,21 +69,54 @@ class Diagram(VGroup):
         if tag in self.tagged:
             for o in self.tagged[tag]:
                 o.do_draw = False
+                o.set_opacity(0)
 
     def restore_by_tag(self, tag: str):
         if tag in self.tagged:
             for o in self.tagged[tag]:
                 o.do_draw = True
+                o.set_opacity(1)
 
     def hide_by_tag(self, tag: str):
         if tag in self.tagged:
             for o in self.tagged[tag]:
                 o.is_hidden = True
+                o.set_opacity(0)
 
     def show_by_tag(self, tag: str):
         if tag in self.tagged:
             for o in self.tagged[tag]:
                 o.is_hidden = False
+                o.set_opacity(1)
+
+    def show_icons(self, show: bool):
+        self.do_show_icons = show
+        for n, o in self.objects.items():
+            if isinstance(o, pyplaml.DiagramClass):
+                o.set_show_icon(show)
+
+    def remove_unlinked(self):
+        for n, deg in self.objects_degree().items():
+            if deg == 0:
+                self[n].do_draw = False
+                self[n].set_opacity(0)
+
+    def restore_unlinked(self):
+        for n, deg in self.objects_degree().items():
+            if deg == 0:
+                self[n].do_draw = True
+                self[n].set_opacity(1)
+
+    def hide_unlinked(self):
+        print(self.objects_degree())
+        for n, deg in self.objects_degree().items():
+            if deg == 0:
+                self[n].set_opacity(0)
+
+    def show_unlinked(self):
+        for n, deg in self.objects_degree().items():
+            if deg == 0:
+                self[n].set_opacity(1)
 
     def __setitem__(self, key: str, val: DiagramObject):
         if not isinstance(val, DiagramObject):

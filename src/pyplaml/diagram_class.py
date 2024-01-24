@@ -91,6 +91,10 @@ class DiagramClass(DiagramObject):
         self.__generics = generics
         self.redraw()
 
+    def set_show_icon(self, show_icon: bool):
+        self.__show_icon = show_icon
+        self.redraw()
+
     def draw(self):
         header = self.__prepare_header()
         attr_body = self.__prepare_attributes_body()
@@ -114,7 +118,8 @@ class DiagramClass(DiagramObject):
         return mgroup
 
     def redraw(self):
-        self.become(self.draw(), match_center=True)
+        if self.do_draw:
+            self.become(self.draw(), match_center=True)
 
     def __prepare_header(self):
         mo_title = self.__prepare_title()
