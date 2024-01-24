@@ -26,6 +26,9 @@ class DiagramObject(VGroup):
             self.notes[direction] = []
 
         self.notes[direction].append(note)
+
+        self.redraw()
+        
         return note
 
     def get_boundary_points(self):

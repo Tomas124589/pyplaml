@@ -115,7 +115,22 @@ class DiagramClass(DiagramObject):
         if self.__generics:
             self.__mg_header.add(self.__prepare_generics())
 
+        if self.notes:
+            self.__prepare_notes(mgroup)
+
         return mgroup
+
+    def __prepare_notes(self, parent: VGroup):
+        note_groups = VGroup()
+        for _dir, notes in self.notes.items():
+            vect = _dir.get_manim_vect_dir()
+            note_groups.add(
+                VGroup(*notes)
+                .arrange(-vect)
+                .next_to(parent, vect)
+            )
+
+        parent.add(note_groups)
 
     def redraw(self):
         if self.do_draw:
