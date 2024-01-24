@@ -2,15 +2,20 @@ import argparse
 
 from manim import *
 
-from pyplaml import Scene
+from pyplaml import PUMLParser
 from pyplaml.diagram_layout import DotLayout
 
 
-class MainScene(Scene):
+class MainScene(ZoomedScene):
     file: str
+    scale_x: float
+    scale_y: float
 
-    def anims(self):
-        diagram = self.parser.parse_file(self.file)
+    def construct(self):
+        self.camera.background_color = WHITE
+        Text.set_default(font_size=16)
+
+        diagram = PUMLParser().parse_file(self.file)
         diagram.layout = DotLayout()
         diagram.apply_layout(self.scale_x, self.scale_y)
 
@@ -23,12 +28,10 @@ if __name__ == "__main__":
     argparser = argparse.ArgumentParser(prog="pyplaml")
 
     argparser.add_argument("file")
-    argparser.add_argument("-a", "--animate", action="store_true")
     argparser.add_argument("-sx", "--scale-x", default=1, type=float)
     argparser.add_argument("-sy", "--scale-y", default=1, type=float)
     argparser.add_argument("-fps", "--frames-per-second", default=60, type=int)
     argparser.add_argument("-fcache", "--flush-cache", action="store_true")
-    argparser.add_argument("-l", "--layout", choices=["dot", "spring"], default="dot")
 
     args = argparser.parse_args()
 
@@ -46,9 +49,7 @@ if __name__ == "__main__":
     scene = MainScene()
 
     scene.file = args.file
-    scene.animate = args.animate
     scene.scale_x = args.scale_x
     scene.scale_y = args.scale_y
-    scene.layout = args.layout
 
     scene.render()

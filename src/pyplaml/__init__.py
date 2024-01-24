@@ -10,4 +10,3 @@ from .direction import Direction
 from .puml_lexer import PUMLexer
 from .puml_parser import PUMLParser
 from .relation import Relation
-from .scene import Scene

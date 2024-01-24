@@ -1,11 +1,11 @@
-import pyplaml
-from pyplaml.diagram_class import *
-from pyplaml.diagram_layout import *
-from pyplaml.relation import *
+from pyplaml import *
 
 
-class MyScene(pyplaml.Scene):
-    def anims(self):
+class MyScene(ZoomedScene):
+    def construct(self):
+        self.camera.background_color = WHITE
+        Text.set_default(font_size=16)
+
         header = Text("Observer Pattern", font_size=44, color=BLACK, weight=BOLD)
 
         observer = DiagramInterface("Observer").add_attributes([
