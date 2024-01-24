@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import typing
 from abc import ABC, abstractmethod
 
 import networkx as nx

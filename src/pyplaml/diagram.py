@@ -29,7 +29,8 @@ class Diagram(VGroup):
     def apply_layout(self, scale_x: float = 1, scale_y: float = 1):
         if self.layout is not None:
             positions = self.layout.apply(
-                {k: v for k, v in self.objects.items() if isinstance(v, pyplaml.DiagramClass | pyplaml.DiagramNote) and v.do_draw},
+                {k: v for k, v in self.objects.items() if
+                 isinstance(v, pyplaml.DiagramClass | pyplaml.DiagramNote) and v.do_draw},
                 scale_x,
                 scale_y
             )
