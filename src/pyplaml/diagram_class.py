@@ -75,17 +75,21 @@ class DiagramClass(DiagramObject):
     def add_attributes(self, attributes: List[ClassAttribute]) -> DiagramClass:
         for a in attributes:
             self.__attributes.append(a)
+        self.redraw()
         return self
 
     def set_stereotype(self, stereotype: str) -> DiagramClass:
         self.__stereotype = stereotype
+        self.redraw()
         return self
 
     def set_abstract(self, is_abstract: bool):
         self.__is_abstract = is_abstract
+        self.redraw()
 
     def set_generics(self, generics: str):
         self.__generics = generics
+        self.redraw()
 
     def draw(self):
         header = self.__prepare_header()
@@ -155,18 +159,16 @@ class DiagramClass(DiagramObject):
 
     def __prepare_generics(self):
         g_text = Text(self.__generics, color=BLACK).scale(0.6)
-        g_text.set_z_index(1)
 
         g_rect = DashedVMobject(Rectangle(color=BLACK, stroke_width=1), num_dashes=50)
         g_rect.stretch_to_fit_width(g_text.width + 0.1)
         g_rect.stretch_to_fit_height(g_text.height + 0.1)
-        g_rect.set_z_index(1)
 
         g_back = Rectangle(fill_color=WHITE, fill_opacity=1)
         g_back.stretch_to_fit_width(g_rect.width - 0.05)
         g_back.stretch_to_fit_height(g_rect.height - 0.05)
 
-        g_group = VGroup(g_rect, g_text, g_back)
+        g_group = VGroup(g_back, g_rect, g_text)
         g_group.move_to(self.__mg_header.get_corner(UP + RIGHT) - (g_group.width / 2, 0, 0))
 
         return g_group
