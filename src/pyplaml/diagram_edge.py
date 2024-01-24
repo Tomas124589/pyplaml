@@ -10,9 +10,9 @@ from .relation import Relation
 class DiagramEdge(DiagramObject):
 
     def __init__(self,
-                 dotted: bool,
                  source: DiagramObject,
                  target: DiagramObject,
+                 dotted: bool = False,
                  source_rel: Relation = Relation.NONE,
                  target_rel: Relation = Relation.NONE,
                  source_text="",

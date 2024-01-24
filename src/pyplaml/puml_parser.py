@@ -93,14 +93,14 @@ class PUMLParser(object):
             _dir = 0
 
         if _dir == 1:
-            edge = DiagramEdge("." in line, l_class, r_class, source_rel, target_rel)
+            edge = DiagramEdge(l_class, r_class, "." in line, source_rel, target_rel)
 
             edge.source_text = l_text
             edge.target_text = r_text
 
             l_class.add_edge(edge)
         else:
-            edge = DiagramEdge("." in line, r_class, l_class, source_rel, target_rel)
+            edge = DiagramEdge(r_class, l_class, "." in line, source_rel, target_rel)
 
             edge.source_text = r_text
             edge.target_text = l_text
@@ -143,7 +143,7 @@ class PUMLParser(object):
 
         self.diagram.add(r_class)
 
-        edge = DiagramEdge(False, l_class, r_class, source_rel=Relation.NONE, target_rel=Relation.EXTENSION)
+        edge = DiagramEdge(l_class, r_class, source_rel=Relation.NONE, target_rel=Relation.EXTENSION)
         l_class.add_edge(edge)
         self.diagram.add(edge)
 
@@ -155,7 +155,7 @@ class PUMLParser(object):
         r_class = DiagramClassFactory.make(p[3], ClassType.INTERFACE)
         self.diagram.add(r_class)
 
-        edge = DiagramEdge(True, l_class, r_class, Relation.NONE, Relation.EXTENSION)
+        edge = DiagramEdge(l_class, r_class, True, Relation.NONE, Relation.EXTENSION)
         l_class.add_edge(edge)
         self.diagram.add(edge)
 
@@ -258,7 +258,7 @@ class PUMLParser(object):
         obj = self.diagram[obj_name]
 
         n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
-        e = DiagramEdge(False, n, obj)
+        e = DiagramEdge(n, obj)
         n.edges.append(e)
 
         self.diagram.add(n, e)
@@ -274,7 +274,7 @@ class PUMLParser(object):
         text = "\n".join(p[2])
 
         n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
-        e = DiagramEdge(False, n, obj)
+        e = DiagramEdge(n, obj)
         n.edges.append(e)
 
         self.diagram.add(n, e)
@@ -293,7 +293,7 @@ class PUMLParser(object):
         text = p[3]
 
         n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
-        e = DiagramEdge(False, n, obj)
+        e = DiagramEdge(n, obj)
         n.edges.append(e)
 
         self.diagram.add(n, e)
