@@ -1,6 +1,7 @@
 from .class_attribute import ClassAttribute, AttributeModifier
 from .diagram import Diagram
 from .diagram_class import DiagramClass
+from .diagram_note import DiagramNote
 from .diagram_edge import DiagramEdge
 from .diagram_object import DiagramObject
 from .puml_lexer import PUMLexer
