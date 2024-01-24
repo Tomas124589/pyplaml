@@ -19,7 +19,7 @@ class AttributeModifier(Enum):
 
 class ClassAttribute:
 
-    def __init__(self, modifier: AttributeModifier, text: str, is_method: bool):
+    def __init__(self, text: str, is_method: bool = False, modifier: AttributeModifier = AttributeModifier.PUBLIC):
         self.modifier = modifier
         self.text = text
         self.is_method = is_method
@@ -48,10 +48,10 @@ class ClassAttribute:
 
         string = string.strip()
         if string[0] in ["-", "~", "#", "+"]:
-            attr = ClassAttribute(AttributeModifier.from_string(string[0]), string[1:], is_method)
+            attr = ClassAttribute(string[1:], is_method, AttributeModifier.from_string(string[0]))
         else:
             attr_str = string.strip()
-            attr = ClassAttribute(AttributeModifier.NONE, attr_str, is_method)
+            attr = ClassAttribute(attr_str, is_method, AttributeModifier.NONE)
 
         if field_flag:
             attr.is_method = False
