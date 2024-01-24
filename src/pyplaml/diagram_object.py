@@ -15,10 +15,18 @@ class DiagramObject(VGroup):
         self.alias = None
         self.is_hidden = False
         self.do_draw = True
+        self.notes: Dict[pyplaml.Direction, List[pyplaml.DiagramNote]] = {}
 
     @abstractmethod
     def redraw(self):
         self.submobjects = []
+
+    def add_note(self, note: pyplaml.DiagramNote, direction: pyplaml.Direction) -> pyplaml.DiagramNote:
+        if direction not in self.notes:
+            self.notes[direction] = []
+
+        self.notes[direction].append(note)
+        return note
 
     def get_boundary_points(self):
         ul = self.get_boundary_point(direction=UL)

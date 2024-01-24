@@ -1,13 +1,7 @@
 import ply.yacc as yacc
 
-from .class_attribute import ClassAttribute
-from .class_type import ClassType
-from .diagram import Diagram
-from .diagram_class import DiagramClass, DiagramInterface, DiagramClassFactory
-from .diagram_edge import DiagramEdge
-from .diagram_note import DiagramNote
-from .puml_lexer import PUMLexer
-from .relation import Relation
+import pyplaml
+from pyplaml import *
 
 
 class PUMLParser(object):
@@ -81,18 +75,10 @@ class PUMLParser(object):
 
         (left_rel, line, right_rel) = line
 
-        source_rel = Relation.from_string(left_rel)
-        target_rel = Relation.from_string(right_rel)
+        source_rel = pyplaml.Relation.from_string(left_rel)
+        target_rel = pyplaml.Relation.from_string(right_rel)
 
-        is_left = source_rel != Relation.NONE
-        is_right = target_rel != Relation.NONE
-
-        if is_right:
-            _dir = 1
-        else:
-            _dir = 0
-
-        if _dir == 1:
+        if target_rel != pyplaml.Relation.NONE:
             edge = DiagramEdge(l_class, r_class, "." in line, source_rel, target_rel)
 
             edge.source_text = l_text
@@ -143,7 +129,7 @@ class PUMLParser(object):
 
         self.diagram.add(r_class)
 
-        edge = DiagramEdge(l_class, r_class, source_rel=Relation.NONE, target_rel=Relation.EXTENSION)
+        edge = DiagramEdge(l_class, r_class, source_rel=pyplaml.Relation.NONE, target_rel=pyplaml.Relation.EXTENSION)
         l_class.add_edge(edge)
         self.diagram.add(edge)
 
@@ -155,7 +141,7 @@ class PUMLParser(object):
         r_class = DiagramClassFactory.make(p[3], ClassType.INTERFACE)
         self.diagram.add(r_class)
 
-        edge = DiagramEdge(l_class, r_class, True, Relation.NONE, Relation.EXTENSION)
+        edge = DiagramEdge(l_class, r_class, True, pyplaml.Relation.NONE, pyplaml.Relation.EXTENSION)
         l_class.add_edge(edge)
         self.diagram.add(edge)
 
@@ -257,13 +243,10 @@ class PUMLParser(object):
         (pos, obj_name, text) = p[1]
         obj = self.diagram[obj_name]
 
-        n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
-        e = DiagramEdge(n, obj)
-        n.edges.append(e)
-
-        self.diagram.add(n, e)
-
-        p[0] = n
+        p[0] = obj.add_note(
+            DiagramNote("{}-note-for-{}".format(pos, obj), text),
+            Direction(pos)
+        )
 
     def p_note(self, p):
         """
@@ -273,13 +256,10 @@ class PUMLParser(object):
         obj = self.diagram[obj_name]
         text = "\n".join(p[2])
 
-        n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
-        e = DiagramEdge(n, obj)
-        n.edges.append(e)
-
-        self.diagram.add(n, e)
-
-        p[0] = n
+        p[0] = obj.add_note(
+            DiagramNote("{}-note-for-{}".format(pos, obj), text),
+            Direction(pos)
+        )
 
     def p_note_last_object(self, p):
         """
@@ -292,13 +272,10 @@ class PUMLParser(object):
         pos = p[2]
         text = p[3]
 
-        n = DiagramNote("{}-note-for-{}".format(pos, obj), text)
-        e = DiagramEdge(n, obj)
-        n.edges.append(e)
-
-        self.diagram.add(n, e)
-
-        p[0] = n
+        p[0] = obj.add_note(
+            DiagramNote("{}-note-for-{}".format(pos, obj), text),
+            Direction(pos)
+        )
 
     def p_remove(self, p):
         """
