@@ -106,11 +106,11 @@ class PUMLParser(object):
 
         text = str(p[2]).strip()
         if text[0] == "<":
-            edge.arrow_from_source = edge.get_dir() != 1
+            edge.arrow_from_source = edge.get_dir() != Direction.LEFT
             text = text[1:]
 
         elif text[0] == ">":
-            edge.arrow_from_source = edge.get_dir() == 1
+            edge.arrow_from_source = edge.get_dir() == Direction.RIGHT
             text = text[1:]
 
         edge.edge_text = text

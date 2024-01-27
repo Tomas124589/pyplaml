@@ -4,6 +4,7 @@ from manim import *
 
 from . import Diagram
 from .diagram_object import DiagramObject
+from .direction import Direction
 from .relation import Relation
 
 
@@ -43,18 +44,13 @@ class DiagramEdge(DiagramObject):
 
         self.redraw()
 
-    def get_dir(self):
-        is_left = self.source_rel != Relation.NONE
-        is_right = self.target_rel != Relation.NONE
+    def get_dir(self) -> Direction | None:
+        if self.source_rel != Relation.NONE:
+            return Direction.LEFT
+        elif self.target_rel != Relation.NONE:
+            return Direction.RIGHT
 
-        if is_left and is_right:
-            return 0
-        elif is_left:
-            return -1
-        elif is_right:
-            return 1
-        else:
-            return None
+        return None
 
     def redraw(self):
         super().redraw()
@@ -163,13 +159,13 @@ class DiagramEdge(DiagramObject):
         _dir = self.get_dir()
         def_params = {"tip_length": 0.2, "tip_width": 0.2}
 
-        if _dir == -1:
+        if _dir == Direction.LEFT:
             self.mo_line.add_tip(self.__get_line_tip(self.source_rel), **def_params)
 
-        elif _dir == 1:
+        elif _dir == Direction.RIGHT:
             self.mo_line.add_tip(self.__get_line_tip(self.target_rel), **def_params)
 
-        elif _dir == 0:
+        else:
             if self.dotted:
                 self.mo_line.add_tip(self.__get_line_tip(self.source_rel), **def_params)
                 self.mo_line.add_tip(self.__get_line_tip(self.target_rel), **def_params, at_start=True)
