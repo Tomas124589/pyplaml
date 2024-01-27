@@ -58,7 +58,7 @@ class DiagramObject(VGroup):
         return self.alias or self.name
 
     def __str__(self) -> str:
-        return str(self.name)
+        return self.name
 
     def __repr__(self):
         return "({}) \"{}\", hidden: {}, draw: {}".format(
