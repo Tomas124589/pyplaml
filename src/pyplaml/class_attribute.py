@@ -13,52 +13,50 @@ class AttributeModifier(Enum):
 
     @staticmethod
     def from_string(string: str) -> AttributeModifier:
-        _mod = {member.value: member for member in AttributeModifier}.get(string)
-        return AttributeModifier.NONE if _mod is None else _mod
+        return AttributeModifier.__members__.get(string, AttributeModifier.NONE)
 
 
 class ClassAttribute:
 
-    def __init__(self, text: str, is_method: bool = False, modifier: AttributeModifier = AttributeModifier.PUBLIC):
-        self.modifier = modifier
+    def __init__(
+            self,
+            text: str,
+            is_method: bool = False,
+            modifier: AttributeModifier = AttributeModifier.PUBLIC,
+            is_abstract: bool = False,
+            is_static: bool = False
+    ):
         self.text = text
         self.is_method = is_method
-        self.is_abstract = False
-        self.is_static = False
+        self.modifier = modifier
+        self.is_abstract = is_abstract
+        self.is_static = is_static
 
     @staticmethod
     def from_string(string: str) -> ClassAttribute:
-        is_method = "(" in string
-
         sub = re.sub(r"(?i){field}", "", string)
-        field_flag = string != sub
+        is_field = string != sub
         string = sub
 
         sub = re.sub(r"(?i){method}", "", string)
-        method_flag = string != sub
+        is_method = (string != sub or "(" in string) and not is_field
         string = sub
 
         sub = re.sub(r"(?i){static}", "", string)
-        static_flag = string != sub
+        is_static = string != sub
         string = sub
 
         sub = re.sub(r"(?i){abstract}", "", string)
-        abstract_flag = string != sub
+        is_abstract = string != sub
         string = sub
 
         string = string.strip()
+
         if string[0] in ["-", "~", "#", "+"]:
-            attr = ClassAttribute(string[1:], is_method, AttributeModifier.from_string(string[0]))
+            text = string[1:]
+            modifier = AttributeModifier.from_string(string[0])
         else:
-            attr_str = string.strip()
-            attr = ClassAttribute(attr_str, is_method, AttributeModifier.NONE)
+            text = string
+            modifier = AttributeModifier.NONE
 
-        if field_flag:
-            attr.is_method = False
-        elif method_flag:
-            attr.is_method = True
-
-        attr.is_static = static_flag
-        attr.is_abstract = abstract_flag
-
-        return attr
+        return ClassAttribute(text, is_method, modifier, is_abstract, is_static)
