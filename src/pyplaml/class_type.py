@@ -11,7 +11,7 @@ class ClassType(Enum):
     ENUM = "enum"
     EXCEPTION = "exception"
     INTERFACE = "interface"
-    META_CLASS = "metaclass"
+    METACLASS = "metaclass"
     PROTOCOL = "protocol"
     STEREOTYPE = "stereotype"
     STRUCT = "struct"
@@ -19,5 +19,4 @@ class ClassType(Enum):
 
     @staticmethod
     def from_string(string: str) -> ClassType:
-        _type = {member.value: member for member in ClassType}.get(string)
-        return ClassType.UNKNOWN if _type is None else _type
+        return ClassType.__members__.get(string.upper(), ClassType.UNKNOWN)

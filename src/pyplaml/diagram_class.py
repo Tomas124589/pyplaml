@@ -306,7 +306,7 @@ class DiagramPlainObject(DiagramClass):
 class DiagramClassFactory:
     @staticmethod
     def make(name: str, class_type: ClassType | str = ClassType.CLASS):
-        class_type = ClassType.from_string(class_type.lower()) if isinstance(class_type, str) else class_type
+        class_type = ClassType.from_string(class_type) if isinstance(class_type, str) else class_type
 
         if class_type == ClassType.CLASS:
             return DiagramClass(name)
@@ -326,7 +326,7 @@ class DiagramClassFactory:
         elif class_type == class_type.INTERFACE:
             return DiagramInterface(name)
 
-        elif class_type == class_type.META_CLASS:
+        elif class_type == class_type.METACLASS:
             return DiagramMetaClass(name)
 
         elif class_type == class_type.PROTOCOL:
