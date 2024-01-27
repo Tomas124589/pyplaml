@@ -9,8 +9,6 @@ class DiagramNote(DiagramObject):
     def __init__(self, name: str, text: str, **kwargs):
         super().__init__(name, **kwargs)
         self.text = text.replace("\\n", "\n")
-        # self.do_draw = False  # TODO Prepare note drawing
-
         self.edges: List[DiagramEdge] = []
 
         self.redraw()
