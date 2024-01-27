@@ -95,46 +95,31 @@ class DiagramClass(DiagramObject):
         self.__show_icon = show_icon
         self.redraw()
 
-    def draw(self):
-        header = self.__prepare_header()
-        attr_body = self.__prepare_attributes_body()
-        method_body = self.__prepare_methods_body()
-
-        max_width = max(self.__mg_header.width, self.__mg_attributes.width, self.__mg_methods.width)
-
-        header.stretch_to_fit_width(max_width)
-        attr_body.stretch_to_fit_width(max_width)
-        method_body.stretch_to_fit_width(max_width)
-
-        mgroup = VGroup(
-            self.__mg_header,
-            self.__mg_attributes,
-            self.__mg_methods
-        ).arrange(DOWN, buff=0)
-
-        if self.__generics:
-            self.__mg_header.add(self.__prepare_generics())
-
-        if self.notes:
-            self.__prepare_notes(mgroup)
-
-        return mgroup
-
-    def __prepare_notes(self, parent: VGroup):
-        note_groups = VGroup()
-        for _dir, notes in self.notes.items():
-            vect = _dir.get_manim_vect_dir()
-            note_groups.add(
-                VGroup(*notes)
-                .arrange(-vect)
-                .next_to(parent, vect)
-            )
-
-        parent.add(note_groups)
-
     def redraw(self):
         if self.do_draw:
-            self.become(self.draw(), match_center=True)
+            header = self.__prepare_header()
+            attr_body = self.__prepare_attributes_body()
+            method_body = self.__prepare_methods_body()
+
+            max_width = max(self.__mg_header.width, self.__mg_attributes.width, self.__mg_methods.width)
+
+            header.stretch_to_fit_width(max_width)
+            attr_body.stretch_to_fit_width(max_width)
+            method_body.stretch_to_fit_width(max_width)
+
+            mgroup = VGroup(
+                self.__mg_header,
+                self.__mg_attributes,
+                self.__mg_methods
+            ).arrange(DOWN, buff=0)
+
+            if self.__generics:
+                self.__mg_header.add(self.__prepare_generics())
+
+            if self.notes:
+                self.__prepare_notes(mgroup)
+
+            self.add(mgroup)
 
     def __prepare_header(self):
         mo_title = self.__prepare_title()
@@ -177,6 +162,22 @@ class DiagramClass(DiagramObject):
 
         return border
 
+    @staticmethod
+    def __prepare_attributes(attributes: List[ClassAttribute]):
+        attr_group = VGroup()
+        for a in attributes:
+            text = Text(a.text, color=BLACK, slant=ITALIC if a.is_abstract else NORMAL)
+
+            if a.is_static:
+                text = VGroup(text, Underline(text, color=BLACK, buff=0, stroke_width=1))
+
+            attr_group.add(VGroup(
+                Text(a.modifier.value, color=BLACK),
+                text
+            ).arrange(RIGHT, buff=0.1).scale(0.75))
+
+        return attr_group.arrange(DOWN, buff=0.1)
+
     def __prepare_generics(self):
         g_text = Text(self.__generics, color=BLACK).scale(0.6)
 
@@ -193,21 +194,17 @@ class DiagramClass(DiagramObject):
 
         return g_group
 
-    @staticmethod
-    def __prepare_attributes(attributes: List[ClassAttribute]):
-        attr_group = VGroup()
-        for a in attributes:
-            text = Text(a.text, color=BLACK, slant=ITALIC if a.is_abstract else NORMAL)
+    def __prepare_notes(self, parent: VGroup):
+        note_groups = VGroup()
+        for _dir, notes in self.notes.items():
+            vect = _dir.get_manim_vect_dir()
+            note_groups.add(
+                VGroup(*notes)
+                .arrange(-vect)
+                .next_to(parent, vect)
+            )
 
-            if a.is_static:
-                text = VGroup(text, Underline(text, color=BLACK, buff=0, stroke_width=1))
-
-            attr_group.add(VGroup(
-                Text(a.modifier.value, color=BLACK),
-                text
-            ).arrange(RIGHT, buff=0.1).scale(0.75))
-
-        return attr_group.arrange(DOWN, buff=0.1)
+        parent.add(note_groups)
 
     @staticmethod
     def get_icon(text: str, colour) -> VMobject:
