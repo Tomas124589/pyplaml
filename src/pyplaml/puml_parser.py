@@ -362,7 +362,12 @@ class PUMLParser(object):
         """
         skinparam   : SKINPARAM
         """
-        skinparam = p[1].split(" ")[1::]
+
+    @staticmethod
+    def p_skinparam_with_body(p):
+        """
+        skinparam   : SKINPARAM IN_BRACKETS_LINES
+        """
 
     @staticmethod
     def p_error(p):

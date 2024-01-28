@@ -172,7 +172,11 @@ class PUMLexer(object):
 
     @staticmethod
     def t_SKINPARAM(t):
-        r"""skinparam\s+.+"""
+        r"""skinparam\s+(\w+)\s+(\w+)?"""
+        target = t.lexer.lexmatch.group(32)
+        value = t.lexer.lexmatch.group(33)
+
+        t.value = (target, value)
         return t
 
     def t_IDENTIFIER(self, t):
