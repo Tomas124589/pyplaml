@@ -112,11 +112,15 @@ class DiagramEdge(DiagramObject):
         self.mo_mid_text_arrow.rotate(self.mo_mid_text_arrow.start_angle + angle_to_obj)
 
     def __line_updater(self):
-        (start, target) = self.__get_closest_points()
+        def_params = {"tip_length": 0.25, "stroke_width": 1, "color": BLACK}
 
-        self.mo_line = DashedLine(buff=0, stroke_width=1, tip_length=0.25, color=BLACK) if self.dotted \
-            else Line(buff=0, stroke_width=1, tip_length=0.25, color=BLACK)
-        self.mo_line.put_start_and_end_on(start, target)
+        if self.source != self.target:
+            (start, target) = self.__get_closest_points()
+            self.mo_line = DashedLine(buff=0, **def_params) if self.dotted else Line(buff=0, **def_params)
+            self.mo_line.put_start_and_end_on(start, target)
+        else:
+            self.mo_line = Arc(**def_params, angle=-PI)
+            self.mo_line.put_start_and_end_on(self.source.get_edge_center(UP), self.source.get_edge_center(RIGHT))
 
         self.__prepare_line_tips()
 
