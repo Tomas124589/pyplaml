@@ -18,9 +18,9 @@ class DiagramLayout(ABC):
     def get_graph(self) -> nx.DiGraph:
         g = nx.DiGraph()
         for name, o in self.objects.items():
-            g.add_node(o.name)
+            g.add_node(o.get_key())
             for e in o.edges:
-                g.add_edge(e.target.get_key(), o.name)
+                g.add_edge(e.target.get_key(), o.get_key())
         return g
 
 
