@@ -10,7 +10,6 @@ from .diagram_object import DiagramObject
 
 
 class DiagramClass(DiagramObject):
-
     def __init__(self,
                  name: str,
                  edges: List[DiagramEdge] = None,
@@ -67,6 +66,8 @@ class DiagramClass(DiagramObject):
         return self.edges
 
     def get_edge_to(self, target: DiagramObject) -> DiagramEdge | None:
+        """Returns edge to target if it exists in this class."""
+
         for e in self.edges:
             if e.target == target:
                 return e
@@ -92,6 +93,7 @@ class DiagramClass(DiagramObject):
         self.redraw()
 
     def set_show_icon(self, show_icon: bool):
+        """Sets if the class icon should be drawn."""
         self.__show_icon = show_icon
         self.redraw()
 
@@ -209,6 +211,8 @@ class DiagramClass(DiagramObject):
 
     @staticmethod
     def get_icon(text: str, colour) -> VMobject:
+        """Returns VGroup representing icon for DiagramClass."""
+
         c = Circle(color=BLACK, fill_color=colour, stroke_width=2, fill_opacity=1)
         t = Text(text, color=BLACK)
         c.surround(t, buffer_factor=1.6)
