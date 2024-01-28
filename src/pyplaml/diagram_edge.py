@@ -45,9 +45,14 @@ class DiagramEdge(DiagramObject):
         self.redraw()
 
     def get_dir(self) -> Direction | None:
-        if self.source_rel != Relation.NONE:
+        is_left = self.source_rel != Relation.NONE
+        is_right = self.target_rel != Relation.NONE
+
+        if is_left and is_right:
+            return None
+        if is_left:
             return Direction.LEFT
-        elif self.target_rel != Relation.NONE:
+        elif is_right:
             return Direction.RIGHT
 
         return None
