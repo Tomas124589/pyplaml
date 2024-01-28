@@ -16,7 +16,6 @@ class DiagramObject(VGroup):
         super().__init__(**kwargs)
         self.name = name
         self.alias = None
-        self.is_hidden = False
         self.do_draw = True
         self.notes: Dict[pyplaml.Direction, List[pyplaml.DiagramNote]] = {}
 
@@ -73,9 +72,8 @@ class DiagramObject(VGroup):
         return self.name
 
     def __repr__(self):
-        return "({}) \"{}\", hidden: {}, draw: {}".format(
+        return "({}) \"{}\", draw: {}".format(
             self.__class__.__name__,
             self.get_key() or "NAME NOT SET",
-            "yes" if self.is_hidden else "no",
             "yes" if self.do_draw else "no",
         )

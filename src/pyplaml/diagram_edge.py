@@ -60,7 +60,7 @@ class DiagramEdge(DiagramObject):
     def redraw(self):
         super().redraw()
 
-        if self.source.is_hidden or self.target.is_hidden:
+        if self.source.background_stroke_opacity or self.target.background_stroke_opacity:
             return
 
         always_redraw(self.__line_updater)
