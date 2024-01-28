@@ -96,6 +96,7 @@ class DiagramClass(DiagramObject):
         self.redraw()
 
     def redraw(self):
+        super().redraw()
         if self.do_draw:
             header = self.__prepare_header()
             attr_body = self.__prepare_attributes_body()
