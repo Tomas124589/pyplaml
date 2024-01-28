@@ -60,4 +60,7 @@ class ClassAttribute:
             text = string
             modifier = AttributeModifier.NONE
 
+        if text[0] == "\\":
+            text = text[1:]
+
         return ClassAttribute(text, is_method, modifier, is_abstract, is_static)
