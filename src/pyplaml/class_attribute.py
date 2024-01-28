@@ -5,6 +5,7 @@ from enum import Enum
 
 
 class AttributeModifier(Enum):
+    """Represents a visibility modifier for ClassAttribute."""
     NONE = ""
     PRIVATE = "-"
     PACKAGE_PRIVATE = "~"
@@ -18,6 +19,7 @@ class AttributeModifier(Enum):
 
 
 class ClassAttribute:
+    """Represent an attribute/method for ClassDiagram."""
 
     def __init__(
             self,
