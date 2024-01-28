@@ -13,7 +13,8 @@ class AttributeModifier(Enum):
 
     @staticmethod
     def from_string(string: str) -> AttributeModifier:
-        return AttributeModifier.__members__.get(string, AttributeModifier.NONE)
+        _mod = {member.value: member for member in AttributeModifier}.get(string)
+        return AttributeModifier.NONE if _mod is None else _mod
 
 
 class ClassAttribute:
