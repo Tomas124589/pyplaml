@@ -159,20 +159,21 @@ class DiagramEdge(DiagramObject):
         _dir = self.get_dir()
         def_params = {"tip_length": 0.2, "tip_width": 0.2}
 
-        if _dir == Direction.LEFT:
+        if _dir == Direction.LEFT and self.source_rel is not Relation.NONE:
             self.mo_line.add_tip(self.__get_line_tip(self.source_rel), **def_params)
-
-        elif _dir == Direction.RIGHT:
+        elif _dir == Direction.RIGHT and self.target_rel is not Relation.NONE:
             self.mo_line.add_tip(self.__get_line_tip(self.target_rel), **def_params)
-
         else:
             if self.dotted:
-                self.mo_line.add_tip(self.__get_line_tip(self.source_rel), **def_params)
-                self.mo_line.add_tip(self.__get_line_tip(self.target_rel), **def_params, at_start=True)
-
+                if self.source_rel is not Relation.NONE:
+                    self.mo_line.add_tip(self.__get_line_tip(self.source_rel), **def_params)
+                if self.target_rel is not Relation.NONE:
+                    self.mo_line.add_tip(self.__get_line_tip(self.target_rel), **def_params, at_start=True)
             else:
-                self.mo_line.add_tip(self.__get_line_tip(self.target_rel), **def_params, at_start=True)
-                self.mo_line.add_tip(self.__get_line_tip(self.source_rel), **def_params)
+                if self.source_rel is not Relation.NONE:
+                    self.mo_line.add_tip(self.__get_line_tip(self.target_rel), **def_params, at_start=True)
+                if self.target_rel is not Relation.NONE:
+                    self.mo_line.add_tip(self.__get_line_tip(self.source_rel), **def_params)
 
     @staticmethod
     def __get_line_tip(rel: Relation):
