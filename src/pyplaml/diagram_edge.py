@@ -9,6 +9,7 @@ from .relation import Relation
 
 
 class DiagramEdge(DiagramObject):
+    """Represents an edge between two DiagramObjects"""
 
     def __init__(self,
                  source: DiagramObject,
@@ -45,6 +46,8 @@ class DiagramEdge(DiagramObject):
         self.redraw()
 
     def get_dir(self) -> Direction | None:
+        """Returns direction of the edge which can be left, right or both."""
+
         is_left = self.source_rel != Relation.NONE
         is_right = self.target_rel != Relation.NONE
 
@@ -67,7 +70,7 @@ class DiagramEdge(DiagramObject):
 
         self.add(self.mo_line)
         self.__prepare_mid_text()
-        self.__prepare_src_text()
+        self.__prepare_source_text()
         self.__prepare_target_text()
 
         self.mo_line.add_updater(self.__updater)
@@ -87,7 +90,7 @@ class DiagramEdge(DiagramObject):
             self.mo_target_text.next_to(self.mo_line.get_end() - self.mo_target_text.height, LEFT, buff=0)
             self.add(self.mo_target_text)
 
-    def __prepare_src_text(self):
+    def __prepare_source_text(self):
         if self.source_text:
             self.mo_src_text = Text(self.source_text, color=BLACK).scale(0.75)
             self.mo_src_text.next_to(self.mo_line.get_start() + self.mo_src_text.height, RIGHT, buff=0)
@@ -142,6 +145,8 @@ class DiagramEdge(DiagramObject):
             self.mo_target_text.next_to(self.mo_line.get_end() - self.mo_target_text.height, LEFT, buff=0)
 
     def __get_closest_points(self):
+        """Returns a pair of closest points between the source and target."""
+
         min_dist = float('inf')
         points = (None, None)
 
