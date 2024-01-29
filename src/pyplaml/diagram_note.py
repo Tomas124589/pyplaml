@@ -5,6 +5,7 @@ from .diagram_object import DiagramObject
 
 
 class DiagramNote(DiagramObject):
+    """Diagram object, which represents a note, can be attached to another diagram object."""
 
     def __init__(self, name: str, text: str, **kwargs):
         super().__init__(name, **kwargs)
