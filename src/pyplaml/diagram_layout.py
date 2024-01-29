@@ -9,13 +9,18 @@ from pyplaml import *
 
 
 class DiagramLayout(ABC):
+    """Base class for layouts which define the position of objects in a diagram."""
+
     objects: typing.Dict[str, DiagramObject]
 
     @abstractmethod
     def apply(self, objects: typing.Dict[str, DiagramObject], scale_x: float = 1, scale_y: float = 1):
+        """Applies layout for provided objects."""
         self.objects = objects
 
     def get_graph(self) -> nx.DiGraph:
+        """Converts provided objects to a directed graph."""
+
         g = nx.DiGraph()
         for name, o in self.objects.items():
             g.add_node(o.get_key())
