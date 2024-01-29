@@ -2,6 +2,8 @@ from enum import Enum
 
 
 class Relation(Enum):
+    """Represents a relation between diagram objects."""
+
     NONE = 0
     EXTENSION = 1
     ASSOCIATION = 2
