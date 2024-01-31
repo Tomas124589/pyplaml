@@ -7,4 +7,4 @@ name = "pyplaml"
 version = "0.0.1"
 description = "Package for converting PlantUML diagrams to Manim representation."
 requires-python = ">=3.10"
-dependencies = ["ply", "manim", "networkx", "pygraphviz"]
+dependencies = ["setuptools", "ply", "manim", "networkx", "pygraphviz"]
