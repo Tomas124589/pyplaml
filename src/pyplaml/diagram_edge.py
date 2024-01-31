@@ -63,7 +63,7 @@ class DiagramEdge(DiagramObject):
     def redraw(self):
         super().redraw()
 
-        if self.source.background_stroke_opacity or self.target.background_stroke_opacity:
+        if self.source.background_stroke_opacity == 0 or self.target.background_stroke_opacity == 0:
             return
 
         always_redraw(self.__line_updater)
