@@ -98,6 +98,8 @@ class DiagramClass(DiagramObject):
         self.redraw()
 
     def redraw(self):
+        orig_pos = self.get_center()
+
         super().redraw()
         if self.do_draw:
             header = self.__prepare_header()
@@ -123,6 +125,7 @@ class DiagramClass(DiagramObject):
                 self.__prepare_notes(mgroup)
 
             self.add(mgroup)
+            self.move_to(orig_pos)
 
     def __prepare_header(self):
         mo_title = self.__prepare_title()
