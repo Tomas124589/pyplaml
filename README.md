@@ -40,3 +40,11 @@ Usage is same as running any other manim scene. To run a scene from examples run
 ```commandline
 manim examples/scenes/animals.py -pql
 ```
+
+## Example
+
+<p align="center">
+  <img src="https://github.com/Tomas124589/pyplaml/blob/main/examples/gif/animals.gif">
+</p>
+
+Other examples available at https://github.com/Tomas124589/pyplaml/blob/main/examples/gif/
