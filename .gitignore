@@ -1,7 +1,7 @@
-.idea
 parser.out
 parsetab.py
-media
 
-/build/
-/src/pyplaml.egg-info/
+.idea/
+media/
+build/
+src/pyplaml.egg-info/
